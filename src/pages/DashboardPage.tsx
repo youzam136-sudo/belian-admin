@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "../styles/dashboard.css";
 
 type ChecklistItem = {
@@ -13,9 +14,19 @@ type ChecklistCard = {
 
 const checklistCards: ChecklistCard[] = [
     {
+        title: "결제 방법 추가",
+        badge: "PG 가입 무료",
+        items: [
+            { label: "상품 등록하기", done: true },
+            { label: "법적 필수 정보 입력하기", done: false },
+            { label: "약관·개인정보처리방침 확인", done: false },
+            { label: "PG 신청하기", done: false },
+        ],
+    },
+    {
         title: "기본설정",
         items: [
-            { label: "사이트 정보 설정하기", done: true },
+            { label: "사이트 정보 설정하기", done: false },
             { label: "관리자 계정 설정하기", done: true },
             { label: "약관 설정하기", done: false },
             { label: "도메인 연결하기", done: false },
@@ -24,17 +35,18 @@ const checklistCards: ChecklistCard[] = [
     {
         title: "판매하기",
         items: [
-            { label: "상품 등록하기", done: true },
-            { label: "배송비 설정하기", done: false },
+            { label: "상품 추가하기", done: false },
+            { label: "배송 설정하기", done: false },
             { label: "결제 수단 연결하기", done: false },
         ],
     },
     {
-        title: "운영하기",
+        title: "성장하기",
         items: [
-            { label: "재고 관리 설정하기", done: false },
+            { label: "검색엔진 등록하기", done: false },
             { label: "쿠폰/이벤트 등록하기", done: false },
-            { label: "게시판 관리하기", done: false },
+            { label: "SMS/알림톡 설정하기", done: false },
+            { label: "방문자 분석하기", done: false },
         ],
     },
 ];
@@ -56,155 +68,257 @@ const periodRows = [
 ];
 
 function DashboardPage() {
-    const totalDone = checklistCards.reduce(
-        (sum, card) => sum + card.items.filter((item) => item.done).length,
-        0,
-    );
-    const totalItems = checklistCards.reduce(
-        (sum, card) => sum + card.items.length,
-        0,
-    );
+    const [memo, setMemo] = useState("");
 
     return (
-        <div className="dashboard-page">
+        <div className="dashboard-layout">
 
-            {/* 요약 */}
-            <section className="dashboard-section">
-                <h2>요약</h2>
+            {/* ================= 메인 컬럼 ================= */}
+            <div className="dashboard-page">
 
-                <div className="dashboard-checklist-grid">
-                    {checklistCards.map((card) => {
-                        const done = card.items.filter((item) => item.done).length;
+                {/* 요약 */}
+                <section className="dashboard-section">
+                    <h2>요약</h2>
 
-                        return (
-                            <div className="dashboard-checklist-card" key={card.title}>
-                                <div className="dashboard-checklist-head">
-                                    <h3>{card.title}</h3>
-                                    <span>{done}/{card.items.length}개 완료</span>
+                    <div className="dashboard-info-banner">
+                        안전한 상품 판매를 위해 쇼핑몰에 결제 수단을 추가해 보세요
+                        <a href="#">추가</a>
+                    </div>
+
+                    <div className="dashboard-checklist-grid">
+                        {checklistCards.map((card) => {
+                            const done = card.items.filter((item) => item.done).length;
+
+                            return (
+                                <div className="dashboard-checklist-card" key={card.title}>
+                                    <div className="dashboard-checklist-head">
+                                        <h3>
+                                            {card.title}
+                                            {card.badge && (
+                                                <span className="dashboard-checklist-tag">
+                                                    {card.badge}
+                                                </span>
+                                            )}
+                                        </h3>
+                                    </div>
+
+                                    <span className="dashboard-checklist-count">
+                                        {done}/{card.items.length}개 완료
+                                    </span>
+
+                                    <div className="dashboard-checklist-bar">
+                                        <div
+                                            className="dashboard-checklist-bar-fill"
+                                            style={{
+                                                width: `${(done / card.items.length) * 100}%`,
+                                            }}
+                                        />
+                                    </div>
+
+                                    <ul>
+                                        {card.items.map((item) => (
+                                            <li
+                                                key={item.label}
+                                                className={item.done ? "is-done" : ""}
+                                            >
+                                                <span className="dashboard-checklist-dot">
+                                                    {item.done && "✓"}
+                                                </span>
+                                                {item.label}
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </div>
+                            );
+                        })}
+                    </div>
+                </section>
 
-                                <div className="dashboard-checklist-bar">
-                                    <div
-                                        className="dashboard-checklist-bar-fill"
-                                        style={{
-                                            width: `${(done / card.items.length) * 100}%`,
-                                        }}
-                                    />
-                                </div>
+                {/* 오늘의 할일 */}
+                <section className="dashboard-section">
+                    <h2>
+                        오늘의 할일{" "}
+                        <span className="dashboard-badge">
+                            {todayTasks.reduce((sum, task) => sum + task.count, 0)}
+                        </span>
+                    </h2>
 
-                                <ul>
-                                    {card.items.map((item) => (
-                                        <li
-                                            key={item.label}
-                                            className={item.done ? "is-done" : ""}
-                                        >
-                                            <span className="dashboard-checklist-dot" />
-                                            {item.label}
-                                        </li>
-                                    ))}
-                                </ul>
+                    <div className="dashboard-today-row">
+                        {todayTasks.map((task) => (
+                            <div className="dashboard-today-item" key={task.label}>
+                                <span>{task.label}</span>
+                                <strong>{task.count}</strong>
                             </div>
-                        );
-                    })}
-                </div>
+                        ))}
+                    </div>
+                </section>
 
-                <p className="dashboard-checklist-total">
-                    전체 설정 진행률 {totalDone}/{totalItems}개 완료
-                </p>
-            </section>
+                {/* 통계 */}
+                <section className="dashboard-section">
+                    <h2>통계</h2>
 
-            {/* 오늘의 할일 */}
-            <section className="dashboard-section">
-                <h2>
-                    오늘의 할일{" "}
-                    <span className="dashboard-badge">
-                        {todayTasks.reduce((sum, task) => sum + task.count, 0)}
-                    </span>
-                </h2>
+                    <div className="dashboard-stats-grid">
+                        <div className="dashboard-chart-card">
+                            <div className="dashboard-card-head">
+                                <h3>방문자</h3>
+                                <a href="#">더보기</a>
+                            </div>
 
-                <div className="dashboard-today-row">
-                    {todayTasks.map((task) => (
-                        <div className="dashboard-today-item" key={task.label}>
-                            <span>{task.label}</span>
-                            <strong>{task.count}</strong>
-                        </div>
-                    ))}
-                </div>
-            </section>
-
-            {/* 통계 */}
-            <section className="dashboard-section">
-                <h2>통계</h2>
-
-                <div className="dashboard-stats-grid">
-                    <div className="dashboard-chart-card">
-                        <div className="dashboard-card-head">
-                            <h3>방문자</h3>
-                        </div>
-
-                        <svg className="dashboard-chart" viewBox="0 0 320 140" preserveAspectRatio="none">
-                            <polyline
-                                points="0,110 53,90 106,70 160,95 213,60 266,80 320,40"
-                                fill="none"
-                                stroke="var(--admin-accent)"
-                                strokeWidth="2"
-                            />
-
-                            {[110, 90, 70, 95, 60, 80, 40].map((y, index) => (
-                                <circle
-                                    key={index}
-                                    cx={index * 53.3}
-                                    cy={y}
-                                    r={3}
-                                    fill="var(--admin-accent)"
+                            <svg className="dashboard-chart" viewBox="0 0 320 140" preserveAspectRatio="none">
+                                <polyline
+                                    points="0,110 53,90 106,70 160,95 213,60 266,80 320,40"
+                                    fill="none"
+                                    stroke="var(--admin-accent)"
+                                    strokeWidth="2"
                                 />
-                            ))}
-                        </svg>
 
-                        <div className="dashboard-chart-labels">
-                            {["08-18", "08-19", "08-20", "08-21", "08-22", "08-23", "08-24"].map(
-                                (label) => (
-                                    <span key={label}>{label}</span>
-                                ),
-                            )}
+                                {[110, 90, 70, 95, 60, 80, 40].map((y, index) => (
+                                    <circle
+                                        key={index}
+                                        cx={index * 53.3}
+                                        cy={y}
+                                        r={3}
+                                        fill="var(--admin-accent)"
+                                    />
+                                ))}
+                            </svg>
+
+                            <div className="dashboard-chart-labels">
+                                {["08-18", "08-19", "08-20", "08-21", "08-22", "08-23", "08-24"].map(
+                                    (label) => (
+                                        <span key={label}>{label}</span>
+                                    ),
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="dashboard-table-card">
+                            <div className="dashboard-card-head">
+                                <h3>기간별 분석</h3>
+                                <a href="#">더보기</a>
+                            </div>
+
+                            <table className="dashboard-table">
+                                <thead>
+                                    <tr>
+                                        <th>일자</th>
+                                        <th>주문수</th>
+                                        <th>매출액</th>
+                                        <th>방문자</th>
+                                        <th>가입</th>
+                                        <th>문의</th>
+                                        <th>후기</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {periodRows.map((row) => (
+                                        <tr key={row.date}>
+                                            <td>{row.date}</td>
+                                            <td>{row.orders}</td>
+                                            <td>{row.sales}</td>
+                                            <td>{row.visitors}</td>
+                                            <td>{row.signups}</td>
+                                            <td>{row.inquiries}</td>
+                                            <td>{row.reviews}</td>
+                                        </tr>
+                                    ))}
+
+                                    <tr className="dashboard-table-summary">
+                                        <td>최근 7일 합계</td>
+                                        <td>16건</td>
+                                        <td>528,000원</td>
+                                        <td>712명</td>
+                                        <td>7명</td>
+                                        <td>4</td>
+                                        <td>4</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+                </section>
 
-                    <div className="dashboard-table-card">
-                        <div className="dashboard-card-head">
-                            <h3>기간별 분석</h3>
+                {/* 컨텐츠 */}
+                <section className="dashboard-section">
+                    <h2>컨텐츠</h2>
+
+                    <div className="dashboard-content-grid">
+                        <div className="dashboard-content-card">
+                            <div className="dashboard-card-head">
+                                <h3>상품 구매평</h3>
+                                <a href="#">더보기</a>
+                            </div>
+
+                            <div className="dashboard-content-empty">
+                                상품 구매평이 없어요
+                            </div>
                         </div>
 
-                        <table className="dashboard-table">
-                            <thead>
-                                <tr>
-                                    <th>일자</th>
-                                    <th>주문수</th>
-                                    <th>매출액</th>
-                                    <th>방문자</th>
-                                    <th>가입</th>
-                                    <th>문의</th>
-                                    <th>후기</th>
-                                </tr>
-                            </thead>
+                        <div className="dashboard-content-card">
+                            <div className="dashboard-card-head">
+                                <h3>상품 문의</h3>
+                                <a href="#">더보기</a>
+                            </div>
 
-                            <tbody>
-                                {periodRows.map((row) => (
-                                    <tr key={row.date}>
-                                        <td>{row.date}</td>
-                                        <td>{row.orders}</td>
-                                        <td>{row.sales}</td>
-                                        <td>{row.visitors}</td>
-                                        <td>{row.signups}</td>
-                                        <td>{row.inquiries}</td>
-                                        <td>{row.reviews}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                            <div className="dashboard-content-empty">
+                                상품 문의가 없어요
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            {/* ================= 오른쪽 패널 ================= */}
+            <aside className="dashboard-side">
+
+                <div className="dashboard-profile-card">
+                    <div className="dashboard-profile-avatar" />
+
+                    <div>
+                        <strong>관리자</strong>
+                        <span>admin@belian.com</span>
                     </div>
                 </div>
-            </section>
+
+                <div className="dashboard-side-row">
+                    <span>사용버전</span>
+                    <strong>Free</strong>
+                </div>
+
+                <div className="dashboard-side-row">
+                    <span>PG</span>
+                    <strong className="is-warning">미가입</strong>
+                </div>
+
+                <button type="button" className="dashboard-pg-btn">
+                    PG 가입 신청
+                </button>
+
+                <div className="dashboard-side-card">
+                    <strong>운영진</strong>
+
+                    <div className="dashboard-side-member">
+                        <div className="dashboard-profile-avatar small" />
+                        <span>관리자</span>
+                        <em>관리</em>
+                    </div>
+                </div>
+
+                <div className="dashboard-memo-card">
+                    <strong>관리자 메모</strong>
+
+                    <textarea
+                        placeholder="관리자들과 공유할 메모를 남겨주세요"
+                        value={memo}
+                        onChange={(event) => setMemo(event.target.value)}
+                    />
+
+                    <button type="button">저장</button>
+                </div>
+
+            </aside>
 
         </div>
     );
