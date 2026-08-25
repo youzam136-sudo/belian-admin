@@ -1,0 +1,163 @@
+.admin-layout {
+    display: flex;
+
+    min-height: 100vh;
+}
+
+/* SIDEBAR */
+
+.admin-sidebar {
+    display: flex;
+    flex-direction: column;
+
+    width: 220px;
+    flex-shrink: 0;
+
+    padding: 24px 16px;
+
+    background: var(--admin-sidebar-bg);
+}
+
+.admin-sidebar-logo {
+    margin-bottom: 30px;
+    padding: 0 8px;
+
+    color: #fff;
+
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.admin-sidebar-logo span {
+    color: #8b93a3;
+
+    font-weight: 500;
+}
+
+.admin-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+
+    gap: 22px;
+}
+
+.admin-sidebar-group {
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+.admin-sidebar-group-title {
+    padding: 0 8px;
+    margin-bottom: 6px;
+
+    color: #5b6273;
+
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.admin-sidebar-link {
+    padding: 9px 8px;
+
+    border-radius: 6px;
+
+    color: #c3c8d4;
+    text-decoration: none;
+
+    font-size: 14px;
+
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.admin-sidebar-link:hover {
+    background: rgba(255, 255, 255, 0.06);
+
+    color: #fff;
+}
+
+.admin-sidebar-link.is-active {
+    background: var(--admin-accent);
+
+    color: #fff;
+    font-weight: 600;
+}
+
+/* MAIN */
+
+.admin-main {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+    min-width: 0;
+}
+
+.admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    height: 60px;
+
+    padding: 0 28px;
+
+    border-bottom: 1px solid var(--admin-border);
+
+    background: #fff;
+}
+
+.admin-header h1 {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.admin-header-right {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+}
+
+.admin-header-user {
+    color: var(--admin-text-muted);
+
+    font-size: 13px;
+}
+
+.admin-header-right button {
+    padding: 7px 14px;
+
+    border: 1px solid var(--admin-border);
+    border-radius: 6px;
+
+    background: #fff;
+    color: #444;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.admin-content {
+    flex: 1;
+
+    padding: 28px;
+
+    overflow-y: auto;
+}
+
+/* MOBILE */
+
+@media (max-width: 900px) {
+    .admin-sidebar {
+        display: none;
+    }
+
+    .admin-content {
+        padding: 18px;
+    }
+}
