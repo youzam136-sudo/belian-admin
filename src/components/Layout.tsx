@@ -1,12 +1,22 @@
-import { Outlet, useMatches } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import "../styles/layout.css";
 
+const titleMap: Record<string, string> = {
+    "/": "대시보드",
+    "/members": "회원 관리",
+    "/products": "상품 관리",
+    "/inventory": "재고 관리",
+    "/orders": "주문 관리",
+    "/payments": "결제 관리",
+    "/shipping": "배송 관리",
+    "/admins": "관리자 관리",
+};
+
 function Layout() {
-    const matches = useMatches();
-    const current = matches[matches.length - 1];
-    const title = (current?.handle as { title?: string } | undefined)?.title ?? "대시보드";
+    const location = useLocation();
+    const title = titleMap[location.pathname] ?? "대시보드";
 
     return (
         <div className="admin-layout">
