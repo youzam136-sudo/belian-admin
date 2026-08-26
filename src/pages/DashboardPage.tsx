@@ -1,545 +1,423 @@
-/* ===== 대시보드 레이아웃 (좌: 본문 / 우: 사이드패널) ===== */
-.dashboard-layout {
-    display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 24px;
-}
-
-.dashboard-page {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 36px;
-}
-
-.dashboard-side {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-/* ===== 섹션 공통 ===== */
-.dashboard-section h2 {
-    font-size: 20px;
-    font-weight: 800;
-    margin: 0 0 18px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.dashboard-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 24px;
-    height: 24px;
-    padding: 0 6px;
-    border-radius: 999px;
-    background-color: #181a1e;
-    color: #fff;
-    font-size: 13px;
-    font-weight: 700;
-}
-
-.dashboard-info-banner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #eef8ff;
-    border-radius: 14px;
-    padding: 18px 24px;
-    font-size: 15px;
-    font-weight: 600;
-    color: #1c1c1e;
-    margin-bottom: 24px;
-}
-
-.dashboard-info-banner a {
-    color: var(--admin-accent-dark);
-    font-weight: 700;
-    text-decoration: none;
-}
-
-.dashboard-card-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 18px;
-}
-
-.dashboard-card-head h3 {
-    font-size: 17px;
-    font-weight: 700;
-    margin: 0;
-}
-
-.dashboard-card-head a {
-    font-size: 13px;
-    color: var(--admin-text-muted);
-    text-decoration: none;
-}
-
-/* ===== 요약 체크리스트 카드 ===== */
-.dashboard-checklist-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 24px;
-}
-
-.dashboard-checklist-card {
-    background-color: #ffffff;
-    border-radius: 18px;
-    padding: 28px 26px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-}
-
-.dashboard-checklist-head h3 {
-    font-size: 18px;
-    font-weight: 800;
-    margin: 0 0 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.dashboard-checklist-tag {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--admin-accent-dark);
-    background-color: var(--admin-accent-soft);
-    padding: 4px 10px;
-    border-radius: 999px;
-}
-
-.dashboard-checklist-count {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--admin-text-muted);
-    margin-bottom: 10px;
-}
-
-.dashboard-checklist-bar {
-    width: 100%;
-    height: 10px;
-    background-color: var(--admin-border);
-    border-radius: 999px;
-    overflow: hidden;
-    margin-bottom: 20px;
-}
-
-.dashboard-checklist-bar-fill {
-    height: 100%;
-    background-color: #181a1e;
-    border-radius: 999px;
-    transition: width 0.3s ease;
-}
-
-.dashboard-checklist-card ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.dashboard-checklist-card li {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 500;
-    color: #15181E;
-    transition: background-color 0.12s ease;
-    cursor: pointer;
-}
-
-.dashboard-checklist-card li:hover {
-    background-color: #f3f4f6;
-}
-
-.dashboard-checklist-card li.is-done {
-    color: #9ca3af;
-    text-decoration: line-through;
-}
-
-.dashboard-checklist-dot {
-    width: 24px;
-    height: 24px;
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    border: 2px solid #d1d5db;
-    font-size: 13px;
-    font-weight: 800;
-    color: transparent;
-}
-
-.dashboard-checklist-card li.is-done .dashboard-checklist-dot {
-    border-color: #22c55e;
-    background-color: #22c55e;
-    color: #ffffff;
-}
-
-/* ===== 오늘의 할일 ===== */
-.dashboard-today-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 20px;
-    background-color: #ffffff;
-    border-radius: 18px;
-    padding: 26px;
-}
-
-.dashboard-today-item {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.dashboard-today-item span {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--admin-text-muted);
-}
-
-.dashboard-today-item strong {
-    font-size: 30px;
-    font-weight: 800;
-    color: #15181E;
-}
-
-/* ===== 통계 ===== */
-.dashboard-stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.4fr;
-    gap: 24px;
-}
-
-.dashboard-chart-card,
-.dashboard-table-card,
-.dashboard-content-card {
-    background-color: #ffffff;
-    border-radius: 18px;
-    padding: 28px 26px;
-}
-
-.dashboard-chart-legend {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 14px;
-}
-
-.dashboard-chart-legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: var(--admin-text-muted);
-}
-
-.dashboard-chart-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: inline-block;
-}
-
-.dashboard-chart-dot.visitor {
-    background-color: var(--admin-accent-dark);
-}
-
-.dashboard-chart-dot.pageview {
-    background-color: var(--admin-accent-soft);
-    border: 1px solid var(--admin-accent);
-}
-
-.dashboard-chart-wrap {
-    position: relative;
-    display: flex;
-    gap: 8px;
-}
-
-.dashboard-chart-yaxis {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    font-size: 12px;
-    color: var(--admin-text-muted);
-    padding: 4px 0;
-}
-
-.dashboard-chart {
-    width: 100%;
-    height: 200px;
-}
-
-.dashboard-chart-tooltip {
-    position: absolute;
-    transform: translate(-50%, -120%);
-    background: #ffffff;
-    border: 1px solid var(--admin-border);
-    border-radius: 8px;
-    padding: 8px 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    font-size: 13px;
-    font-weight: 700;
-    pointer-events: none;
-    white-space: nowrap;
-    z-index: 5;
-}
-
-.dashboard-chart-tooltip-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.dashboard-chart-labels {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    font-size: 12px;
-    color: var(--admin-text-muted);
-}
-
-.dashboard-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 15px;
-}
-
-.dashboard-table th {
-    text-align: left;
-    font-size: 13px;
-    font-weight: 700;
-    color: #9ca3af;
-    padding: 0 12px 14px;
-    border-bottom: 1px solid var(--admin-border);
-}
-
-.dashboard-table td {
-    padding: 16px 12px;
-    border-bottom: 1px solid #f3f4f6;
-    color: #15181E;
-}
-
-.dashboard-table-summary td {
-    font-weight: 800;
-    border-bottom: none;
-    background-color: #f8fafc;
-}
-
-/* ===== 컨텐츠 ===== */
-.dashboard-content-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 24px;
-}
-
-.dashboard-content-empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 120px;
-    color: #9ca3af;
-    font-size: 15px;
-}
-
-/* ===== 오른쪽 사이드 패널 ===== */
-.dashboard-profile-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background-color: #ffffff;
-    border-radius: 18px;
-    padding: 22px 24px;
-}
-
-.dashboard-profile-avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background-color: #e5e7eb;
-    flex-shrink: 0;
-}
-
-.dashboard-profile-avatar.small {
-    width: 32px;
-    height: 32px;
-}
-
-.dashboard-profile-card div {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.dashboard-profile-card strong {
-    font-size: 16px;
-    font-weight: 800;
-}
-
-.dashboard-profile-card span {
-    font-size: 13px;
-    color: var(--admin-text-muted);
-}
-
-.dashboard-info-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.dashboard-side-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #ffffff;
-    border-radius: 14px;
-    padding: 16px 22px;
-    font-size: 15px;
-    font-weight: 600;
-}
-
-.dashboard-side-row.multiline {
-    align-items: flex-start;
-}
-
-.dashboard-side-row strong {
-    font-weight: 800;
-}
-
-.dashboard-side-row strong.is-warning {
-    color: #ef4444;
-}
-
-.dashboard-side-row-value {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 2px;
-}
-
-.dashboard-side-row-value em {
-    font-style: normal;
-    font-size: 12px;
-    color: var(--admin-text-muted);
-}
-
-.dashboard-pg-btn {
-    width: 100%;
-    padding: 16px;
-    border: none;
-    border-radius: 14px;
-    background-color: var(--admin-accent);
-    color: #ffffff;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.15s ease;
-}
-
-.dashboard-pg-btn:hover {
-    background-color: var(--admin-accent-dark);
-}
-
-.dashboard-toggle-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    width: 100%;
-    padding: 10px;
-    border: none;
-    background: transparent;
-    color: var(--admin-text-muted);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.dashboard-toggle-btn .arrow {
-    display: inline-block;
-    transition: transform 0.15s ease;
-}
-
-.dashboard-toggle-btn .arrow.up {
-    transform: rotate(180deg);
-}
-
-.dashboard-side-card {
-    background-color: #ffffff;
-    border-radius: 18px;
-    padding: 22px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.dashboard-side-card > strong {
-    font-size: 15px;
-    font-weight: 800;
-}
-
-.dashboard-side-member {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-}
-
-.dashboard-side-member span {
-    flex: 1;
-    font-weight: 600;
-}
-
-.dashboard-side-member em {
-    font-style: normal;
-    color: var(--admin-text-muted);
-    font-size: 13px;
-}
-
-.dashboard-memo-card {
-    background-color: #fff9db;
-    border-radius: 18px;
-    padding: 22px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.dashboard-memo-card strong {
-    font-size: 15px;
-    font-weight: 800;
-}
-
-.dashboard-memo-card textarea {
-    width: 100%;
-    min-height: 90px;
-    border: none;
-    border-radius: 10px;
-    padding: 12px;
-    font-size: 14px;
-    font-family: inherit;
-    resize: vertical;
-    background-color: #ffffff;
-}
-
-.dashboard-memo-card button {
-    align-self: flex-end;
-    padding: 8px 18px;
-    border: none;
-    border-radius: 8px;
-    background-color: #181a1e;
-    color: #ffffff;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-}
+import { useState } from "react";
+import "../styles/dashboard.css";
+
+type ChecklistItem = {
+    label: string;
+    done: boolean;
+};
+
+type ChecklistCard = {
+    title: string;
+    badge?: string;
+    items: ChecklistItem[];
+};
+
+const checklistCards: ChecklistCard[] = [
+    {
+        title: "결제 방법 추가",
+        badge: "PG 가입 무료",
+        items: [
+            { label: "상품 등록하기", done: true },
+            { label: "법적 필수 정보 입력하기", done: false },
+            { label: "약관·개인정보처리방침 확인", done: false },
+            { label: "PG 신청하기", done: false },
+        ],
+    },
+    {
+        title: "기본설정",
+        items: [
+            { label: "사이트 정보 설정하기", done: false },
+            { label: "관리자 계정 설정하기", done: true },
+            { label: "약관 설정하기", done: false },
+            { label: "도메인 연결하기", done: false },
+        ],
+    },
+    {
+        title: "판매하기",
+        items: [
+            { label: "상품 추가하기", done: false },
+            { label: "배송 설정하기", done: false },
+            { label: "결제 수단 연결하기", done: false },
+        ],
+    },
+    {
+        title: "성장하기",
+        items: [
+            { label: "검색엔진 등록하기", done: false },
+            { label: "쿠폰/이벤트 등록하기", done: false },
+            { label: "SMS/알림톡 설정하기", done: false },
+            { label: "방문자 분석하기", done: false },
+        ],
+    },
+];
+
+const todayTasks = [
+    { label: "신규주문", count: 3 },
+    { label: "취소관리", count: 0 },
+    { label: "반품관리", count: 1 },
+    { label: "교환관리", count: 0 },
+    { label: "답변대기 문의", count: 2 },
+];
+
+const periodRows = [
+    { date: "2026-08-24", orders: 4, sales: "128,000원", visitors: 152, signups: 2, inquiries: 1, reviews: 1 },
+    { date: "2026-08-23", orders: 2, sales: "64,000원", visitors: 138, signups: 1, inquiries: 0, reviews: 0 },
+    { date: "2026-08-22", orders: 6, sales: "215,000원", visitors: 201, signups: 3, inquiries: 2, reviews: 2 },
+    { date: "2026-08-21", orders: 1, sales: "32,000원", visitors: 97, signups: 0, inquiries: 1, reviews: 0 },
+    { date: "2026-08-20", orders: 3, sales: "89,000원", visitors: 124, signups: 1, inquiries: 0, reviews: 1 },
+];
+
+const chartData = [
+    { label: "08-20", pageviews: 0, visitors: 0 },
+    { label: "08-21", pageviews: 0, visitors: 0 },
+    { label: "08-22", pageviews: 0, visitors: 0 },
+    { label: "08-23", pageviews: 0, visitors: 0 },
+    { label: "08-24", pageviews: 1, visitors: 1 },
+    { label: "08-25", pageviews: 0, visitors: 0 },
+    { label: "08-26", pageviews: 1, visitors: 1 },
+];
+
+function DashboardPage() {
+    const [memo, setMemo] = useState("");
+    const [infoOpen, setInfoOpen] = useState(true);
+    const [hoveredPoint, setHoveredPoint] = useState<number | null>(null);
+
+    const chartWidth = 640;
+    const chartHeight = 220;
+    const maxValue = Math.max(1, ...chartData.map((d) => Math.max(d.pageviews, d.visitors)));
+    const stepX = chartWidth / (chartData.length - 1);
+
+    const getY = (value: number) =>
+        chartHeight - (value / maxValue) * (chartHeight - 20) - 10;
+
+    const linePoints = chartData
+        .map((d, i) => `${i * stepX},${getY(d.pageviews)}`)
+        .join(" ");
+
+    const areaPoints =
+        `0,${chartHeight} ` +
+        chartData.map((d, i) => `${i * stepX},${getY(d.pageviews)}`).join(" ") +
+        ` ${chartWidth},${chartHeight}`;
+
+    return (
+        <div className="dashboard-layout">
+
+            <div className="dashboard-page">
+
+                <section className="dashboard-section">
+                    <h2>요약</h2>
+
+                    <div className="dashboard-info-banner">
+                        안전한 상품 판매를 위해 쇼핑몰에 결제 수단을 추가해 보세요
+                        <a href="#">추가</a>
+                    </div>
+
+                    <div className="dashboard-checklist-grid">
+                        {checklistCards.map((card) => {
+                            const done = card.items.filter((item) => item.done).length;
+
+                            return (
+                                <div className="dashboard-checklist-card" key={card.title}>
+                                    <div className="dashboard-checklist-head">
+                                        <h3>
+                                            {card.title}
+                                            {card.badge && (
+                                                <span className="dashboard-checklist-tag">
+                                                    {card.badge}
+                                                </span>
+                                            )}
+                                        </h3>
+                                    </div>
+
+                                    <span className="dashboard-checklist-count">
+                                        {done}/{card.items.length}개 완료
+                                    </span>
+
+                                    <div className="dashboard-checklist-bar">
+                                        <div
+                                            className="dashboard-checklist-bar-fill"
+                                            style={{
+                                                width: `${(done / card.items.length) * 100}%`,
+                                            }}
+                                        />
+                                    </div>
+
+                                    <ul>
+                                        {card.items.map((item) => (
+                                            <li
+                                                key={item.label}
+                                                className={item.done ? "is-done" : ""}
+                                            >
+                                                <span className="dashboard-checklist-dot">
+                                                    {item.done && "✓"}
+                                                </span>
+                                                {item.label}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </section>
+
+                <section className="dashboard-section">
+                    <h2>
+                        오늘의 할일{" "}
+                        <span className="dashboard-badge">
+                            {todayTasks.reduce((sum, task) => sum + task.count, 0)}
+                        </span>
+                    </h2>
+
+                    <div className="dashboard-today-row">
+                        {todayTasks.map((task) => (
+                            <div className="dashboard-today-item" key={task.label}>
+                                <span>{task.label}</span>
+                                <strong>{task.count}</strong>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
+                <section className="dashboard-section">
+                    <h2>통계</h2>
+
+                    <div className="dashboard-stats-grid">
+                        <div className="dashboard-chart-card">
+                            <div className="dashboard-card-head">
+                                <h3>방문자</h3>
+                                <a href="#">더보기</a>
+                            </div>
+
+                            <div className="dashboard-chart-legend">
+                                <span className="dashboard-chart-legend-item">
+                                    <span className="dashboard-chart-dot pageview" />
+                                    페이지뷰
+                                </span>
+                                <span className="dashboard-chart-legend-item">
+                                    <span className="dashboard-chart-dot visitor" />
+                                    방문자
+                                </span>
+                            </div>
+
+                            <div className="dashboard-chart-wrap">
+                                <div className="dashboard-chart-yaxis">
+                                    <span>{maxValue}</span>
+                                    <span>0</span>
+                                </div>
+
+                                <svg
+                                    className="dashboard-chart"
+                                    viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+                                    preserveAspectRatio="none"
+                                >
+                                    <polygon
+                                        points={areaPoints}
+                                        fill="var(--admin-accent-soft)"
+                                        opacity="0.9"
+                                    />
+                                    <polyline
+                                        points={linePoints}
+                                        fill="none"
+                                        stroke="var(--admin-accent-dark)"
+                                        strokeWidth="2"
+                                    />
+
+                                    {chartData.map((d, index) => (
+                                        <circle
+                                            key={index}
+                                            cx={index * stepX}
+                                            cy={getY(d.visitors)}
+                                            r={hoveredPoint === index ? 5 : 3.5}
+                                            fill="var(--admin-accent-dark)"
+                                            style={{ cursor: "pointer" }}
+                                            onMouseEnter={() => setHoveredPoint(index)}
+                                            onMouseLeave={() => setHoveredPoint(null)}
+                                        />
+                                    ))}
+                                </svg>
+
+                                {hoveredPoint !== null && (
+                                    <div
+                                        className="dashboard-chart-tooltip"
+                                        style={{
+                                            left: `${(hoveredPoint / (chartData.length - 1)) * 100}%`,
+                                            top: `${(getY(chartData[hoveredPoint].visitors) / chartHeight) * 100}%`,
+                                        }}
+                                    >
+                                        <div className="dashboard-chart-tooltip-row">
+                                            <span className="dashboard-chart-dot visitor" />
+                                            {chartData[hoveredPoint].visitors}
+                                        </div>
+                                        <div className="dashboard-chart-tooltip-row">
+                                            <span className="dashboard-chart-dot pageview" />
+                                            {chartData[hoveredPoint].pageviews}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="dashboard-chart-labels">
+                                {chartData.map((d) => (
+                                    <span key={d.label}>{d.label}</span>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="dashboard-table-card">
+                            <div className="dashboard-card-head">
+                                <h3>기간별 분석</h3>
+                                <a href="#">더보기</a>
+                            </div>
+
+                            <table className="dashboard-table">
+                                <thead>
+                                    <tr>
+                                        <th>일자</th>
+                                        <th>주문수</th>
+                                        <th>매출액</th>
+                                        <th>방문자</th>
+                                        <th>가입</th>
+                                        <th>문의</th>
+                                        <th>후기</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {periodRows.map((row) => (
+                                        <tr key={row.date}>
+                                            <td>{row.date}</td>
+                                            <td>{row.orders}</td>
+                                            <td>{row.sales}</td>
+                                            <td>{row.visitors}</td>
+                                            <td>{row.signups}</td>
+                                            <td>{row.inquiries}</td>
+                                            <td>{row.reviews}</td>
+                                        </tr>
+                                    ))}
+
+                                    <tr className="dashboard-table-summary">
+                                        <td>최근 7일 합계</td>
+                                        <td>16건</td>
+                                        <td>528,000원</td>
+                                        <td>712명</td>
+                                        <td>7명</td>
+                                        <td>4</td>
+                                        <td>4</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="dashboard-section">
+                    <h2>컨텐츠</h2>
+
+                    <div className="dashboard-content-grid">
+                        <div className="dashboard-content-card">
+                            <div className="dashboard-card-head">
+                                <h3>상품 구매평</h3>
+                                <a href="#">더보기</a>
+                            </div>
+
+                            <div className="dashboard-content-empty">
+                                상품 구매평이 없어요
+                            </div>
+                        </div>
+
+                        <div className="dashboard-content-card">
+                            <div className="dashboard-card-head">
+                                <h3>상품 문의</h3>
+                                <a href="#">더보기</a>
+                            </div>
+
+                            <div className="dashboard-content-empty">
+                                상품 문의가 없어요
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <aside className="dashboard-side">
+
+                <div className="dashboard-profile-card">
+                    <div className="dashboard-profile-avatar" />
+
+                    <div>
+                        <strong>관리자</strong>
+                        <span>admin@belian.com</span>
+                    </div>
+                </div>
+
+                {infoOpen && (
+                    <div className="dashboard-info-list">
+                        <div className="dashboard-side-row">
+                            <span>PG</span>
+                            <strong className="is-warning">미가입</strong>
+                        </div>
+
+                        <div className="dashboard-side-row">
+                            <span>APP</span>
+                            <strong>iOS 미사용 · Android 미사용</strong>
+                        </div>
+
+                        <div className="dashboard-side-row">
+                            <span>도메인</span>
+                            <strong>기본 도메인 사용 중</strong>
+                        </div>
+
+                        <div className="dashboard-side-row multiline">
+                            <span>SSL</span>
+                            <div className="dashboard-side-row-value">
+                                <strong>사용</strong>
+                                <em>(기본 도메인 자동 적용)</em>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <button type="button" className="dashboard-pg-btn">
+                    PG 가입 신청
+                </button>
+
+                <button
+                    type="button"
+                    className="dashboard-toggle-btn"
+                    onClick={() => setInfoOpen((prev) => !prev)}
+                >
+                    {infoOpen ? "닫기" : "더보기"}
+                    <span className={infoOpen ? "arrow up" : "arrow"}>▾</span>
+                </button>
+
+                <div className="dashboard-side-card">
+                    <strong>운영진</strong>
+
+                    <div className="dashboard-side-member">
+                        <div className="dashboard-profile-avatar small" />
+                        <span>관리자</span>
+                        <em>관리</em>
+                    </div>
+                </div>
+
+                <div className="dashboard-memo-card">
+                    <strong>관리자 메모</strong>
+
+                    <textarea
+                        placeholder="관리자들과 공유할 메모를 남겨주세요"
+                        value={memo}
+                        onChange={(event) => setMemo(event.target.value)}
+                    />
+
+                    <button type="button">저장</button>
+                </div>
+
+            </aside>
+
+        </div>
+    );
+}
+
+export default DashboardPage;
