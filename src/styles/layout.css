@@ -1,4 +1,14 @@
-/* ===== 기본 레이아웃 ===== */
+/* ===== 전역 변수 ===== */
+:root {
+  --admin-accent: #00d6a3;
+  --admin-accent-dark: #00b389;
+  --admin-black: #181a1e;
+  --admin-bg: #fafbfc;
+  --admin-text: #1c1c1e;
+  --admin-muted: #6b7280;
+  --admin-border: #eceef1;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -6,8 +16,8 @@
 body {
   margin: 0;
   font-family: "Pretendard", "Apple SD Gothic Neo", -apple-system, sans-serif;
-  background-color: #f4f5f7;
-  color: #1c1c1e;
+  background-color: var(--admin-bg);
+  color: var(--admin-text);
 }
 
 .admin-layout {
@@ -18,7 +28,7 @@ body {
 .admin-main {
   flex: 1;
   padding: 40px 48px;
-  background-color: #f4f5f7;
+  background-color: var(--admin-bg);
 }
 
 /* ===== 사이드바 ===== */
@@ -35,13 +45,13 @@ body {
   font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: #1c1c1e;
+  color: var(--admin-text);
   padding: 8px 12px 28px;
 }
 
 .admin-sidebar-logo span {
   font-weight: 500;
-  color: #00d6a3;
+  color: var(--admin-accent);
   margin-left: 4px;
 }
 
@@ -81,11 +91,11 @@ body {
 
 .admin-sidebar-link:hover {
   background-color: #f0fdf9;
-  color: #00b389;
+  color: var(--admin-accent-dark);
 }
 
 .admin-sidebar-link.is-active {
-  background-color: #00d6a3;
+  background-color: var(--admin-accent);
   color: #ffffff;
   font-weight: 700;
 }
