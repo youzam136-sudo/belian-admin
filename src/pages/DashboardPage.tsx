@@ -67,8 +67,36 @@ const periodRows = [
     { date: "2026-08-20", orders: 3, sales: "89,000원", visitors: 124, signups: 1, inquiries: 0, reviews: 1 },
 ];
 
+const chartData = [
+    { label: "08-20", pageviews: 0, visitors: 0 },
+    { label: "08-21", pageviews: 0, visitors: 0 },
+    { label: "08-22", pageviews: 0, visitors: 0 },
+    { label: "08-23", pageviews: 0, visitors: 0 },
+    { label: "08-24", pageviews: 1, visitors: 1 },
+    { label: "08-25", pageviews: 0, visitors: 0 },
+    { label: "08-26", pageviews: 1, visitors: 1 },
+];
+
 function DashboardPage() {
     const [memo, setMemo] = useState("");
+    const [hoveredPoint, setHoveredPoint] = useState<number | null>(null);
+
+    const chartWidth = 640;
+    const chartHeight = 220;
+    const maxValue = Math.max(1, ...chartData.map((d) => Math.max(d.pageviews, d.visitors)));
+    const stepX = chartWidth / (chartData.length - 1);
+
+    const getY = (value: number) =>
+        chartHeight - (value / maxValue) * (chartHeight - 20) - 10;
+
+    const linePoints = chartData
+        .map((d, i) => `${i * stepX},${getY(d.pageviews)}`)
+        .join(" ");
+
+    const areaPoints =
+        `0,${chartHeight} ` +
+        chartData.map((d, i) => `${i * stepX},${getY(d.pageviews)}`).join(" ") +
+        ` ${chartWidth},${chartHeight}`;
 
     return (
         <div className="dashboard-layout">
@@ -160,31 +188,78 @@ function DashboardPage() {
                                 <a href="#">더보기</a>
                             </div>
 
-                            <svg className="dashboard-chart" viewBox="0 0 320 140" preserveAspectRatio="none">
-                                <polyline
-                                    points="0,110 53,90 106,70 160,95 213,60 266,80 320,40"
-                                    fill="none"
-                                    stroke="var(--admin-accent)"
-                                    strokeWidth="2"
-                                />
+                            <div className="dashboard-chart-legend">
+                                <span className="dashboard-chart-legend-item">
+                                    <span className="dashboard-chart-dot pageview" />
+                                    페이지뷰
+                                </span>
+                                <span className="dashboard-chart-legend-item">
+                                    <span className="dashboard-chart-dot visitor" />
+                                    방문자
+                                </span>
+                            </div>
 
-                                {[110, 90, 70, 95, 60, 80, 40].map((y, index) => (
-                                    <circle
-                                        key={index}
-                                        cx={index * 53.3}
-                                        cy={y}
-                                        r={3}
-                                        fill="var(--admin-accent)"
+                            <div className="dashboard-chart-wrap">
+                                <div className="dashboard-chart-yaxis">
+                                    <span>{maxValue}</span>
+                                    <span>0</span>
+                                </div>
+
+                                <svg
+                                    className="dashboard-chart"
+                                    viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+                                    preserveAspectRatio="none"
+                                >
+                                    <polygon
+                                        points={areaPoints}
+                                        fill="var(--admin-accent-soft)"
+                                        opacity="0.9"
                                     />
-                                ))}
-                            </svg>
+                                    <polyline
+                                        points={linePoints}
+                                        fill="none"
+                                        stroke="var(--admin-accent-dark)"
+                                        strokeWidth="2"
+                                    />
+
+                                    {chartData.map((d, index) => (
+                                        <circle
+                                            key={index}
+                                            cx={index * stepX}
+                                            cy={getY(d.visitors)}
+                                            r={hoveredPoint === index ? 5 : 3.5}
+                                            fill="var(--admin-accent-dark)"
+                                            style={{ cursor: "pointer" }}
+                                            onMouseEnter={() => setHoveredPoint(index)}
+                                            onMouseLeave={() => setHoveredPoint(null)}
+                                        />
+                                    ))}
+                                </svg>
+
+                                {hoveredPoint !== null && (
+                                    <div
+                                        className="dashboard-chart-tooltip"
+                                        style={{
+                                            left: `${(hoveredPoint / (chartData.length - 1)) * 100}%`,
+                                            top: `${(getY(chartData[hoveredPoint].visitors) / chartHeight) * 100}%`,
+                                        }}
+                                    >
+                                        <div className="dashboard-chart-tooltip-row">
+                                            <span className="dashboard-chart-dot visitor" />
+                                            {chartData[hoveredPoint].visitors}
+                                        </div>
+                                        <div className="dashboard-chart-tooltip-row">
+                                            <span className="dashboard-chart-dot pageview" />
+                                            {chartData[hoveredPoint].pageviews}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
 
                             <div className="dashboard-chart-labels">
-                                {["08-18", "08-19", "08-20", "08-21", "08-22", "08-23", "08-24"].map(
-                                    (label) => (
-                                        <span key={label}>{label}</span>
-                                    ),
-                                )}
+                                {chartData.map((d) => (
+                                    <span key={d.label}>{d.label}</span>
+                                ))}
                             </div>
                         </div>
 
