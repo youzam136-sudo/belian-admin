@@ -352,13 +352,44 @@ const [infoOpen, setInfoOpen] = useState(true);
                     </div>
                 </div>
 
-                <div className="dashboard-side-row">
-                    <span>PG</span>
-                    <strong className="is-warning">미가입</strong>
-                </div>
+                {infoOpen && (
+                    <div className="dashboard-info-list">
+                        <div className="dashboard-side-row">
+                            <span>PG</span>
+                            <strong className="is-warning">미가입</strong>
+                        </div>
+
+                        <div className="dashboard-side-row">
+                            <span>APP</span>
+                            <strong>iOS 미사용 · Android 미사용</strong>
+                        </div>
+
+                        <div className="dashboard-side-row">
+                            <span>도메인</span>
+                            <strong>기본 도메인 사용 중</strong>
+                        </div>
+
+                        <div className="dashboard-side-row multiline">
+                            <span>SSL</span>
+                            <div className="dashboard-side-row-value">
+                                <strong>사용</strong>
+                                <em>(기본 도메인 자동 적용)</em>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 <button type="button" className="dashboard-pg-btn">
                     PG 가입 신청
+                </button>
+
+                <button
+                    type="button"
+                    className="dashboard-toggle-btn"
+                    onClick={() => setInfoOpen((prev) => !prev)}
+                >
+                    {infoOpen ? "닫기" : "더보기"}
+                    <span className={infoOpen ? "arrow up" : "arrow"}>▾</span>
                 </button>
 
                 <div className="dashboard-side-card">
