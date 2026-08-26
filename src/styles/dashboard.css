@@ -438,8 +438,8 @@
     padding: 16px;
     border: none;
     border-radius: 14px;
-    background-color: var(--admin-accent-soft);
-    color: var(--admin-accent-dark);
+    background-color: #eef8ff;
+    color: #2563eb;
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
@@ -447,7 +447,7 @@
 }
 
 .dashboard-pg-btn:hover {
-    background-color: var(--admin-accent);
+    background-color: #2563eb;
     color: #ffffff;
 }
 
