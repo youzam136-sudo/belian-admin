@@ -5,13 +5,15 @@
 }
 
 :root {
-    --admin-bg: #f4f5f7;
+    --admin-bg: #fafbfc;
     --admin-sidebar-bg: #ffffff;
-    --admin-accent: #00c9a7;
-    --admin-accent-dark: #00a88c;
+    --admin-accent: #00d6a3;
+    --admin-accent-dark: #00b98f;
+    --admin-accent-soft: #e7fbf5;
+    --admin-blue: #4a8ff5;
     --admin-text: #23262b;
-    --admin-text-muted: #8b909a;
-    --admin-border: #e9eaee;
+    --admin-text-muted: #9a9fa8;
+    --admin-border: #eef0f3;
 }
 
 html, body, #root {
