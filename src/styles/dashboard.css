@@ -26,8 +26,8 @@
 
     color: #191b1f;
 
-    font-size: 15px;
-    font-weight: 800;
+    font-size: 17px;
+    font-weight: 900;
 }
 
 .dashboard-section h2::before {
@@ -110,7 +110,7 @@
 }
 
 .dashboard-checklist-card {
-    padding: 22px 20px;
+    padding: 28px 26px;
 }
 
 .dashboard-checklist-head {
@@ -124,8 +124,8 @@
 
     gap: 7px;
 
-    font-size: 14px;
-    font-weight: 700;
+    font-size: 16px;
+    font-weight: 800;
 }
 
 .dashboard-checklist-tag {
@@ -143,20 +143,20 @@
 .dashboard-checklist-count {
     display: block;
 
-    margin-bottom: 10px;
+    margin-bottom: 14px;
 
     color: var(--admin-text-muted);
 
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .dashboard-checklist-bar {
-    height: 4px;
+    height: 5px;
 
-    margin-bottom: 18px;
+    margin-bottom: 22px;
     border-radius: 999px;
 
-    background: #f0f1f4;
+    background: #eceef1;
 
     overflow: hidden;
 }
@@ -164,14 +164,14 @@
 .dashboard-checklist-bar-fill {
     height: 100%;
 
-    background: var(--admin-accent);
+    background: #181a1e;
 }
 
 .dashboard-checklist-card ul {
     display: flex;
     flex-direction: column;
 
-    gap: 12px;
+    gap: 15px;
 
     list-style: none;
 }
@@ -180,11 +180,11 @@
     display: flex;
     align-items: center;
 
-    gap: 9px;
+    gap: 10px;
 
     color: var(--admin-text-muted);
 
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .dashboard-checklist-card li.is-done {
@@ -196,8 +196,8 @@
     align-items: center;
     justify-content: center;
 
-    width: 17px;
-    height: 17px;
+    width: 19px;
+    height: 19px;
     flex-shrink: 0;
 
     border: 1.5px solid #dde0e5;
@@ -205,14 +205,14 @@
 
     color: #fff;
 
-    font-size: 10px;
-    font-weight: 700;
+    font-size: 11px;
+    font-weight: 800;
 }
 
 .dashboard-checklist-card li.is-done .dashboard-checklist-dot {
-    border-color: var(--admin-accent);
+    border-color: #17c987;
 
-    background: var(--admin-accent);
+    background: #17c987;
 }
 
 /* 오늘의 할일 */
@@ -229,20 +229,20 @@
     flex-direction: column;
     align-items: center;
 
-    gap: 10px;
+    gap: 12px;
 
-    padding: 22px 10px;
+    padding: 26px 10px;
 }
 
 .dashboard-today-item span {
     color: var(--admin-text-muted);
 
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .dashboard-today-item strong {
-    font-size: 22px;
-    font-weight: 800;
+    font-size: 26px;
+    font-weight: 900;
 }
 
 /* 통계 */
@@ -257,7 +257,7 @@
 .dashboard-chart-card,
 .dashboard-table-card,
 .dashboard-content-card {
-    padding: 22px 24px;
+    padding: 26px 28px;
 }
 
 .dashboard-card-head {
@@ -269,8 +269,8 @@
 }
 
 .dashboard-card-head h3 {
-    font-size: 14px;
-    font-weight: 700;
+    font-size: 16px;
+    font-weight: 800;
 }
 
 .dashboard-card-head a {
