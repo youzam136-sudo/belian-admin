@@ -15,7 +15,6 @@ type ChecklistCard = {
 const checklistCards: ChecklistCard[] = [
     {
         title: "결제 방법 추가",
-        badge: "PG 가입 무료",
         items: [
             { label: "상품 등록하기", done: true },
             { label: "법적 필수 정보 입력하기", done: false },
@@ -357,11 +356,6 @@ function DashboardPage() {
                         <div className="dashboard-side-row">
                             <span>PG</span>
                             <strong className="is-warning">미가입</strong>
-                        </div>
-
-                        <div className="dashboard-side-row">
-                            <span>APP</span>
-                            <strong>iOS 미사용 · Android 미사용</strong>
                         </div>
 
                         <div className="dashboard-side-row">
