@@ -438,16 +438,17 @@
     padding: 16px;
     border: none;
     border-radius: 14px;
-    background-color: var(--admin-accent);
-    color: #ffffff;
+    background-color: var(--admin-accent-soft);
+    color: var(--admin-accent-dark);
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.15s ease;
+    transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .dashboard-pg-btn:hover {
-    background-color: var(--admin-accent-dark);
+    background-color: var(--admin-accent);
+    color: #ffffff;
 }
 
 .dashboard-toggle-btn {
