@@ -1,6 +1,17 @@
 import { NavLink } from "react-router-dom";
 import "../styles/layout.css";
 
+const icons: Record<string, string> = {
+    "대시보드": "▦",
+    "회원 관리": "◉",
+    "상품 관리": "◧",
+    "재고 관리": "▤",
+    "주문 관리": "▧",
+    "결제 관리": "◈",
+    "배송 관리": "▥",
+    "관리자 관리": "⚙",
+};
+
 const menuGroups = [
     {
         title: "일반",
@@ -51,6 +62,9 @@ function Sidebar() {
                                         : "admin-sidebar-link"
                                 }
                             >
+                                <span className="admin-sidebar-icon">
+                                    {icons[item.label]}
+                                </span>
                                 {item.label}
                             </NavLink>
                         ))}
