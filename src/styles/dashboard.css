@@ -179,14 +179,19 @@
 .dashboard-checklist-card li {
     display: flex;
     align-items: center;
-
-    gap: 10px;
-
-    color: var(--admin-text-muted);
-
-    font-size: 14px;
+    gap: 12px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #15181E;
+    transition: background-color 0.12s ease;
+    cursor: pointer;
 }
 
+.dashboard-checklist-card li:hover {
+    background-color: #f3f4f6;
+}
 .dashboard-checklist-card li.is-done {
        color: #15181E;
 }
