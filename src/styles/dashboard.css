@@ -64,3 +64,50 @@
     align-items: center;
     gap: 6px;
 }
+/* ===== 정보 리스트 (열고닫기) ===== */
+.dashboard-info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dashboard-side-row.multiline {
+    align-items: flex-start;
+}
+
+.dashboard-side-row-value {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.dashboard-side-row-value em {
+    font-style: normal;
+    font-size: 12px;
+    color: var(--admin-text-muted);
+}
+
+.dashboard-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    color: var(--admin-text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.dashboard-toggle-btn .arrow {
+    display: inline-block;
+    transition: transform 0.15s ease;
+}
+
+.dashboard-toggle-btn .arrow.up {
+    transform: rotate(180deg);
+}
