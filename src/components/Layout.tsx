@@ -4,7 +4,7 @@ import Header from "./Header";
 import "../styles/layout.css";
 
 const titleMap: Record<string, string> = {
-    "/": "대시보드",
+ "/": "BELIAN",
     "/members": "회원 관리",
     "/products": "상품 관리",
     "/inventory": "재고 관리",
