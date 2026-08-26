@@ -97,8 +97,8 @@ html, body {
     color: var(--admin-accent-dark);
 }
 .admin-sidebar-link.is-active {
-    background: var(--admin-accent-soft);
-    color: var(--admin-accent-dark);
+    background: #eef0f2;
+    color: #14161a;
     font-weight: 800;
 }
 
