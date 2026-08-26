@@ -78,7 +78,8 @@ const chartData = [
 ];
 
 function DashboardPage() {
-    const [memo, setMemo] = useState("");
+const [memo, setMemo] = useState("");
+const [infoOpen, setInfoOpen] = useState(true);
     const [hoveredPoint, setHoveredPoint] = useState<number | null>(null);
 
     const chartWidth = 640;
