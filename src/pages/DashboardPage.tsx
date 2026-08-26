@@ -73,10 +73,8 @@ function DashboardPage() {
     return (
         <div className="dashboard-layout">
 
-            {/* ================= 메인 컬럼 ================= */}
             <div className="dashboard-page">
 
-                {/* 요약 */}
                 <section className="dashboard-section">
                     <h2>요약</h2>
 
@@ -134,7 +132,6 @@ function DashboardPage() {
                     </div>
                 </section>
 
-                {/* 오늘의 할일 */}
                 <section className="dashboard-section">
                     <h2>
                         오늘의 할일{" "}
@@ -153,7 +150,6 @@ function DashboardPage() {
                     </div>
                 </section>
 
-                {/* 통계 */}
                 <section className="dashboard-section">
                     <h2>통계</h2>
 
@@ -239,7 +235,6 @@ function DashboardPage() {
                     </div>
                 </section>
 
-                {/* 컨텐츠 */}
                 <section className="dashboard-section">
                     <h2>컨텐츠</h2>
 
@@ -270,7 +265,6 @@ function DashboardPage() {
 
             </div>
 
-            {/* ================= 오른쪽 패널 ================= */}
             <aside className="dashboard-side">
 
                 <div className="dashboard-profile-card">
@@ -280,11 +274,6 @@ function DashboardPage() {
                         <strong>관리자</strong>
                         <span>admin@belian.com</span>
                     </div>
-                </div>
-
-                <div className="dashboard-side-row">
-                    <span>사용버전</span>
-                    <strong>Free</strong>
                 </div>
 
                 <div className="dashboard-side-row">
@@ -299,29 +288,4 @@ function DashboardPage() {
                 <div className="dashboard-side-card">
                     <strong>운영진</strong>
 
-                    <div className="dashboard-side-member">
-                        <div className="dashboard-profile-avatar small" />
-                        <span>관리자</span>
-                        <em>관리</em>
-                    </div>
-                </div>
-
-                <div className="dashboard-memo-card">
-                    <strong>관리자 메모</strong>
-
-                    <textarea
-                        placeholder="관리자들과 공유할 메모를 남겨주세요"
-                        value={memo}
-                        onChange={(event) => setMemo(event.target.value)}
-                    />
-
-                    <button type="button">저장</button>
-                </div>
-
-            </aside>
-
-        </div>
-    );
-}
-
-export default DashboardPage;
+                    <div
