@@ -1,170 +1,285 @@
-/* ===== 대시보드 상단 ===== */
-.dashboard-header {
-  margin-bottom: 32px;
+/* ===== 대시보드 레이아웃 (좌: 본문 / 우: 사이드패널) ===== */
+.dashboard-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
 }
 
-.dashboard-title {
-  font-size: 28px;
+.dashboard-page {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.dashboard-side {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ===== 섹션 공통 ===== */
+.dashboard-section h2 {
+  font-size: 20px;
   font-weight: 800;
-  color: #1c1c1e;
-  margin: 0 0 6px;
+  margin: 0 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.dashboard-subtitle {
+.dashboard-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background-color: var(--admin-black);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.dashboard-info-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #eef8ff;
+  border-radius: 14px;
+  padding: 18px 24px;
   font-size: 15px;
-  color: #6b7280;
+  font-weight: 600;
+  color: #1c1c1e;
+  margin-bottom: 24px;
+}
+
+.dashboard-info-banner a {
+  color: var(--admin-accent-dark);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.dashboard-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.dashboard-card-head h3 {
+  font-size: 17px;
+  font-weight: 700;
   margin: 0;
 }
 
-/* ===== 카드 그리드 ===== */
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 24px;
-  margin-bottom: 32px;
+.dashboard-card-head a {
+  font-size: 13px;
+  color: var(--admin-muted);
+  text-decoration: none;
 }
 
-.dashboard-card {
+/* ===== 요약 체크리스트 카드 ===== */
+.dashboard-checklist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.dashboard-checklist-card {
   background-color: #ffffff;
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 28px 26px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-.dashboard-card-label {
-  font-size: 15px;
-  font-weight: 600;
-  color: #6b7280;
-  margin: 0 0 12px;
-}
-
-.dashboard-card-value {
-  font-size: 32px;
+.dashboard-checklist-head h3 {
+  font-size: 18px;
   font-weight: 800;
-  color: #1c1c1e;
-  margin: 0;
+  margin: 0 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.dashboard-card-value.accent {
-  color: #00d6a3;
+.dashboard-checklist-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--admin-accent-dark);
+  background-color: #e6fbf5;
+  padding: 4px 10px;
+  border-radius: 999px;
 }
 
-.dashboard-card-delta {
+.dashboard-checklist-count {
+  display: block;
   font-size: 14px;
   font-weight: 600;
-  margin-top: 8px;
+  color: var(--admin-muted);
+  margin-bottom: 10px;
 }
 
-.dashboard-card-delta.up {
-  color: #00b389;
-}
-
-.dashboard-card-delta.down {
-  color: #ef4444;
-}
-
-/* ===== 진행률 바 (검정) ===== */
-.dashboard-progress-wrap {
-  background-color: #ffffff;
-  border-radius: 16px;
-  padding: 28px 26px;
-  margin-bottom: 32px;
-}
-
-.dashboard-progress-title {
-  font-size: 17px;
-  font-weight: 700;
-  margin: 0 0 16px;
-}
-
-.dashboard-progress-bar {
+.dashboard-checklist-bar {
   width: 100%;
-  height: 14px;
-  background-color: #eceef1;
+  height: 10px;
+  background-color: var(--admin-border);
   border-radius: 999px;
   overflow: hidden;
+  margin-bottom: 20px;
 }
 
-.dashboard-progress-fill {
+.dashboard-checklist-bar-fill {
   height: 100%;
-  background-color: #111111;
+  background-color: var(--admin-black);
   border-radius: 999px;
   transition: width 0.3s ease;
 }
 
-.dashboard-progress-percent {
-  display: block;
-  margin-top: 10px;
-  font-size: 15px;
-  font-weight: 700;
-  color: #111111;
-}
-
-/* ===== 체크리스트 (초록 체크) ===== */
-.dashboard-checklist {
-  background-color: #ffffff;
-  border-radius: 16px;
-  padding: 28px 26px;
+.dashboard-checklist-card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
 }
 
-.dashboard-check-item {
+.dashboard-checklist-card li {
   display: flex;
   align-items: center;
-  gap: 14px;
-  font-size: 16px;
+  gap: 12px;
+  font-size: 15px;
+  font-weight: 500;
   color: #374151;
 }
 
-.dashboard-check-item.done {
+.dashboard-checklist-card li.is-done {
   color: #9ca3af;
   text-decoration: line-through;
 }
 
-.dashboard-check-icon {
-  width: 26px;
-  height: 26px;
+.dashboard-checklist-dot {
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  font-size: 15px;
+  border: 2px solid #d1d5db;
+  font-size: 13px;
   font-weight: 800;
-  color: #ffffff;
-  background-color: #d1d5db;
+  color: transparent;
 }
 
-.dashboard-check-icon.checked {
+.dashboard-checklist-card li.is-done .dashboard-checklist-dot {
+  border-color: #22c55e;
   background-color: #22c55e;
+  color: #ffffff;
 }
 
-/* ===== 리스트/테이블 카드 ===== */
-.dashboard-table-card {
+/* ===== 오늘의 할일 ===== */
+.dashboard-today-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 20px;
   background-color: #ffffff;
-  border-radius: 16px;
+  border-radius: 18px;
+  padding: 26px;
+}
+
+.dashboard-today-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dashboard-today-item span {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--admin-muted);
+}
+
+.dashboard-today-item strong {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--admin-text);
+}
+
+/* ===== 통계 ===== */
+.dashboard-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 24px;
+}
+
+.dashboard-chart-card,
+.dashboard-table-card,
+.dashboard-content-card {
+  background-color: #ffffff;
+  border-radius: 18px;
   padding: 28px 26px;
 }
 
-.dashboard-table-card table {
+.dashboard-chart {
+  width: 100%;
+  height: 140px;
+}
+
+.dashboard-chart-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--admin-muted);
+}
+
+.dashboard-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 15px;
 }
 
-.dashboard-table-card th {
+.dashboard-table th {
   text-align: left;
   font-size: 13px;
   font-weight: 700;
   color: #9ca3af;
   padding: 0 12px 14px;
-  border-bottom: 1px solid #eceef1;
+  border-bottom: 1px solid var(--admin-border);
 }
 
-.dashboard-table-card td {
+.dashboard-table td {
   padding: 16px 12px;
   border-bottom: 1px solid #f3f4f6;
-  color: #1c1c1e;
+  color: var(--admin-text);
 }
+
+.dashboard-table-summary td {
+  font-weight: 800;
+  border-bottom: none;
+  background-color: #f8fafc;
+}
+
+/* ===== 컨텐츠 ===== */
+.dashboard-content-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.dashboard-content-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  color: #9ca3af;
+  font-size: 15px;
+}
+
+/* ===== 오른쪽 사이드 패널 ===== */
+.d
