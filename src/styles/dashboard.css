@@ -188,7 +188,7 @@
 }
 
 .dashboard-checklist-card li.is-done {
-    color: var(--admin-text);
+       color: #15181E;
 }
 
 .dashboard-checklist-dot {
