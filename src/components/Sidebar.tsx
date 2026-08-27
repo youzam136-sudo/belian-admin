@@ -41,9 +41,7 @@ const menuGroups: MenuGroup[] = [
                 children: [
                     { label: "회원 목록", to: "/members" },
                     { label: "운영진", to: "/members/staff" },
-                    { label: "고객 행동 관리", to: "/members/behavior" },
                     { label: "고객 설정", to: "/members/settings" },
-                    { label: "고객 상담 채널", to: "/members/support" },
                 ],
             },
         ],
