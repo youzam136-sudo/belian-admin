@@ -148,6 +148,7 @@ function Sidebar() {
                                                 <NavLink
                                                     key={child.to}
                                                     to={child.to}
+                                                    end
                                                     className={({ isActive }) =>
                                                         isActive
                                                             ? "admin-sidebar-sublink is-active"
