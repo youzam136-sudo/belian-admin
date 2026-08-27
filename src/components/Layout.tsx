@@ -4,8 +4,12 @@ import Header from "./Header";
 import "../styles/layout.css";
 
 const titleMap: Record<string, string> = {
- "/": "BELIAN",
-    "/members": "회원 관리",
+    "/": "BELIAN",
+    "/members": "회원 목록",
+    "/members/staff": "운영진",
+    "/members/behavior": "고객 행동 관리",
+    "/members/settings": "고객 설정",
+    "/members/support": "고객 상담 채널",
     "/products": "상품 관리",
     "/inventory": "재고 관리",
     "/orders": "주문 관리",
@@ -16,7 +20,7 @@ const titleMap: Record<string, string> = {
 
 function Layout() {
     const location = useLocation();
-    const title = titleMap[location.pathname] ?? "대시보드";
+    const title = titleMap[location.pathname] ?? "BELIAN";
 
     return (
         <div className="admin-layout">
