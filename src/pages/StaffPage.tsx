@@ -62,8 +62,16 @@ function StaffPage() {
             </div>
 
             <div className="staff-main">
-                <div className="staff-tabs">
-                    <span className="staff-tab is-active">운영진 목록</span>
+                <div className="staff-tabs-row">
+                    <div className="staff-tabs">
+                        <span className="staff-tab is-active">
+                            운영진 목록
+                        </span>
+                    </div>
+
+                    <button type="button" className="staff-add-btn">
+                        운영자 추가
+                    </button>
                 </div>
 
                 <div className="staff-search">
