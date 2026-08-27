@@ -1,15 +1,43 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import "../styles/staff.css";
+
+type StaffMember = {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+    joinedAt: string;
+};
+
+const staffMembers: StaffMember[] = [
+    {
+        id: "s1",
+        name: "관리자",
+        email: "admin@belian.com",
+        role: "소유자",
+        joinedAt: "2024-03-12",
+    },
+];
 
 function StaffPage() {
     const [keyword, setKeyword] = useState("");
+
+    const filtered = useMemo(() => {
+        const q = keyword.trim().toLowerCase();
+        if (!q) return staffMembers;
+        return staffMembers.filter(
+            (s) =>
+                s.name.toLowerCase().includes(q) ||
+                s.email.toLowerCase().includes(q)
+        );
+    }, [keyword]);
 
     return (
         <div className="staff-page">
             <div className="staff-side">
                 <div className="staff-count-card">
                     <span>전체 운영자</span>
-                    <strong>0</strong>
+                    <strong>{staffMembers.length}</strong>
                 </div>
 
                 <button type="button" className="staff-new-group-btn">
@@ -48,10 +76,36 @@ function StaffPage() {
                     />
                 </div>
 
-                <div className="staff-empty">
-                    <p>Free 버전에서는 지원하지 않는 기능입니다.</p>
-                    <a href="#">자세히 알아보기</a>
-                </div>
+                {filtered.length === 0 ? (
+                    <div className="staff-empty">
+                        <p>검색 결과가 없어요</p>
+                    </div>
+                ) : (
+                    <table className="staff-table">
+                        <thead>
+                            <tr>
+                                <th>이름</th>
+                                <th>계정</th>
+                                <th>권한</th>
+                                <th>등록일</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filtered.map((staff) => (
+                                <tr key={staff.id}>
+                                    <td>{staff.name}</td>
+                                    <td>{staff.email}</td>
+                                    <td>
+                                        <span className="staff-role">
+                                            {staff.role}
+                                        </span>
+                                    </td>
+                                    <td>{staff.joinedAt}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
             </div>
         </div>
     );
