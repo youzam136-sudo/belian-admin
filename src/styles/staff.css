@@ -95,7 +95,7 @@
 
 .staff-search {
     position: relative;
-    margin-bottom: 60px;
+    margin-bottom: 24px;
 }
 
 .staff-search input {
@@ -122,6 +122,42 @@
     font-size: 14px;
 }
 
+/* 운영진 테이블 */
+.staff-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.staff-table th {
+    text-align: left;
+    font-size: 13px;
+    font-weight: 700;
+    color: #9ca3af;
+    padding: 12px;
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.staff-table td {
+    padding: 16px 12px;
+    border-bottom: 1px solid #f3f4f6;
+    color: #15181E;
+}
+
+.staff-table tr:last-child td {
+    border-bottom: none;
+}
+
+.staff-role {
+    display: inline-flex;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    background-color: var(--admin-accent-soft);
+    color: var(--admin-accent-dark);
+}
+
 .staff-empty {
     display: flex;
     flex-direction: column;
@@ -136,11 +172,4 @@
     font-size: 15px;
     font-weight: 600;
     color: #6b7078;
-}
-
-.staff-empty a {
-    font-size: 14px;
-    font-weight: 600;
-    color: #2563eb;
-    text-decoration: none;
 }
