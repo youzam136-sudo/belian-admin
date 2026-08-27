@@ -86,9 +86,16 @@ function MembersPage() {
                     />
                 </div>
 
-                <button type="button" className="members-add-btn">
-                    사용자 추가
-                </button>
+                <div className="members-toolbar-actions">
+                    <button type="button" className="members-export-btn">
+                        <span>⬇</span>
+                        엑셀 다운로드
+                    </button>
+
+                    <button type="button" className="members-add-btn">
+                        사용자 추가
+                    </button>
+                </div>
             </div>
 
             <span className="members-count">전체 회원 {filtered.length}명</span>
