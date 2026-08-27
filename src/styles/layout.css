@@ -7,7 +7,6 @@
     --admin-accent-dark: #17877a;
 }
 
-/* Vite 기본 #root 폭 제한 해제 — 화면 꽉 채우기 */
 html, body {
     width: 100%;
     margin: 0;
@@ -100,6 +99,55 @@ html, body {
     background: #eef0f2;
     color: #14161a;
     font-weight: 800;
+}
+
+/* SIDEBAR - 펼침 메뉴 */
+.admin-sidebar-parent-wrap {
+    display: flex;
+    flex-direction: column;
+}
+.admin-sidebar-parent {
+    width: 100%;
+    border: none;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+    text-align: left;
+}
+.admin-sidebar-caret {
+    margin-left: auto;
+    font-size: 11px;
+    color: #9297a3;
+    transition: transform 0.15s ease;
+}
+.admin-sidebar-caret.up {
+    transform: rotate(180deg);
+}
+.admin-sidebar-submenu {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-left: 34px;
+    margin-top: 2px;
+    margin-bottom: 4px;
+}
+.admin-sidebar-sublink {
+    padding: 9px 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #565a63;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+.admin-sidebar-sublink:hover {
+    background: var(--admin-accent-soft);
+    color: var(--admin-accent-dark);
+}
+.admin-sidebar-sublink.is-active {
+    background: #eef0f2;
+    color: #14161a;
+    font-weight: 700;
 }
 
 /* MAIN */
