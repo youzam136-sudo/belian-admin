@@ -5,12 +5,19 @@ import "../styles/layout.css";
 const icons: Record<string, string> = {
     "대시보드": "▦",
     "회원 관리": "◉",
-    "상품 관리": "◧",
-    "재고 관리": "▤",
-    "주문 관리": "▧",
-    "결제 관리": "◈",
-    "배송 관리": "▥",
-    "관리자 관리": "⚙",
+    "상품": "◧",
+    "주문": "▧",
+    "배송": "▥",
+    "상품문의": "◎",
+    "구매평": "★",
+    "쿠폰": "▤",
+    "적립금": "◈",
+    "게시판": "▦",
+    "일반": "⚙",
+    "SEO": "◉",
+    "약관": "▥",
+    "전자결제": "◈",
+    "보안 개인정보보호": "⚑",
 };
 
 type MenuLeaf = {
@@ -49,16 +56,37 @@ const menuGroups: MenuGroup[] = [
     {
         title: "쇼핑",
         items: [
-            { type: "link", label: "상품 관리", to: "/products" },
-            { type: "link", label: "재고 관리", to: "/inventory" },
-            { type: "link", label: "주문 관리", to: "/orders" },
-            { type: "link", label: "결제 관리", to: "/payments" },
-            { type: "link", label: "배송 관리", to: "/shipping" },
+            { type: "link", label: "상품", to: "/products" },
+            { type: "link", label: "주문", to: "/orders" },
+            { type: "link", label: "배송", to: "/shipping" },
+            { type: "link", label: "상품문의", to: "/products/inquiries" },
+            { type: "link", label: "구매평", to: "/products/reviews" },
         ],
     },
     {
+        title: "프로모션",
+        items: [
+            { type: "link", label: "쿠폰", to: "/promotions/coupons" },
+            { type: "link", label: "적립금", to: "/promotions/points" },
+        ],
+    },
+    {
+        title: "게시판 관리",
+        items: [{ type: "link", label: "게시판", to: "/boards" }],
+    },
+    {
         title: "설정",
-        items: [{ type: "link", label: "관리자 관리", to: "/admins" }],
+        items: [
+            { type: "link", label: "일반", to: "/settings/general" },
+            { type: "link", label: "SEO", to: "/settings/seo" },
+            { type: "link", label: "약관", to: "/settings/terms" },
+            { type: "link", label: "전자결제", to: "/settings/payment" },
+            {
+                type: "link",
+                label: "보안 개인정보보호",
+                to: "/settings/security",
+            },
+        ],
     },
 ];
 
