@@ -71,11 +71,17 @@
     padding: 24px 26px;
 }
 
+.staff-tabs-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--admin-border);
+    margin-bottom: 20px;
+}
+
 .staff-tabs {
     display: flex;
     gap: 24px;
-    border-bottom: 1px solid var(--admin-border);
-    margin-bottom: 20px;
 }
 
 .staff-tab {
@@ -91,6 +97,23 @@
     font-weight: 700;
     border-bottom: 2px solid #14161a;
     margin-bottom: -1px;
+}
+
+.staff-add-btn {
+    padding: 9px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    margin-bottom: 10px;
+}
+
+.staff-add-btn:hover {
+    background: #1d4ed8;
 }
 
 .staff-search {
