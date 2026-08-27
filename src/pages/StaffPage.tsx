@@ -15,7 +15,7 @@ const staffMembers: StaffMember[] = [
         name: "관리자",
         email: "admin@belian.com",
         role: "소유자",
-        joinedAt: "2024-03-12",
+        joinedAt: "2026-08-21",
     },
 ];
 
