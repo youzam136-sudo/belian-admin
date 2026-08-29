@@ -259,4 +259,171 @@ function MemberSettingsPage() {
                     <tr>
                       <td>
                         연락처
-                        <button className="member-settings__btn
+                        <button className="member-settings__btn member-settings__btn--small">
+                          수정
+                        </button>
+                      </td>
+                      <td>
+                        <input type="checkbox" />
+                      </td>
+                      <td>
+                        <input type="checkbox" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>주소</td>
+                      <td>
+                        <input type="checkbox" />
+                      </td>
+                      <td>
+                        <input type="checkbox" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>생년월일</td>
+                      <td>
+                        <input type="checkbox" />
+                      </td>
+                      <td>
+                        <input type="checkbox" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>추천인</td>
+                      <td>
+                        <input type="checkbox" />
+                      </td>
+                      <td>
+                        <input type="checkbox" />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <button className="member-settings__link-btn">
+                  + 사용자 정의 항목 추가
+                </button>
+              </div>
+
+              <div className="member-settings__member-type">
+                <div className="member-settings__member-type-header">
+                  <label className="member-settings__checkbox">
+                    <input
+                      type="checkbox"
+                      checked={businessMemberEnabled}
+                      onChange={(e) =>
+                        setBusinessMemberEnabled(e.target.checked)
+                      }
+                    />
+                    사업자 회원
+                  </label>
+                  <button className="member-settings__btn member-settings__btn--small">
+                    설정
+                  </button>
+                </div>
+              </div>
+
+              <button className="member-settings__link-btn member-settings__link-btn--add">
+                + 새 유형 추가
+              </button>
+            </div>
+
+            <div className="member-settings__save-bar">
+              <button className="member-settings__btn member-settings__btn--primary">
+                저장
+              </button>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "group" && (
+          <div className="member-settings__content">
+            <div className="member-settings__card">
+              <h3 className="member-settings__card-title">기본 그룹 설정</h3>
+              <div className="member-settings__row">
+                <span className="member-settings__label">일반 회원</span>
+                <select className="member-settings__select">
+                  <option>그룹없음</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="member-settings__card">
+              <h3 className="member-settings__card-title">회원 그룹 설정</h3>
+              <table className="member-settings__table">
+                <thead>
+                  <tr>
+                    <th>그룹 유형</th>
+                    <th>그룹명</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <span className="member-settings__badge">회원</span>
+                    </td>
+                    <td>그룹없음</td>
+                  </tr>
+                </tbody>
+              </table>
+              <button className="member-settings__link-btn">
+                + 새 그룹 추가
+              </button>
+            </div>
+
+            <div className="member-settings__card">
+              <h3 className="member-settings__card-title">쇼핑 등급 설정</h3>
+              <div className="member-settings__notice">
+                <p>
+                  고객의 회원가입 유도 및 재구매율을 향상시키기 위해 쇼핑
+                  등급을 사용할 수 있습니다. 회원의 구매 금액에 따라 할인이나
+                  적립금 추가 지급과 같은 혜택을 차등 제공할 수 있습니다.
+                </p>
+                <button className="member-settings__link-btn">
+                  자세히 알아보기
+                </button>
+              </div>
+
+              <div className="member-settings__row">
+                <span className="member-settings__label">사용여부</span>
+                <label className="member-settings__checkbox">
+                  <input
+                    type="checkbox"
+                    checked={gradeEnabled}
+                    onChange={(e) => setGradeEnabled(e.target.checked)}
+                  />
+                  사용
+                </label>
+              </div>
+
+              <table className="member-settings__table">
+                <thead>
+                  <tr>
+                    <th>등급유형</th>
+                    <th>등급명</th>
+                    <th>등급기준</th>
+                    <th>할인</th>
+                    <th>최대 할인</th>
+                    <th>적립금 추가 적립</th>
+                    <th>최대 적립</th>
+                    <th>배송비 면제</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {!gradeEnabled && (
+                    <tr>
+                      <td colSpan={8} className="member-settings__empty">
+                        쇼핑 등급 설정을 사용하고 있지 않습니다.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}
+
+export default MemberSettingsPage;
