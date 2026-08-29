@@ -160,12 +160,12 @@
 .member-settings__table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .member-settings__table th {
-  text-align: left;
-  padding: 10px 12px;
+  text-align: center;
+  padding: 16px 14px;
   color: #6b7280;
   font-weight: 500;
   border-bottom: 1px solid #e5e7eb;
@@ -173,16 +173,22 @@
 }
 
 .member-settings__table td {
-  padding: 10px 12px;
+  text-align: center;
+  padding: 16px 14px;
   border-bottom: 1px solid #f3f4f6;
   color: #374151;
+}
+
+.member-settings__table th:first-child,
+.member-settings__table td:first-child {
+  text-align: left;
 }
 
 .member-settings__table input[type="checkbox"],
 .member-settings__table input[type="radio"] {
   accent-color: #2563eb;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   cursor: pointer;
 }
 
