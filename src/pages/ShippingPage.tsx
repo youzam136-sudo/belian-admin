@@ -49,6 +49,28 @@ function ShippingPage() {
 
   const [originMenuOpen, setOriginMenuOpen] = useState(false);
 
+  const [isOriginAddModalOpen, setIsOriginAddModalOpen] = useState(false);
+  const [originName, setOriginName] = useState("");
+  const [shipZip, setShipZip] = useState("");
+  const [shipAddress, setShipAddress] = useState("");
+  const [shipDetailAddress, setShipDetailAddress] = useState("");
+  const [returnZip, setReturnZip] = useState("");
+  const [returnAddress, setReturnAddress] = useState("");
+  const [returnDetailAddress, setReturnDetailAddress] = useState("");
+  const [originPhone, setOriginPhone] = useState("");
+
+  const closeOriginAddModal = () => {
+    setIsOriginAddModalOpen(false);
+    setOriginName("");
+    setShipZip("");
+    setShipAddress("");
+    setShipDetailAddress("");
+    setReturnZip("");
+    setReturnAddress("");
+    setReturnDetailAddress("");
+    setOriginPhone("");
+  };
+
   const toggleMethodCheck = (key: keyof typeof methodChecks) => {
     setMethodChecks((prev) => ({ ...prev, [key]: !prev[key] }));
   };
@@ -308,7 +330,10 @@ function ShippingPage() {
                   * 바지 브랜드 B 업체
                   <br />* 바지 브랜드 C 업체
                 </p>
-                <button className="shipping-page__link-btn">
+                <button
+                  className="shipping-page__link-btn"
+                  onClick={() => setIsOriginAddModalOpen(true)}
+                >
                   출고 및 반품/교환지 추가
                 </button>
               </div>
@@ -390,7 +415,10 @@ function ShippingPage() {
                   </div>
                 </div>
 
-                <button className="shipping-page__link-btn">
+                <button
+                  className="shipping-page__link-btn"
+                  onClick={() => setIsOriginAddModalOpen(true)}
+                >
                   출고 및 반품/교환지 추가
                 </button>
               </div>
@@ -779,6 +807,135 @@ function ShippingPage() {
                 onClick={() => setIsEditModalOpen(false)}
               >
                 수정
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 출고 및 반품/교환지 추가 모달 */}
+      {isOriginAddModalOpen && (
+        <div
+          className="shipping-modal-overlay"
+          onClick={closeOriginAddModal}
+        >
+          <div
+            className="shipping-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="shipping-modal__header">
+              <h3 className="shipping-modal__title">
+                출고 및 반품/교환지 추가
+              </h3>
+              <button
+                className="shipping-modal__close"
+                onClick={closeOriginAddModal}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="shipping-modal__body">
+              <div className="shipping-modal__field">
+                <label className="shipping-modal__label">
+                  출고 및 반품/교환지명
+                </label>
+                <input
+                  type="text"
+                  className="shipping-modal__input"
+                  placeholder="출고 및 반품/교환지명 을(를) 입력하세요"
+                  value={originName}
+                  onChange={(e) => setOriginName(e.target.value)}
+                />
+              </div>
+
+              <div className="shipping-modal__field">
+                <label className="shipping-modal__label">출고지 주소</label>
+                <div className="shipping-modal__zip-row">
+                  <input
+                    type="text"
+                    className="shipping-modal__input"
+                    placeholder="우편번호"
+                    value={shipZip}
+                    onChange={(e) => setShipZip(e.target.value)}
+                  />
+                  <button className="shipping-modal__zip-btn">
+                    주소찾기
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  className="shipping-modal__input"
+                  placeholder="주소"
+                  value={shipAddress}
+                  onChange={(e) => setShipAddress(e.target.value)}
+                />
+                <input
+                  type="text"
+                  className="shipping-modal__input"
+                  placeholder="상세주소"
+                  value={shipDetailAddress}
+                  onChange={(e) => setShipDetailAddress(e.target.value)}
+                />
+              </div>
+
+              <div className="shipping-modal__field">
+                <label className="shipping-modal__label">
+                  반품/교환지 주소
+                </label>
+                <div className="shipping-modal__zip-row">
+                  <input
+                    type="text"
+                    className="shipping-modal__input"
+                    placeholder="우편번호"
+                    value={returnZip}
+                    onChange={(e) => setReturnZip(e.target.value)}
+                  />
+                  <button className="shipping-modal__zip-btn">
+                    주소찾기
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  className="shipping-modal__input"
+                  placeholder="주소"
+                  value={returnAddress}
+                  onChange={(e) => setReturnAddress(e.target.value)}
+                />
+                <input
+                  type="text"
+                  className="shipping-modal__input"
+                  placeholder="상세주소"
+                  value={returnDetailAddress}
+                  onChange={(e) => setReturnDetailAddress(e.target.value)}
+                />
+              </div>
+
+              <div className="shipping-modal__field">
+                <label className="shipping-modal__label">대표 연락처</label>
+                <input
+                  type="text"
+                  className="shipping-modal__input"
+                  placeholder="전화번호 을(를) 입력하세요"
+                  value={originPhone}
+                  onChange={(e) => setOriginPhone(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="shipping-modal__footer">
+              <button
+                className="shipping-modal__btn"
+                onClick={closeOriginAddModal}
+              >
+                취소
+              </button>
+              <button
+                className="shipping-modal__btn shipping-modal__btn--primary"
+                disabled={originName.trim() === ""}
+                onClick={closeOriginAddModal}
+              >
+                저장
               </button>
             </div>
           </div>
