@@ -47,7 +47,7 @@ function ReviewsPage() {
 /* ---------------- 구매평 목록 ---------------- */
 
 function ReviewsListTab() {
-  const MOCK_REVIEWS: {
+  const INITIAL_REVIEWS: {
     id: number;
     productName: string;
     rating: number;
@@ -55,6 +55,7 @@ function ReviewsListTab() {
     authorName: string;
     createdAt: string;
     status: "답변대기" | "답변완료";
+    reply: string;
   }[] = [
     {
       id: 1,
@@ -65,8 +66,11 @@ function ReviewsListTab() {
       authorName: "김벨리",
       createdAt: "2026-08-29",
       status: "답변대기",
+      reply: "",
     },
   ];
+
+  const [reviews, setReviews] = useState(INITIAL_REVIEWS);
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -84,6 +88,17 @@ function ReviewsListTab() {
   const [productName, setProductName] = useState("");
   const [brand, setBrand] = useState("");
 
+  const [moreMenuOpenId, setMoreMenuOpenId] = useState<number | null>(null);
+
+  const [replyModalId, setReplyModalId] = useState<number | null>(null);
+  const [replyDraft, setReplyDraft] = useState("");
+
+  const [editModalId, setEditModalId] = useState<number | null>(null);
+  const [editDraft, setEditDraft] = useState("");
+  const [editRatingDraft, setEditRatingDraft] = useState(5);
+
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
+
   const resetFilters = () => {
     setAnswerFilter("답변 전체");
     setStarFilter("별 점수");
@@ -96,6 +111,49 @@ function ReviewsListTab() {
     setProductNo("");
     setProductName("");
     setBrand("");
+  };
+
+  const closeAllMenus = () => setMoreMenuOpenId(null);
+
+  const openReplyModal = (review: (typeof reviews)[number]) => {
+    setReplyModalId(review.id);
+    setReplyDraft(review.reply);
+    setMoreMenuOpenId(null);
+  };
+
+  const submitReply = () => {
+    setReviews((prev) =>
+      prev.map((r) =>
+        r.id === replyModalId
+          ? { ...r, reply: replyDraft, status: "답변완료" as const }
+          : r
+      )
+    );
+    setReplyModalId(null);
+    setReplyDraft("");
+  };
+
+  const openEditModal = (review: (typeof reviews)[number]) => {
+    setEditModalId(review.id);
+    setEditDraft(review.content);
+    setEditRatingDraft(review.rating);
+    setMoreMenuOpenId(null);
+  };
+
+  const submitEdit = () => {
+    setReviews((prev) =>
+      prev.map((r) =>
+        r.id === editModalId
+          ? { ...r, content: editDraft, rating: editRatingDraft }
+          : r
+      )
+    );
+    setEditModalId(null);
+  };
+
+  const confirmDelete = () => {
+    setReviews((prev) => prev.filter((r) => r.id !== deleteTargetId));
+    setDeleteTargetId(null);
   };
 
   return (
@@ -198,10 +256,7 @@ function ReviewsListTab() {
                 />
 
                 <div className="reviews-filter-panel__footer">
-                  <button
-                    className="reviews-btn"
-                    onClick={resetFilters}
-                  >
+                  <button className="reviews-btn" onClick={resetFilters}>
                     초기화
                   </button>
                   <button
@@ -230,7 +285,7 @@ function ReviewsListTab() {
       <div className="reviews-list__header">
         <label className="reviews-list__select-all">
           <input type="checkbox" />
-          구매평 <span className="reviews-list__count">{MOCK_REVIEWS.length}</span>
+          구매평 <span className="reviews-list__count">{reviews.length}</span>
         </label>
 
         <div className="reviews-list__actions">
@@ -249,44 +304,99 @@ function ReviewsListTab() {
       </div>
 
       <div className="reviews-list__body">
-        {MOCK_REVIEWS.length === 0 ? (
+        {reviews.length === 0 ? (
           <p className="reviews-list__empty">작성된 구매평이 없습니다.</p>
         ) : (
           <div className="reviews-list__items">
-            {MOCK_REVIEWS.map((review) => (
-              <div key={review.id} className="review-card">
-                <input
-                  type="checkbox"
-                  className="review-card__checkbox"
-                />
-                <div className="review-card__thumb" />
-                <div className="review-card__body">
-                  <div className="review-card__top">
-                    <span className="review-card__product">
-                      {review.productName}
-                    </span>
-                    <span
-                      className={`reviews-badge ${
-                        review.status === "답변완료"
-                          ? "reviews-badge--done"
-                          : "reviews-badge--pending"
-                      }`}
-                    >
-                      {review.status}
-                    </span>
-                  </div>
-                  <div className="review-card__stars">
-                    {"★".repeat(review.rating)}
-                    {"☆".repeat(5 - review.rating)}
-                  </div>
-                  <p className="review-card__content">{review.content}</p>
-                  <div className="review-card__meta">
-                    <span>{review.authorName}</span>
-                    <span>{review.createdAt}</span>
+            {reviews
+              .filter((r) =>
+                (r.content + r.productName)
+                  .toLowerCase()
+                  .includes(searchKeyword.toLowerCase())
+              )
+              .map((review) => (
+                <div key={review.id} className="review-card">
+                  <input type="checkbox" className="review-card__checkbox" />
+                  <div className="review-card__thumb" />
+                  <div className="review-card__body">
+                    <div className="review-card__top">
+                      <span className="review-card__product">
+                        {review.productName}
+                      </span>
+                      <div className="review-card__top-right">
+                        <span
+                          className={`reviews-badge ${
+                            review.status === "답변완료"
+                              ? "reviews-badge--done"
+                              : "reviews-badge--pending"
+                          }`}
+                        >
+                          {review.status}
+                        </span>
+                        <div className="review-card__more-wrap">
+                          <button
+                            className="review-card__more"
+                            onClick={() =>
+                              setMoreMenuOpenId(
+                                moreMenuOpenId === review.id
+                                  ? null
+                                  : review.id
+                              )
+                            }
+                          >
+                            ⋮
+                          </button>
+                          {moreMenuOpenId === review.id && (
+                            <>
+                              <div
+                                className="reviews-dropdown-overlay"
+                                onClick={closeAllMenus}
+                              />
+                              <div className="review-card__menu">
+                                <button
+                                  onClick={() => openReplyModal(review)}
+                                >
+                                  {review.reply ? "답변 수정" : "답변 등록"}
+                                </button>
+                                <button onClick={() => openEditModal(review)}>
+                                  구매평 수정
+                                </button>
+                                <button
+                                  className="review-card__menu-item--danger"
+                                  onClick={() => {
+                                    setDeleteTargetId(review.id);
+                                    setMoreMenuOpenId(null);
+                                  }}
+                                >
+                                  삭제
+                                </button>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="review-card__stars">
+                      {"★".repeat(review.rating)}
+                      {"☆".repeat(5 - review.rating)}
+                    </div>
+                    <p className="review-card__content">{review.content}</p>
+                    <div className="review-card__meta">
+                      <span>{review.authorName}</span>
+                      <span>{review.createdAt}</span>
+                    </div>
+
+                    {review.reply && (
+                      <div className="review-card__reply">
+                        <span className="review-card__reply-label">
+                          판매자 답변
+                        </span>
+                        <p>{review.reply}</p>
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         )}
       </div>
@@ -296,10 +406,7 @@ function ReviewsListTab() {
           className="reviews-modal-overlay"
           onClick={() => setIsExportModalOpen(false)}
         >
-          <div
-            className="reviews-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="reviews-modal" onClick={(e) => e.stopPropagation()}>
             <div className="reviews-modal__header">
               <h3 className="reviews-modal__title">구매평 엑셀 다운로드</h3>
               <button
@@ -346,6 +453,140 @@ function ReviewsListTab() {
                 onClick={() => setIsExportModalOpen(false)}
               >
                 닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {replyModalId !== null && (
+        <div
+          className="reviews-modal-overlay"
+          onClick={() => setReplyModalId(null)}
+        >
+          <div className="reviews-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="reviews-modal__header">
+              <h3 className="reviews-modal__title">답변 등록</h3>
+              <button
+                className="reviews-modal__close"
+                onClick={() => setReplyModalId(null)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="reviews-modal__body">
+              <textarea
+                className="reviews-settings__textarea"
+                rows={5}
+                placeholder="고객에게 남길 답변을 입력해 주세요."
+                value={replyDraft}
+                onChange={(e) => setReplyDraft(e.target.value)}
+              />
+            </div>
+            <div className="reviews-modal__footer">
+              <button
+                className="reviews-btn"
+                onClick={() => setReplyModalId(null)}
+              >
+                취소
+              </button>
+              <button
+                className="reviews-btn reviews-btn--primary"
+                disabled={replyDraft.trim() === ""}
+                onClick={submitReply}
+              >
+                등록
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {editModalId !== null && (
+        <div
+          className="reviews-modal-overlay"
+          onClick={() => setEditModalId(null)}
+        >
+          <div className="reviews-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="reviews-modal__header">
+              <h3 className="reviews-modal__title">구매평 수정</h3>
+              <button
+                className="reviews-modal__close"
+                onClick={() => setEditModalId(null)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="reviews-modal__body">
+              <div className="reviews-edit__stars">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <span
+                    key={n}
+                    className={
+                      n <= editRatingDraft
+                        ? "reviews-edit__star reviews-edit__star--active"
+                        : "reviews-edit__star"
+                    }
+                    onClick={() => setEditRatingDraft(n)}
+                  >
+                    ★
+                  </span>
+                ))}
+              </div>
+              <textarea
+                className="reviews-settings__textarea"
+                rows={5}
+                value={editDraft}
+                onChange={(e) => setEditDraft(e.target.value)}
+              />
+            </div>
+            <div className="reviews-modal__footer">
+              <button
+                className="reviews-btn"
+                onClick={() => setEditModalId(null)}
+              >
+                취소
+              </button>
+              <button
+                className="reviews-btn reviews-btn--primary"
+                onClick={submitEdit}
+              >
+                저장
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deleteTargetId !== null && (
+        <div
+          className="reviews-modal-overlay"
+          onClick={() => setDeleteTargetId(null)}
+        >
+          <div
+            className="reviews-modal reviews-modal--small"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="reviews-modal__header">
+              <h3 className="reviews-modal__title">구매평 삭제</h3>
+            </div>
+            <div className="reviews-modal__body">
+              <p className="reviews-page__placeholder-inline">
+                이 구매평을 삭제하시겠어요? 삭제 후에는 복구할 수 없어요.
+              </p>
+            </div>
+            <div className="reviews-modal__footer">
+              <button
+                className="reviews-btn"
+                onClick={() => setDeleteTargetId(null)}
+              >
+                취소
+              </button>
+              <button
+                className="reviews-btn reviews-btn--danger"
+                onClick={confirmDelete}
+              >
+                삭제
               </button>
             </div>
           </div>
