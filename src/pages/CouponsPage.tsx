@@ -91,6 +91,10 @@ function CouponsPage() {
     setDeleteTargetId(null);
   };
 
+  const goToEdit = (coupon: Coupon) => {
+    navigate(`/promotions/coupons/edit/${coupon.id}`, { state: coupon });
+  };
+
   return (
     <div className="dashboard-page">
       <section className="dashboard-section coupons-page">
@@ -228,7 +232,11 @@ function CouponsPage() {
                 </thead>
                 <tbody>
                   {filteredCoupons.map((coupon) => (
-                    <tr key={coupon.id}>
+                    <tr
+                      key={coupon.id}
+                      className="coupons-table__row"
+                      onClick={() => goToEdit(coupon)}
+                    >
                       <td className="coupons-table__name-cell">
                         {coupon.name}
                       </td>
@@ -248,7 +256,10 @@ function CouponsPage() {
                           {coupon.status}
                         </span>
                       </td>
-                      <td className="coupons-table__more-cell">
+                      <td
+                        className="coupons-table__more-cell"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <button
                           className="coupons-table__more"
                           onClick={() =>
@@ -269,7 +280,10 @@ function CouponsPage() {
                             />
                             <div className="coupons-table__menu">
                               <button
-                                onClick={() => setMoreMenuOpenId(null)}
+                                onClick={() => {
+                                  setMoreMenuOpenId(null);
+                                  goToEdit(coupon);
+                                }}
                               >
                                 수정
                               </button>
