@@ -1,0 +1,200 @@
+.inquiries-header {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.inquiries-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.inquiries-tab {
+  background: none;
+  border: none;
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.inquiries-tab--active {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.inquiries-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inquiries-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0 14px;
+  min-width: 300px;
+}
+
+.inquiries-search__icon {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.inquiries-search input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #374151;
+}
+
+.inquiries-icon-btn {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.inquiries-icon-btn:hover {
+  background: #f9fafb;
+}
+
+.inquiries-icon-btn--active {
+  background: #eff6ff;
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+/* 필터 패널 */
+.inquiries-filter-panel {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 420px;
+  margin-left: auto;
+}
+
+.inquiries-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inquiries-filter-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.inquiries-filter-field select,
+.inquiries-filter-field__date {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 11px 14px;
+  font-size: 14px;
+  color: #374151;
+  width: 100%;
+}
+
+.inquiries-filter-field select:focus,
+.inquiries-filter-field__date:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.inquiries-filter-panel__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.inquiries-filter-btn {
+  background: #f3f4f6;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.inquiries-filter-btn--primary {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.inquiries-filter-btn--primary:hover {
+  background: #000;
+}
+
+/* 본문 영역 */
+.inquiries-body {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inquiries-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.inquiries-empty__icon {
+  font-size: 40px;
+  opacity: 0.4;
+}
+
+.inquiries-empty__text {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.inquiries-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.inquiries-table th {
+  text-align: left;
+  padding: 14px 16px;
+  color: #6b7280;
+  font-weight: 500;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.inquiries-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  color: #374151;
+}
