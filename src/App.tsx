@@ -6,6 +6,7 @@ import MembersPage from "./pages/MembersPage";
 import StaffPage from "./pages/StaffPage";
 import MemberSettingsPage from "./pages/MemberSettingsPage";
 import ProductsPage from "./pages/ProductsPage";
+import ProductRegisterPage from "./pages/ProductRegisterPage";
 import OrdersPage from "./pages/OrdersPage";
 import ShippingPage from "./pages/ShippingPage";
 import ProductInquiriesPage from "./pages/ProductInquiriesPage";
@@ -50,6 +51,11 @@ function App() {
                         path="products"
                         element={<ProductsPage />}
                         handle={{ title: "상품" }}
+                    />
+                    <Route
+                        path="products/register"
+                        element={<ProductRegisterPage />}
+                        handle={{ title: "상품 등록" }}
                     />
                     <Route
                         path="orders"
