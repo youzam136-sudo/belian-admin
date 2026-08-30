@@ -12,6 +12,7 @@ import ShippingPage from "./pages/ShippingPage";
 import ProductInquiriesPage from "./pages/ProductInquiriesPage";
 import ReviewsPage from "./pages/ReviewsPage";
 import CouponsPage from "./pages/CouponsPage";
+import CouponCreatePage from "./pages/CouponCreatePage";
 import PointsPage from "./pages/PointsPage";
 import BoardPage from "./pages/BoardPage";
 import GeneralSettingsPage from "./pages/GeneralSettingsPage";
@@ -82,6 +83,11 @@ function App() {
                         path="promotions/coupons"
                         element={<CouponsPage />}
                         handle={{ title: "쿠폰" }}
+                    />
+                    <Route
+                        path="promotions/coupons/new"
+                        element={<CouponCreatePage />}
+                        handle={{ title: "쿠폰 만들기" }}
                     />
                     <Route
                         path="promotions/points"
