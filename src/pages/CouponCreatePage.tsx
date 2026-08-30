@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, useParams, useLocation } from "react-router-dom";
 import "../styles/couponcreate.css";
 
 type CouponType = "down" | "auto" | "create" | "targeted";
@@ -17,16 +17,51 @@ const BANNER_INFO: Record<string, { icon: string; title: string; desc: string }>
   },
 };
 
+interface EditingCoupon {
+  id: number;
+  name: string;
+  target: string;
+  benefit: string;
+  period: string;
+  status: string;
+}
+
 function CouponCreatePage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { id } = useParams();
+  const location = useLocation();
+  const isEditMode = Boolean(id);
+  const editingCoupon = location.state as EditingCoupon | undefined;
+
   const type = (searchParams.get("type") || "down") as CouponType;
 
-  const [couponName, setCouponName] = useState("");
+  const parsedAmount = editingCoupon
+    ? Number(editingCoupon.benefit.match(/([\d,]+)원/)?.[1]?.replace(/,/g, "") || 0)
+    : 0;
+  const parsedMinOrder = editingCoupon
+    ? Number(
+        editingCoupon.benefit.match(/\(([\d,]+)/)?.[1]?.replace(/,/g, "") || 0
+      )
+    : 0;
+  const parsedStartDate = editingCoupon
+    ? editingCoupon.period.split(" ~ ")[0]?.trim() || "2026.08.31"
+    : "2026.08.31";
+  const parsedEndDate = editingCoupon
+    ? editingCoupon.period.split(" ~ ")[1]?.trim() || "2026.09.07"
+    : "2026.09.07";
+  const parsedTargetGeneral: "전체회원" | "특정그룹" | "특정회원" =
+    editingCoupon?.target === "특정 그룹"
+      ? "특정그룹"
+      : editingCoupon?.target === "특정 회원"
+      ? "특정회원"
+      : "전체회원";
+
+  const [couponName, setCouponName] = useState(editingCoupon?.name || "");
 
   const [issueTargetGeneral, setIssueTargetGeneral] = useState<
     "전체회원" | "특정그룹" | "특정회원"
-  >("전체회원");
+  >(parsedTargetGeneral);
   const [issueTargetAuto, setIssueTargetAuto] = useState<
     "첫회원가입" | "첫주문완료" | "쇼핑등급변경" | "생일"
   >("첫회원가입");
@@ -47,8 +82,8 @@ function CouponCreatePage() {
   const [benefitType, setBenefitType] = useState<
     "금액할인" | "비율할인" | "배송비무료" | "고정가할인"
   >("금액할인");
-  const [discountAmount, setDiscountAmount] = useState(0);
-  const [minOrderAmount, setMinOrderAmount] = useState(0);
+  const [discountAmount, setDiscountAmount] = useState(parsedAmount);
+  const [minOrderAmount, setMinOrderAmount] = useState(parsedMinOrder);
   const [duplicateDiscount, setDuplicateDiscount] = useState<"단독" | "함께">(
     "단독"
   );
@@ -67,10 +102,10 @@ function CouponCreatePage() {
   const [operationMode, setOperationMode] = useState<
     "period" | "expiry" | "unlimited"
   >(type === "auto" ? "expiry" : "period");
-  const [startDate, setStartDate] = useState("2026.08.31");
+  const [startDate, setStartDate] = useState(parsedStartDate);
   const [startHour, setStartHour] = useState("02");
   const [startMinute, setStartMinute] = useState("20");
-  const [endDate, setEndDate] = useState("2026.09.07");
+  const [endDate, setEndDate] = useState(parsedEndDate);
   const [endHour, setEndHour] = useState("23");
   const [endMinute, setEndMinute] = useState("59");
   const [expiryDays, setExpiryDays] = useState(15);
@@ -97,7 +132,9 @@ function CouponCreatePage() {
           <button className="coupon-create__back" onClick={() => navigate(-1)}>
             ←
           </button>
-          <h2 className="coupon-create__title">쿠폰 만들기</h2>
+          <h2 className="coupon-create__title">
+            {isEditMode ? "쿠폰 수정" : "쿠폰 만들기"}
+          </h2>
           <div className="coupon-create__header-actions">
             <button
               className="coupon-create__btn"
@@ -109,12 +146,12 @@ function CouponCreatePage() {
               className="coupon-create__btn coupon-create__btn--primary"
               onClick={handleCreate}
             >
-              쿠폰 생성
+              {isEditMode ? "저장" : "쿠폰 생성"}
             </button>
           </div>
         </div>
 
-        {banner && (
+        {banner && !isEditMode && (
           <div className="coupon-create__banner">
             <span className="coupon-create__banner-icon">{banner.icon}</span>
             <div className="coupon-create__banner-text">
@@ -1076,7 +1113,7 @@ function CouponCreatePage() {
             className="coupon-create__btn coupon-create__btn--primary"
             onClick={handleCreate}
           >
-            쿠폰 생성
+            {isEditMode ? "저장" : "쿠폰 생성"}
           </button>
         </div>
       </div>
