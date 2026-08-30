@@ -47,6 +47,19 @@ function ReviewsPage() {
 /* ---------------- 구매평 목록 ---------------- */
 
 function ReviewsListTab() {
+  const MOCK_REVIEWS = [
+    {
+      id: 1,
+      productName: "와인베리 퍼밍 콜라겐 젤리",
+      rating: 5,
+      content:
+        "발림성이 좋고 향도 은은해서 만족스러워요. 아침저녁으로 꾸준히 쓰고 있는데 피부가 확실히 탄력있어진 느낌이에요.",
+      authorName: "김벨리",
+      createdAt: "2026-08-29",
+      status: "답변대기" as const,
+    },
+  ];
+
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
@@ -209,7 +222,7 @@ function ReviewsListTab() {
       <div className="reviews-list__header">
         <label className="reviews-list__select-all">
           <input type="checkbox" />
-          구매평 <span className="reviews-list__count">0</span>
+          구매평 <span className="reviews-list__count">{MOCK_REVIEWS.length}</span>
         </label>
 
         <div className="reviews-list__actions">
@@ -228,7 +241,46 @@ function ReviewsListTab() {
       </div>
 
       <div className="reviews-list__body">
-        <p className="reviews-list__empty">작성된 구매평이 없습니다.</p>
+        {MOCK_REVIEWS.length === 0 ? (
+          <p className="reviews-list__empty">작성된 구매평이 없습니다.</p>
+        ) : (
+          <div className="reviews-list__items">
+            {MOCK_REVIEWS.map((review) => (
+              <div key={review.id} className="review-card">
+                <input
+                  type="checkbox"
+                  className="review-card__checkbox"
+                />
+                <div className="review-card__thumb" />
+                <div className="review-card__body">
+                  <div className="review-card__top">
+                    <span className="review-card__product">
+                      {review.productName}
+                    </span>
+                    <span
+                      className={`reviews-badge ${
+                        review.status === "답변완료"
+                          ? "reviews-badge--done"
+                          : "reviews-badge--pending"
+                      }`}
+                    >
+                      {review.status}
+                    </span>
+                  </div>
+                  <div className="review-card__stars">
+                    {"★".repeat(review.rating)}
+                    {"☆".repeat(5 - review.rating)}
+                  </div>
+                  <p className="review-card__content">{review.content}</p>
+                  <div className="review-card__meta">
+                    <span>{review.authorName}</span>
+                    <span>{review.createdAt}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {isExportModalOpen && (
