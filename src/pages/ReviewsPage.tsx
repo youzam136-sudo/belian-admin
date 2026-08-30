@@ -98,6 +98,8 @@ function ReviewsListTab() {
   const [editRatingDraft, setEditRatingDraft] = useState(5);
 
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);
 
   const resetFilters = () => {
     setAnswerFilter("답변 전체");
@@ -154,6 +156,22 @@ function ReviewsListTab() {
   const confirmDelete = () => {
     setReviews((prev) => prev.filter((r) => r.id !== deleteTargetId));
     setDeleteTargetId(null);
+  };
+
+  const toggleSelectAll = (checked: boolean) => {
+    setSelectedIds(checked ? reviews.map((r) => r.id) : []);
+  };
+
+  const toggleSelectOne = (id: number) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+
+  const confirmBulkDelete = () => {
+    setReviews((prev) => prev.filter((r) => !selectedIds.includes(r.id)));
+    setSelectedIds([]);
+    setIsBulkDeleteOpen(false);
   };
 
   return (
@@ -284,11 +302,23 @@ function ReviewsListTab() {
 
       <div className="reviews-list__header">
         <label className="reviews-list__select-all">
-          <input type="checkbox" />
+          <input
+            type="checkbox"
+            checked={reviews.length > 0 && selectedIds.length === reviews.length}
+            onChange={(e) => toggleSelectAll(e.target.checked)}
+          />
           구매평 <span className="reviews-list__count">{reviews.length}</span>
         </label>
 
         <div className="reviews-list__actions">
+          {selectedIds.length > 0 && (
+            <button
+              className="reviews-list__bulk-delete"
+              onClick={() => setIsBulkDeleteOpen(true)}
+            >
+              선택 삭제 ({selectedIds.length})
+            </button>
+          )}
           <button
             className="reviews-list__export"
             onClick={() => setIsExportModalOpen(true)}
@@ -316,7 +346,12 @@ function ReviewsListTab() {
               )
               .map((review) => (
                 <div key={review.id} className="review-card">
-                  <input type="checkbox" className="review-card__checkbox" />
+                  <input
+                    type="checkbox"
+                    className="review-card__checkbox"
+                    checked={selectedIds.includes(review.id)}
+                    onChange={() => toggleSelectOne(review.id)}
+                  />
                   <div className="review-card__thumb" />
                   <div className="review-card__body">
                     <div className="review-card__top">
@@ -585,6 +620,42 @@ function ReviewsListTab() {
               <button
                 className="reviews-btn reviews-btn--danger"
                 onClick={confirmDelete}
+              >
+                삭제
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isBulkDeleteOpen && (
+        <div
+          className="reviews-modal-overlay"
+          onClick={() => setIsBulkDeleteOpen(false)}
+        >
+          <div
+            className="reviews-modal reviews-modal--small"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="reviews-modal__header">
+              <h3 className="reviews-modal__title">구매평 삭제</h3>
+            </div>
+            <div className="reviews-modal__body">
+              <p className="reviews-page__placeholder-inline">
+                선택한 구매평 {selectedIds.length}개를 삭제하시겠어요? 삭제
+                후에는 복구할 수 없어요.
+              </p>
+            </div>
+            <div className="reviews-modal__footer">
+              <button
+                className="reviews-btn"
+                onClick={() => setIsBulkDeleteOpen(false)}
+              >
+                취소
+              </button>
+              <button
+                className="reviews-btn reviews-btn--danger"
+                onClick={confirmBulkDelete}
               >
                 삭제
               </button>
