@@ -4,10 +4,24 @@ import "../styles/inquiries.css";
 interface Inquiry {
   id: number;
   title: string;
+  productName: string;
+  authorName: string;
+  isSecret: boolean;
+  createdAt: string;
   status: "답변대기" | "답변완료";
 }
 
-const MOCK_INQUIRIES: Inquiry[] = [];
+const MOCK_INQUIRIES: Inquiry[] = [
+  {
+    id: 1,
+    title: "배송은 얼마나 걸리나요?",
+    productName: "와인베리 퍼밍 콜라겐 젤리",
+    authorName: "김벨리",
+    isSecret: false,
+    createdAt: "2026-08-29",
+    status: "답변대기",
+  },
+];
 
 function ProductInquiriesPage() {
   const [activeTab, setActiveTab] = useState<"전체" | "답변대기" | "답변완료">(
@@ -29,7 +43,8 @@ function ProductInquiriesPage() {
   };
 
   const filteredInquiries = MOCK_INQUIRIES.filter((inquiry) => {
-    const matchesTab = activeTab === "전체" ? true : inquiry.status === activeTab;
+    const matchesTab =
+      activeTab === "전체" ? true : inquiry.status === activeTab;
     const matchesKeyword = inquiry.title
       .toLowerCase()
       .includes(searchKeyword.toLowerCase());
@@ -77,80 +92,92 @@ function ProductInquiriesPage() {
                 onChange={(e) => setSearchKeyword(e.target.value)}
               />
             </div>
-            <button
-              className={`inquiries-icon-btn ${
-                isFilterOpen ? "inquiries-icon-btn--active" : ""
-              }`}
-              onClick={() => setIsFilterOpen((prev) => !prev)}
-            >
-              ⚲
-            </button>
+
+            <div className="inquiries-filter-wrap">
+              <button
+                className={`inquiries-icon-btn ${
+                  isFilterOpen ? "inquiries-icon-btn--active" : ""
+                }`}
+                onClick={() => setIsFilterOpen((prev) => !prev)}
+              >
+                ⚲
+              </button>
+
+              {isFilterOpen && (
+                <>
+                  <div
+                    className="inquiries-dropdown-overlay"
+                    onClick={() => setIsFilterOpen(false)}
+                  />
+                  <div className="inquiries-filter-panel">
+                    <div className="inquiries-filter-field">
+                      <label>검색 유형</label>
+                      <select
+                        value={searchType}
+                        onChange={(e) => setSearchType(e.target.value)}
+                      >
+                        <option>제목/본문</option>
+                        <option>제목</option>
+                        <option>본문</option>
+                      </select>
+                    </div>
+
+                    <div className="inquiries-filter-field">
+                      <label>문의 유형</label>
+                      <select
+                        value={inquiryType}
+                        onChange={(e) => setInquiryType(e.target.value)}
+                      >
+                        <option>전체</option>
+                        <option>상품 문의</option>
+                        <option>배송 문의</option>
+                        <option>교환/반품 문의</option>
+                      </select>
+                    </div>
+
+                    <div className="inquiries-filter-field">
+                      <label>비밀문의 여부</label>
+                      <select
+                        value={secretType}
+                        onChange={(e) => setSecretType(e.target.value)}
+                      >
+                        <option>전체</option>
+                        <option>비밀글</option>
+                        <option>공개글</option>
+                      </select>
+                    </div>
+
+                    <div className="inquiries-filter-field">
+                      <label>기간</label>
+                      <input
+                        type="text"
+                        className="inquiries-filter-field__date"
+                        placeholder="시작일 → 종료일"
+                        value={periodRange}
+                        onChange={(e) => setPeriodRange(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="inquiries-filter-panel__footer">
+                      <button
+                        className="inquiries-filter-btn"
+                        onClick={resetFilters}
+                      >
+                        초기화
+                      </button>
+                      <button
+                        className="inquiries-filter-btn inquiries-filter-btn--primary"
+                        onClick={() => setIsFilterOpen(false)}
+                      >
+                        검색
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
-
-        {isFilterOpen && (
-          <div className="inquiries-filter-panel">
-            <div className="inquiries-filter-field">
-              <label>검색 유형</label>
-              <select
-                value={searchType}
-                onChange={(e) => setSearchType(e.target.value)}
-              >
-                <option>제목/본문</option>
-                <option>제목</option>
-                <option>본문</option>
-              </select>
-            </div>
-
-            <div className="inquiries-filter-field">
-              <label>문의 유형</label>
-              <select
-                value={inquiryType}
-                onChange={(e) => setInquiryType(e.target.value)}
-              >
-                <option>전체</option>
-                <option>상품 문의</option>
-                <option>배송 문의</option>
-                <option>교환/반품 문의</option>
-              </select>
-            </div>
-
-            <div className="inquiries-filter-field">
-              <label>비밀문의 여부</label>
-              <select
-                value={secretType}
-                onChange={(e) => setSecretType(e.target.value)}
-              >
-                <option>전체</option>
-                <option>비밀글</option>
-                <option>공개글</option>
-              </select>
-            </div>
-
-            <div className="inquiries-filter-field">
-              <label>기간</label>
-              <input
-                type="text"
-                className="inquiries-filter-field__date"
-                placeholder="시작일 → 종료일"
-                value={periodRange}
-                onChange={(e) => setPeriodRange(e.target.value)}
-              />
-            </div>
-
-            <div className="inquiries-filter-panel__footer">
-              <button
-                className="inquiries-filter-btn"
-                onClick={resetFilters}
-              >
-                초기화
-              </button>
-              <button className="inquiries-filter-btn inquiries-filter-btn--primary">
-                검색
-              </button>
-            </div>
-          </div>
-        )}
 
         <div className="inquiries-body">
           {filteredInquiries.length === 0 ? (
@@ -162,17 +189,35 @@ function ProductInquiriesPage() {
             <table className="inquiries-table">
               <thead>
                 <tr>
-                  <th>번호</th>
-                  <th>제목</th>
                   <th>상태</th>
+                  <th>문의 제목</th>
+                  <th>상품명</th>
+                  <th>작성자</th>
+                  <th>비밀글</th>
+                  <th>등록일</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredInquiries.map((inquiry) => (
                   <tr key={inquiry.id}>
-                    <td>{inquiry.id}</td>
-                    <td>{inquiry.title}</td>
-                    <td>{inquiry.status}</td>
+                    <td>
+                      <span
+                        className={`inquiries-badge ${
+                          inquiry.status === "답변완료"
+                            ? "inquiries-badge--done"
+                            : "inquiries-badge--pending"
+                        }`}
+                      >
+                        {inquiry.status}
+                      </span>
+                    </td>
+                    <td className="inquiries-table__title-cell">
+                      {inquiry.title}
+                    </td>
+                    <td>{inquiry.productName}</td>
+                    <td>{inquiry.authorName}</td>
+                    <td>{inquiry.isSecret ? "비밀글" : "-"}</td>
+                    <td>{inquiry.createdAt}</td>
                   </tr>
                 ))}
               </tbody>
