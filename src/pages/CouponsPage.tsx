@@ -51,6 +51,7 @@ const COUPON_TYPES = [
 
 function CouponsPage() {
   const navigate = useNavigate();
+  const [coupons, setCoupons] = useState<Coupon[]>(MOCK_COUPONS);
   const [statusFilter, setStatusFilter] = useState<
     "전체" | "대기" | "진행중" | "종료"
   >("전체");
@@ -61,15 +62,17 @@ function CouponsPage() {
   const [showCouponApplied, setShowCouponApplied] = useState(false);
 
   const [isTypeModalOpen, setIsTypeModalOpen] = useState(false);
+  const [moreMenuOpenId, setMoreMenuOpenId] = useState<number | null>(null);
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
   const counts = {
-    전체: MOCK_COUPONS.length,
-    대기: MOCK_COUPONS.filter((c) => c.status === "대기").length,
-    진행중: MOCK_COUPONS.filter((c) => c.status === "진행중").length,
-    종료: MOCK_COUPONS.filter((c) => c.status === "종료").length,
+    전체: coupons.length,
+    대기: coupons.filter((c) => c.status === "대기").length,
+    진행중: coupons.filter((c) => c.status === "진행중").length,
+    종료: coupons.filter((c) => c.status === "종료").length,
   };
 
-  const filteredCoupons = MOCK_COUPONS.filter((c) => {
+  const filteredCoupons = coupons.filter((c) => {
     const matchesStatus =
       statusFilter === "전체" ? true : c.status === statusFilter;
     const matchesKeyword = c.name
@@ -81,6 +84,11 @@ function CouponsPage() {
   const goToCreate = (type: string) => {
     setIsTypeModalOpen(false);
     navigate(`/promotions/coupons/new?type=${type}`);
+  };
+
+  const confirmDeleteCoupon = () => {
+    setCoupons((prev) => prev.filter((c) => c.id !== deleteTargetId));
+    setDeleteTargetId(null);
   };
 
   return (
@@ -215,6 +223,7 @@ function CouponsPage() {
                     <th>혜택</th>
                     <th>기간</th>
                     <th>상태</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -238,6 +247,44 @@ function CouponsPage() {
                         >
                           {coupon.status}
                         </span>
+                      </td>
+                      <td className="coupons-table__more-cell">
+                        <button
+                          className="coupons-table__more"
+                          onClick={() =>
+                            setMoreMenuOpenId(
+                              moreMenuOpenId === coupon.id
+                                ? null
+                                : coupon.id
+                            )
+                          }
+                        >
+                          ⋮
+                        </button>
+                        {moreMenuOpenId === coupon.id && (
+                          <>
+                            <div
+                              className="coupons-dropdown-overlay"
+                              onClick={() => setMoreMenuOpenId(null)}
+                            />
+                            <div className="coupons-table__menu">
+                              <button
+                                onClick={() => setMoreMenuOpenId(null)}
+                              >
+                                수정
+                              </button>
+                              <button
+                                className="coupons-table__menu-item--danger"
+                                onClick={() => {
+                                  setDeleteTargetId(coupon.id);
+                                  setMoreMenuOpenId(null);
+                                }}
+                              >
+                                삭제
+                              </button>
+                            </div>
+                          </>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -299,6 +346,39 @@ function CouponsPage() {
               <span className="coupons-modal__warning-link">
                 지금처럼 알림톡 보낼 수 있는 방법 확인하기 ›
               </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deleteTargetId !== null && (
+        <div
+          className="coupons-modal-overlay"
+          onClick={() => setDeleteTargetId(null)}
+        >
+          <div
+            className="coupons-modal coupons-modal--small"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="coupons-modal__header">
+              <h3 className="coupons-modal__title">쿠폰 삭제</h3>
+            </div>
+            <p className="coupons-modal__confirm-text">
+              이 쿠폰을 삭제하시겠어요? 삭제 후에는 복구할 수 없어요.
+            </p>
+            <div className="coupons-modal__footer">
+              <button
+                className="coupons-btn"
+                onClick={() => setDeleteTargetId(null)}
+              >
+                취소
+              </button>
+              <button
+                className="coupons-btn coupons-btn--danger"
+                onClick={confirmDeleteCoupon}
+              >
+                삭제
+              </button>
             </div>
           </div>
         </div>
