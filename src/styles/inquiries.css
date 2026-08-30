@@ -82,18 +82,32 @@
   color: #2563eb;
 }
 
-/* 필터 패널 */
+/* 필터 패널 - 컨텐츠 위에 뜨는 오버레이 방식 */
+.inquiries-filter-wrap {
+  position: relative;
+}
+
+.inquiries-dropdown-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+}
+
 .inquiries-filter-panel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 24px;
-  margin-bottom: 16px;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-width: 420px;
-  margin-left: auto;
+  width: 340px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+  z-index: 950;
 }
 
 .inquiries-filter-field {
@@ -156,16 +170,15 @@
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   min-height: 320px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .inquiries-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 16px;
+  min-height: 320px;
 }
 
 .inquiries-empty__icon {
@@ -185,7 +198,7 @@
 }
 
 .inquiries-table th {
-  text-align: left;
+  text-align: center;
   padding: 14px 16px;
   color: #6b7280;
   font-weight: 500;
@@ -194,7 +207,30 @@
 }
 
 .inquiries-table td {
+  text-align: center;
   padding: 14px 16px;
   border-bottom: 1px solid #f3f4f6;
   color: #374151;
+}
+
+.inquiries-table__title-cell {
+  text-align: left;
+}
+
+.inquiries-badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.inquiries-badge--pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.inquiries-badge--done {
+  background: #eff6ff;
+  color: #2563eb;
 }
