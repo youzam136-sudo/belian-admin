@@ -1,22 +1,22 @@
 .member-settings__title {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   color: #1a1a1a;
 }
 
 .member-settings__tabs {
   display: flex;
-  gap: 24px;
+  gap: 28px;
   border-bottom: 1px solid #e5e7eb;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .member-settings__tab {
   background: none;
   border: none;
-  padding: 12px 4px;
-  font-size: 15px;
+  padding: 14px 4px;
+  font-size: 16px;
   color: #6b7280;
   cursor: pointer;
   position: relative;
@@ -40,27 +40,27 @@
 .member-settings__content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
 .member-settings__card {
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
-  padding: 24px;
+  padding: 28px;
 }
 
 .member-settings__card-title {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   color: #1a1a1a;
 }
 
 .member-settings__row {
   display: flex;
   gap: 32px;
-  padding: 16px 0;
+  padding: 20px 0;
   border-bottom: 1px solid #f3f4f6;
 }
 
@@ -69,8 +69,8 @@
 }
 
 .member-settings__label {
-  flex: 0 0 140px;
-  font-size: 14px;
+  flex: 0 0 150px;
+  font-size: 15px;
   color: #374151;
   font-weight: 500;
 }
@@ -79,15 +79,15 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
 }
 
 .member-settings__checkbox,
 .member-settings__radio {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
+  gap: 10px;
+  font-size: 15px;
   color: #374151;
   cursor: pointer;
 }
@@ -95,15 +95,15 @@
 .member-settings__checkbox input,
 .member-settings__radio input {
   accent-color: #2563eb;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   cursor: pointer;
 }
 
 .member-settings__hint {
-  font-size: 12px;
+  font-size: 13px;
   color: #9ca3af;
-  line-height: 1.6;
+  line-height: 1.7;
   margin: 0;
 }
 
@@ -142,8 +142,8 @@
 .member-settings__textarea {
   border: 1px solid #d1d5db;
   border-radius: 6px;
-  padding: 10px 12px;
-  font-size: 14px;
+  padding: 12px 14px;
+  font-size: 15px;
   resize: vertical;
   font-family: inherit;
 }
@@ -151,10 +151,10 @@
 .member-settings__select {
   border: 1px solid #d1d5db;
   border-radius: 6px;
-  padding: 8px 12px;
-  font-size: 14px;
+  padding: 10px 14px;
+  font-size: 15px;
   color: #374151;
-  width: 200px;
+  width: 220px;
 }
 
 .member-settings__table {
@@ -193,7 +193,7 @@
 }
 
 .member-settings__member-type {
-  padding: 16px 0;
+  padding: 20px 0;
   border-bottom: 1px solid #f3f4f6;
   margin-bottom: 8px;
 }
@@ -202,14 +202,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .member-settings__link-btn {
   background: none;
   border: none;
   color: #2563eb;
-  font-size: 13px;
+  font-size: 14px;
   cursor: pointer;
   padding: 8px 0;
   text-align: left;
@@ -220,8 +220,9 @@
   border-radius: 8px;
   width: 100%;
   text-align: center;
-  padding: 12px;
+  padding: 14px;
   color: #6b7280;
+  font-size: 14px;
   margin-top: 8px;
 }
 
@@ -233,21 +234,21 @@
 .member-settings__notice {
   background: #eff6ff;
   border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 16px;
+  padding: 18px;
+  margin-bottom: 18px;
 }
 
 .member-settings__notice p {
-  font-size: 13px;
+  font-size: 14px;
   color: #374151;
-  line-height: 1.6;
-  margin: 0 0 8px;
+  line-height: 1.7;
+  margin: 0 0 10px;
 }
 
 .member-settings__badge {
   background: #dbeafe;
   color: #2563eb;
-  font-size: 12px;
+  font-size: 13px;
   padding: 4px 10px;
   border-radius: 4px;
   font-weight: 500;
@@ -256,5 +257,6 @@
 .member-settings__empty {
   text-align: center;
   color: #9ca3af;
-  padding: 24px 0;
+  padding: 28px 0;
+  font-size: 14px;
 }
