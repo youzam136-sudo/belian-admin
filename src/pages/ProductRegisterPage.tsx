@@ -30,6 +30,7 @@ function ProductRegisterPage() {
   const [manufacturer, setManufacturer] = useState("");
   const [brand, setBrand] = useState("");
   const [shippingNote, setShippingNote] = useState("");
+  const [shippingNoteEnabled, setShippingNoteEnabled] = useState(false);
 
   const [gradeDiscount, setGradeDiscount] = useState(true);
   const [couponDiscount, setCouponDiscount] = useState(true);
@@ -49,6 +50,137 @@ function ProductRegisterPage() {
   const [minorRestricted, setMinorRestricted] = useState(false);
 
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+
+  const [showOptionForm, setShowOptionForm] = useState(false);
+  const [optionGroups, setOptionGroups] = useState([
+    {
+      type: "선택형",
+      name: "",
+      values: [] as string[],
+      valueInput: "",
+      required: true,
+    },
+  ]);
+
+  const updateOptionGroup = (index: number, patch: Partial<{
+    type: string;
+    name: string;
+    values: string[];
+    valueInput: string;
+    required: boolean;
+  }>) => {
+    setOptionGroups((prev) =>
+      prev.map((g, i) => (i === index ? { ...g, ...patch } : g))
+    );
+  };
+
+  const handleOptionValueKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    if (e.key === "Enter" || e.key === "Tab" || e.key === ",") {
+      e.preventDefault();
+      const group = optionGroups[index];
+      const trimmed = group.valueInput.trim();
+      if (trimmed !== "") {
+        updateOptionGroup(index, {
+          values: [...group.values, trimmed],
+          valueInput: "",
+        });
+      }
+    }
+  };
+
+  const removeOptionValue = (groupIndex: number, valueIndex: number) => {
+    const group = optionGroups[groupIndex];
+    updateOptionGroup(groupIndex, {
+      values: group.values.filter((_, i) => i !== valueIndex),
+    });
+  };
+
+  const addOptionGroup = () => {
+    setOptionGroups((prev) => [
+      ...prev,
+      { type: "선택형", name: "", values: [], valueInput: "", required: true },
+    ]);
+  };
+
+  const cancelOptionForm = () => {
+    setShowOptionForm(false);
+    setOptionGroups([
+      { type: "선택형", name: "", values: [], valueInput: "", required: true },
+    ]);
+  };
+
+  const BADGE_LABELS = ["신상품", "베스트", "MD추천", "주문폭주", "오늘출발"];
+  const [selectedBadges, setSelectedBadges] = useState<string[]>([]);
+  const toggleBadge = (label: string) => {
+    setSelectedBadges((prev) =>
+      prev.includes(label)
+        ? prev.filter((b) => b !== label)
+        : [...prev, label]
+    );
+  };
+
+  const [topBadgeEnabled, setTopBadgeEnabled] = useState(false);
+  const [topBadgeText, setTopBadgeText] = useState("");
+  const [bottomBadgeEnabled, setBottomBadgeEnabled] = useState(false);
+  const [bottomBadgeText, setBottomBadgeText] = useState("");
+
+  const [saleStatus, setSaleStatus] = useState<"판매중" | "품절" | "숨김">(
+    "판매중"
+  );
+  const [salePeriodEnabled, setSalePeriodEnabled] = useState(false);
+
+  const MOCK_SEARCH_PRODUCTS = [
+    { id: 1, name: "벨리안 대표 상품" },
+    { id: 2, name: "와일드 씨드 퍼밍 로션 200ml" },
+    { id: 3, name: "와인베리 퍼밍 콜라겐 젤리" },
+  ];
+
+  const [relatedQuery, setRelatedQuery] = useState("");
+  const [relatedDropdownOpen, setRelatedDropdownOpen] = useState(false);
+  const [relatedCheckedIds, setRelatedCheckedIds] = useState<number[]>([]);
+  const [relatedProducts, setRelatedProducts] = useState<
+    { id: number; name: string }[]
+  >([]);
+
+  const [extraQuery, setExtraQuery] = useState("");
+  const [extraDropdownOpen, setExtraDropdownOpen] = useState(false);
+  const [extraCheckedIds, setExtraCheckedIds] = useState<number[]>([]);
+  const [extraProducts, setExtraProducts] = useState<
+    { id: number; name: string }[]
+  >([]);
+
+  const toggleCheckedId = (
+    ids: number[],
+    setIds: (ids: number[]) => void,
+    id: number
+  ) => {
+    setIds(
+      ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id]
+    );
+  };
+
+  const addRelatedProducts = () => {
+    const toAdd = MOCK_SEARCH_PRODUCTS.filter(
+      (p) => relatedCheckedIds.includes(p.id) && !relatedProducts.some((r) => r.id === p.id)
+    );
+    setRelatedProducts((prev) => [...prev, ...toAdd]);
+    setRelatedCheckedIds([]);
+    setRelatedDropdownOpen(false);
+    setRelatedQuery("");
+  };
+
+  const addExtraProducts = () => {
+    const toAdd = MOCK_SEARCH_PRODUCTS.filter(
+      (p) => extraCheckedIds.includes(p.id) && !extraProducts.some((r) => r.id === p.id)
+    );
+    setExtraProducts((prev) => [...prev, ...toAdd]);
+    setExtraCheckedIds([]);
+    setExtraDropdownOpen(false);
+    setExtraQuery("");
+  };
 
   const scrollToSection = (id: string) => {
     setActiveSection(id);
@@ -437,10 +569,15 @@ function ProductRegisterPage() {
                   className="product-register__input"
                   placeholder="입력된 배송 관련 안내가 없습니다."
                   value={shippingNote}
+                  disabled={!shippingNoteEnabled}
                   onChange={(e) => setShippingNote(e.target.value)}
                 />
                 <label className="product-register__checkbox">
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    checked={shippingNoteEnabled}
+                    onChange={(e) => setShippingNoteEnabled(e.target.checked)}
+                  />
                   직접 입력
                 </label>
               </div>
@@ -449,10 +586,149 @@ function ProductRegisterPage() {
             {/* 옵션 */}
             <section id="section-option" className="product-register__card">
               <h3 className="product-register__card-title">옵션</h3>
-              <p className="product-register__placeholder-text">
-                단일 옵션 상품으로 등록됩니다. 필요 시 옵션을 추가할 수
-                있어요.
-              </p>
+
+              {!showOptionForm ? (
+                <div className="product-register__option-empty">
+                  <div className="product-register__option-illustration">
+                    🛒
+                  </div>
+                  <p className="product-register__option-desc">
+                    옵션을 설정하면 고객이 상품을 구매할 때 원하는 항목을
+                    선택할 수 있어요.
+                    <br />
+                    색상, 사이즈, 추가 구성품 등 여러 조건을 조합해 등록할
+                    수 있어요.
+                  </p>
+                  <div className="product-register__option-actions">
+                    <button
+                      className="product-register__option-btn product-register__option-btn--primary"
+                      onClick={() => setShowOptionForm(true)}
+                    >
+                      옵션추가
+                    </button>
+                    <button className="product-register__option-btn">
+                      다른 상품 옵션 불러오기
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="product-register__option-form-wrap">
+                  {optionGroups.map((group, index) => (
+                    <div
+                      className="product-register__option-form"
+                      key={index}
+                    >
+                      <div className="product-register__option-form-row">
+                        <div className="product-register__option-form-field product-register__option-form-field--type">
+                          <label className="product-register__option-form-label">
+                            옵션 종류
+                          </label>
+                          <select
+                            className="product-register__select"
+                            value={group.type}
+                            onChange={(e) =>
+                              updateOptionGroup(index, {
+                                type: e.target.value,
+                              })
+                            }
+                          >
+                            <option>선택형</option>
+                            <option>직접입력형</option>
+                          </select>
+                        </div>
+
+                        <div className="product-register__option-form-field product-register__option-form-field--name">
+                          <label className="product-register__option-form-label">
+                            옵션명
+                          </label>
+                          <input
+                            type="text"
+                            className="product-register__input"
+                            placeholder="예시: 색상, 사이즈"
+                            value={group.name}
+                            onChange={(e) =>
+                              updateOptionGroup(index, {
+                                name: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
+
+                        <div className="product-register__option-form-field product-register__option-form-field--values">
+                          <label className="product-register__option-form-label">
+                            옵션값
+                          </label>
+                          <div className="product-register__option-tag-input">
+                            {group.values.map((value, vIndex) => (
+                              <span
+                                key={vIndex}
+                                className="product-register__option-tag"
+                              >
+                                {value}
+                                <button
+                                  onClick={() =>
+                                    removeOptionValue(index, vIndex)
+                                  }
+                                >
+                                  ×
+                                </button>
+                              </span>
+                            ))}
+                            <input
+                              type="text"
+                              placeholder="텍스트 입력 후 Enter·Tab·콤마(,)로 구분해 등록해 보세요."
+                              value={group.valueInput}
+                              onChange={(e) =>
+                                updateOptionGroup(index, {
+                                  valueInput: e.target.value,
+                                })
+                              }
+                              onKeyDown={(e) =>
+                                handleOptionValueKeyDown(e, index)
+                              }
+                            />
+                          </div>
+                        </div>
+
+                        <label className="product-register__checkbox product-register__option-required">
+                          <input
+                            type="checkbox"
+                            checked={group.required}
+                            onChange={(e) =>
+                              updateOptionGroup(index, {
+                                required: e.target.checked,
+                              })
+                            }
+                          />
+                          필수 옵션
+                        </label>
+                      </div>
+                    </div>
+                  ))}
+
+                  <button
+                    className="product-register__option-add-row"
+                    onClick={addOptionGroup}
+                  >
+                    + 옵션
+                  </button>
+
+                  <div className="product-register__option-form-footer">
+                    <button
+                      className="product-register__option-btn"
+                      onClick={cancelOptionForm}
+                    >
+                      취소
+                    </button>
+                    <button
+                      className="product-register__option-btn product-register__option-btn--primary"
+                      onClick={() => setShowOptionForm(true)}
+                    >
+                      옵션 목록에 적용
+                    </button>
+                  </div>
+                </div>
+              )}
             </section>
 
             {/* 상품 강조 설정 */}
@@ -463,9 +739,89 @@ function ProductRegisterPage() {
               <h3 className="product-register__card-title">
                 상품 강조 설정
               </h3>
-              <p className="product-register__placeholder-text">
-                뱃지, 추천 표시 등은 추후 단계에서 설정할 수 있어요.
-              </p>
+
+              <div className="product-register__field">
+                <label className="product-register__label">상품 배지</label>
+                <div className="product-register__checkbox-group">
+                  {BADGE_LABELS.map((label) => (
+                    <label
+                      key={label}
+                      className="product-register__checkbox"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedBadges.includes(label)}
+                        onChange={() => toggleBadge(label)}
+                      />
+                      {label}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="product-register__toggle-row">
+                <span>대표 이미지 좌상단 배지</span>
+                <label className="product-register__toggle">
+                  <input
+                    type="checkbox"
+                    checked={topBadgeEnabled}
+                    onChange={(e) => setTopBadgeEnabled(e.target.checked)}
+                  />
+                  <span className="product-register__toggle-slider" />
+                </label>
+              </div>
+
+              {topBadgeEnabled && (
+                <div className="product-register__badge-input-row">
+                  <span className="product-register__badge-swatch product-register__badge-swatch--dark" />
+                  <div className="product-register__badge-input-wrap">
+                    <input
+                      type="text"
+                      className="product-register__input"
+                      placeholder="공백 포함 9자까지 입력할 수 있습니다."
+                      maxLength={9}
+                      value={topBadgeText}
+                      onChange={(e) => setTopBadgeText(e.target.value)}
+                    />
+                    <span className="product-register__badge-counter">
+                      {topBadgeText.length}/9
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              <div className="product-register__toggle-row">
+                <span>대표 이미지 하단 강조 배지</span>
+                <label className="product-register__toggle">
+                  <input
+                    type="checkbox"
+                    checked={bottomBadgeEnabled}
+                    onChange={(e) =>
+                      setBottomBadgeEnabled(e.target.checked)
+                    }
+                  />
+                  <span className="product-register__toggle-slider" />
+                </label>
+              </div>
+
+              {bottomBadgeEnabled && (
+                <div className="product-register__badge-input-row">
+                  <span className="product-register__badge-swatch product-register__badge-swatch--gray" />
+                  <div className="product-register__badge-input-wrap">
+                    <input
+                      type="text"
+                      className="product-register__input"
+                      placeholder="공백 포함 16자까지 입력할 수 있습니다."
+                      maxLength={16}
+                      value={bottomBadgeText}
+                      onChange={(e) => setBottomBadgeText(e.target.value)}
+                    />
+                    <span className="product-register__badge-counter">
+                      {bottomBadgeText.length}/16
+                    </span>
+                  </div>
+                </div>
+              )}
             </section>
 
             {/* SEO */}
@@ -512,25 +868,224 @@ function ProductRegisterPage() {
             {/* 판매 설정 */}
             <section id="section-sale" className="product-register__card">
               <h3 className="product-register__card-title">판매 설정</h3>
-              <p className="product-register__placeholder-text">
-                판매 기간, 판매 상태 등은 기본값으로 적용됩니다.
-              </p>
+
+              <div className="product-register__field">
+                <label className="product-register__label">판매 상태</label>
+                <div className="product-register__radio-group">
+                  {(["판매중", "품절", "숨김"] as const).map((status) => (
+                    <label
+                      key={status}
+                      className="product-register__radio"
+                    >
+                      <input
+                        type="radio"
+                        name="saleStatus"
+                        checked={saleStatus === status}
+                        onChange={() => setSaleStatus(status)}
+                      />
+                      {status}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="product-register__toggle-row">
+                <span>판매기간 설정</span>
+                <label className="product-register__toggle">
+                  <input
+                    type="checkbox"
+                    checked={salePeriodEnabled}
+                    onChange={(e) =>
+                      setSalePeriodEnabled(e.target.checked)
+                    }
+                  />
+                  <span className="product-register__toggle-slider" />
+                </label>
+              </div>
             </section>
 
             {/* 연관상품 */}
             <section id="section-related" className="product-register__card">
               <h3 className="product-register__card-title">연관상품</h3>
-              <p className="product-register__placeholder-text">
-                등록된 연관상품이 없습니다.
-              </p>
+
+              <div className="product-register__field">
+                <label className="product-register__label">
+                  상품 추가 ⓘ
+                </label>
+                <div className="product-register__product-search">
+                  <span className="product-register__product-search-icon">
+                    🔍
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="상품명으로 검색해 주세요"
+                    value={relatedQuery}
+                    onFocus={() => setRelatedDropdownOpen(true)}
+                    onChange={(e) => setRelatedQuery(e.target.value)}
+                  />
+                </div>
+
+                {relatedDropdownOpen && (
+                  <>
+                    <div
+                      className="product-register__dropdown-overlay"
+                      onClick={() => setRelatedDropdownOpen(false)}
+                    />
+                    <div className="product-register__product-dropdown">
+                      <div className="product-register__product-dropdown-list">
+                        {MOCK_SEARCH_PRODUCTS.filter((p) =>
+                          p.name
+                            .toLowerCase()
+                            .includes(relatedQuery.toLowerCase())
+                        ).map((p) => (
+                          <label
+                            key={p.id}
+                            className="product-register__product-option"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={relatedCheckedIds.includes(p.id)}
+                              onChange={() =>
+                                toggleCheckedId(
+                                  relatedCheckedIds,
+                                  setRelatedCheckedIds,
+                                  p.id
+                                )
+                              }
+                            />
+                            <span className="product-register__product-option-thumb" />
+                            {p.name}
+                          </label>
+                        ))}
+                      </div>
+                      <div className="product-register__product-dropdown-footer">
+                        <button
+                          className="product-register__option-btn product-register__option-btn--primary"
+                          disabled={relatedCheckedIds.length === 0}
+                          onClick={addRelatedProducts}
+                        >
+                          상품 추가
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {relatedProducts.length > 0 && (
+                <div className="product-register__added-products">
+                  {relatedProducts.map((p) => (
+                    <div
+                      key={p.id}
+                      className="product-register__added-product"
+                    >
+                      <span className="product-register__product-option-thumb" />
+                      <span>{p.name}</span>
+                      <button
+                        onClick={() =>
+                          setRelatedProducts((prev) =>
+                            prev.filter((x) => x.id !== p.id)
+                          )
+                        }
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </section>
 
             {/* 추가 상품 */}
             <section id="section-extra" className="product-register__card">
               <h3 className="product-register__card-title">추가 상품</h3>
-              <p className="product-register__placeholder-text">
-                등록된 추가 상품이 없습니다.
-              </p>
+
+              <div className="product-register__field">
+                <label className="product-register__label">
+                  상품 추가 ⓘ
+                </label>
+                <div className="product-register__product-search">
+                  <span className="product-register__product-search-icon">
+                    🔍
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="상품명으로 검색해 주세요"
+                    value={extraQuery}
+                    onFocus={() => setExtraDropdownOpen(true)}
+                    onChange={(e) => setExtraQuery(e.target.value)}
+                  />
+                </div>
+
+                {extraDropdownOpen && (
+                  <>
+                    <div
+                      className="product-register__dropdown-overlay"
+                      onClick={() => setExtraDropdownOpen(false)}
+                    />
+                    <div className="product-register__product-dropdown">
+                      <div className="product-register__product-dropdown-list">
+                        {MOCK_SEARCH_PRODUCTS.filter((p) =>
+                          p.name
+                            .toLowerCase()
+                            .includes(extraQuery.toLowerCase())
+                        ).map((p) => (
+                          <label
+                            key={p.id}
+                            className="product-register__product-option"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={extraCheckedIds.includes(p.id)}
+                              onChange={() =>
+                                toggleCheckedId(
+                                  extraCheckedIds,
+                                  setExtraCheckedIds,
+                                  p.id
+                                )
+                              }
+                            />
+                            <span className="product-register__product-option-thumb" />
+                            {p.name}
+                          </label>
+                        ))}
+                      </div>
+                      <div className="product-register__product-dropdown-footer">
+                        <button
+                          className="product-register__option-btn product-register__option-btn--primary"
+                          disabled={extraCheckedIds.length === 0}
+                          onClick={addExtraProducts}
+                        >
+                          상품 추가
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {extraProducts.length > 0 && (
+                <div className="product-register__added-products">
+                  {extraProducts.map((p) => (
+                    <div
+                      key={p.id}
+                      className="product-register__added-product"
+                    >
+                      <span className="product-register__product-option-thumb" />
+                      <span>{p.name}</span>
+                      <button
+                        onClick={() =>
+                          setExtraProducts((prev) =>
+                            prev.filter((x) => x.id !== p.id)
+                          )
+                        }
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </section>
 
             {/* 상품 전시 */}
