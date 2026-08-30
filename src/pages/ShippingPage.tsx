@@ -2,9 +2,9 @@ import { useState } from "react";
 import "../styles/shipping.css";
 
 function ShippingPage() {
-  const [activeTab, setActiveTab] = useState<
-    "template" | "origin" | "addon"
-  >("template");
+  const [activeTab, setActiveTab] = useState<"template" | "origin">(
+    "template"
+  );
 
   const [bundleFeeRule, setBundleFeeRule] = useState<"lowest" | "highest">(
     "lowest"
@@ -47,6 +47,8 @@ function ShippingPage() {
   const [exchangeFee, setExchangeFee] = useState(5000);
   const [shippingDateOption, setShippingDateOption] = useState("사용안함");
 
+  const [originMenuOpen, setOriginMenuOpen] = useState(false);
+
   const toggleMethodCheck = (key: keyof typeof methodChecks) => {
     setMethodChecks((prev) => ({ ...prev, [key]: !prev[key] }));
   };
@@ -84,14 +86,6 @@ function ShippingPage() {
             onClick={() => setActiveTab("origin")}
           >
             출고 및 반품/교환지 설정
-          </button>
-          <button
-            className={`shipping-page__tab ${
-              activeTab === "addon" ? "shipping-page__tab--active" : ""
-            }`}
-            onClick={() => setActiveTab("addon")}
-          >
-            부가 서비스 <span className="shipping-page__new-badge">New</span>
           </button>
         </div>
 
@@ -296,17 +290,111 @@ function ShippingPage() {
 
         {activeTab === "origin" && (
           <div className="shipping-page__content">
-            <p className="shipping-page__placeholder">
-              등록된 출고 및 반품/교환지가 없습니다.
-            </p>
-          </div>
-        )}
+            <div className="shipping-page__row">
+              <div className="shipping-page__intro">
+                <h3 className="shipping-page__intro-title">
+                  출고 및 반품/교환지
+                </h3>
+                <p className="shipping-page__intro-desc">
+                  취급하는 상품별로 출고, 반품/교환지가 다를 경우 추가
+                  등록이 가능하며, 각기 다른 템플릿을 설정할 수 있습니다.
+                </p>
+                <p className="shipping-page__intro-desc">
+                  예시) 의류 쇼핑몰 운영 중 거래처 혹은 발주사가 3곳일 경우
+                  아래와 같이 등록합니다.
+                  <br />
+                  * 바지 브랜드 A 업체
+                  <br />
+                  * 바지 브랜드 B 업체
+                  <br />* 바지 브랜드 C 업체
+                </p>
+                <button className="shipping-page__link-btn">
+                  출고 및 반품/교환지 추가
+                </button>
+              </div>
 
-        {activeTab === "addon" && (
-          <div className="shipping-page__content">
-            <p className="shipping-page__placeholder">
-              이용 가능한 부가 서비스가 없습니다.
-            </p>
+              <div className="shipping-page__origin-panel">
+                <h3 className="shipping-page__origin-panel-title">
+                  출고 및 반품/교환지 목록
+                </h3>
+
+                <div className="shipping-page__origin-notice">
+                  출고 및 반품/교환지는 하나의 지역 안에서 설정할 수
+                  있습니다.
+                  <br />
+                  지역은 <b>환경설정 &gt; 사이트 설정</b>의 설정값을
+                  따릅니다. 지역을 변경할 경우, 기존에 등록된 출고 및
+                  반품/교환지 목록은 모두 초기화되며 배송 템플릿과의 연결도
+                  해제됩니다.
+                </div>
+
+                <div className="shipping-page__origin-region-row">
+                  <span>지역</span>
+                  <span>대한민국</span>
+                </div>
+
+                <div className="shipping-origin-card">
+                  <div className="shipping-origin-card__header">
+                    <span className="shipping-origin-card__name">
+                      📍 출고 및 반품/교환지명 A
+                    </span>
+                    <div className="shipping-origin-card__menu-wrap">
+                      <button
+                        className="shipping-template-card__more"
+                        onClick={() => setOriginMenuOpen((prev) => !prev)}
+                      >
+                        ⋯
+                      </button>
+                      {originMenuOpen && (
+                        <>
+                          <div
+                            className="shipping-dropdown-overlay"
+                            onClick={() => setOriginMenuOpen(false)}
+                          />
+                          <div className="shipping-origin-card__menu">
+                            <button
+                              className="shipping-origin-card__menu-item"
+                              onClick={() => setOriginMenuOpen(false)}
+                            >
+                              수정
+                            </button>
+                            <button
+                              className="shipping-origin-card__menu-item shipping-origin-card__menu-item--danger"
+                              onClick={() => setOriginMenuOpen(false)}
+                            >
+                              삭제
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="shipping-origin-card__row">
+                    <span>출고지</span>
+                    <span className="shipping-origin-card__placeholder">
+                      출고지를 등록해 주세요.
+                    </span>
+                  </div>
+                  <div className="shipping-origin-card__row">
+                    <span>반품/교환지</span>
+                    <span className="shipping-origin-card__placeholder">
+                      반품/교환지를 등록해 주세요.
+                    </span>
+                  </div>
+                  <div className="shipping-origin-card__row">
+                    <span>대표 연락처</span>
+                    <span className="shipping-origin-card__placeholder">
+                      대표 연락처를 등록해 주세요.
+                    </span>
+                  </div>
+                </div>
+
+                <button className="shipping-page__link-btn">
+                  출고 및 반품/교환지 추가
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </section>
