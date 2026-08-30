@@ -59,6 +59,11 @@ function CouponCreatePage() {
     "지정안함" | "상품지정"
   >("지정안함");
 
+  const [discountPercent, setDiscountPercent] = useState(0);
+  const [maxDiscountAmount, setMaxDiscountAmount] = useState(0);
+  const [fixedPrice, setFixedPrice] = useState(0);
+  const [appliedProductQuery, setAppliedProductQuery] = useState("");
+
   const [operationMode, setOperationMode] = useState<
     "period" | "expiry" | "unlimited"
   >(type === "auto" ? "expiry" : "period");
@@ -457,6 +462,128 @@ function CouponCreatePage() {
               <p className="coupon-create__benefit-desc">
                 설정한 비율만큼 할인하는 혜택을 제공해요
               </p>
+
+              {benefitType === "비율할인" && (
+                <div className="coupon-create__benefit-detail">
+                  <div className="coupon-create__row">
+                    <label>할인 비율</label>
+                    <div className="coupon-create__input-with-unit">
+                      <input
+                        type="number"
+                        value={discountPercent}
+                        onChange={(e) =>
+                          setDiscountPercent(Number(e.target.value))
+                        }
+                      />
+                      <span>%</span>
+                    </div>
+                  </div>
+                  <div className="coupon-create__row">
+                    <label>최소 주문 금액</label>
+                    <div className="coupon-create__row-inputs">
+                      <select>
+                        <option>모든 상품</option>
+                        <option>특정 카테고리</option>
+                        <option>특정 상품</option>
+                      </select>
+                      <div className="coupon-create__input-with-unit">
+                        <input
+                          type="number"
+                          value={minOrderAmount}
+                          onChange={(e) =>
+                            setMinOrderAmount(Number(e.target.value))
+                          }
+                        />
+                        <span>원</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="coupon-create__row">
+                    <label>최대 할인 금액</label>
+                    <div className="coupon-create__input-with-unit">
+                      <input
+                        type="number"
+                        value={maxDiscountAmount}
+                        onChange={(e) =>
+                          setMaxDiscountAmount(Number(e.target.value))
+                        }
+                      />
+                      <span>원</span>
+                    </div>
+                  </div>
+                  <div className="coupon-create__row">
+                    <label>중복 할인 ⓘ</label>
+                    <div className="coupon-create__radio-row">
+                      <label className="coupon-create__radio">
+                        <input
+                          type="radio"
+                          checked={duplicateDiscount === "단독"}
+                          onChange={() => setDuplicateDiscount("단독")}
+                        />
+                        단독으로만 사용 가능
+                      </label>
+                      <label className="coupon-create__radio">
+                        <input
+                          type="radio"
+                          checked={duplicateDiscount === "함께"}
+                          onChange={() => setDuplicateDiscount("함께")}
+                        />
+                        다른 쿠폰과 함께 사용 가능
+                      </label>
+                    </div>
+                  </div>
+                  <div className="coupon-create__row">
+                    <label>쿠폰 적용 범위</label>
+                    <div className="coupon-create__radio-row">
+                      <label className="coupon-create__radio">
+                        <input
+                          type="radio"
+                          checked={couponScope === "모든상품"}
+                          onChange={() => setCouponScope("모든상품")}
+                        />
+                        모든 상품
+                      </label>
+                      <label className="coupon-create__radio">
+                        <input
+                          type="radio"
+                          checked={couponScope === "특정카테고리"}
+                          onChange={() => setCouponScope("특정카테고리")}
+                        />
+                        특정 카테고리
+                      </label>
+                      <label className="coupon-create__radio">
+                        <input
+                          type="radio"
+                          checked={couponScope === "특정상품"}
+                          onChange={() => setCouponScope("특정상품")}
+                        />
+                        특정 상품
+                      </label>
+                    </div>
+                  </div>
+                  <div className="coupon-create__row">
+                    <label>적용 제외 상품</label>
+                    <div className="coupon-create__radio-row">
+                      <label className="coupon-create__radio">
+                        <input
+                          type="radio"
+                          checked={excludeProducts === "지정안함"}
+                          onChange={() => setExcludeProducts("지정안함")}
+                        />
+                        지정 안 함
+                      </label>
+                      <label className="coupon-create__radio">
+                        <input
+                          type="radio"
+                          checked={excludeProducts === "상품지정"}
+                          onChange={() => setExcludeProducts("상품지정")}
+                        />
+                        상품 지정
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </label>
 
@@ -469,8 +596,122 @@ function CouponCreatePage() {
             <div>
               <p className="coupon-create__benefit-title">배송비 무료</p>
               <p className="coupon-create__benefit-desc">
-                설정한 최소 주문 금액을 충족하면 배송비 무료 혜택이 적용돼요.
+                설정한 최소 주문 금액을 충족하면 배송비 무료 혜택이
+                적용돼요.
+                <br />
+                주문서의 모든 배송비가 무료로 적용되며, 주문서당 1개
+                쿠폰만 사용할 수 있어요. 단, 반품·교환 시 발생하는
+                배송비는 면제되지 않아요.
               </p>
+
+              {benefitType === "배송비무료" && (
+                <div className="coupon-create__benefit-detail">
+                  <div className="coupon-create__row">
+                    <label>최소 주문 금액</label>
+                    <div className="coupon-create__row-inputs">
+                      <select>
+                        <option>모든 상품</option>
+                        <option>특정 카테고리</option>
+                        <option>특정 상품</option>
+                      </select>
+                      <div className="coupon-create__input-with-unit">
+                        <input
+                          type="number"
+                          value={minOrderAmount}
+                          onChange={(e) =>
+                            setMinOrderAmount(Number(e.target.value))
+                          }
+                        />
+                        <span>원</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="coupon-create__row">
+                    <label>최대 할인 금액</label>
+                    <div className="coupon-create__input-with-unit">
+                      <input
+                        type="number"
+                        value={maxDiscountAmount}
+                        onChange={(e) =>
+                          setMaxDiscountAmount(Number(e.target.value))
+                        }
+                      />
+                      <span>원</span>
+                    </div>
+                  </div>
+                  <div className="coupon-create__row">
+                    <label>중복 할인 ⓘ</label>
+                    <div className="coupon-create__radio-row">
+                      <label className="coupon-create__radio">
+                        <input
+                          type="radio"
+                          checked={duplicateDiscount === "단독"}
+                          onChange={() => setDuplicateDiscount("단독")}
+                        />
+                        단독으로만 사용 가능
+                      </label>
+                      <label className="coupon-create__radio">
+                        <input
+                          type="radio"
+                          checked={duplicateDiscount === "함께"}
+                          onChange={() => setDuplicateDiscount("함께")}
+                        />
+                        다른 쿠폰과 함께 사용 가능
+                      </label>
+                    </div>
+                  </div>
+                  <div className="coupon-create__row">
+                    <label>쿠폰 적용 범위</label>
+                    <div className="coupon-create__radio-row">
+                      <label className="coupon-create__radio">
+                        <input
+                          type="radio"
+                          checked={couponScope === "모든상품"}
+                          onChange={() => setCouponScope("모든상품")}
+                        />
+                        모든 상품
+                      </label>
+                      <label className="coupon-create__radio">
+                        <input
+                          type="radio"
+                          checked={couponScope === "특정카테고리"}
+                          onChange={() => setCouponScope("특정카테고리")}
+                        />
+                        특정 카테고리
+                      </label>
+                      <label className="coupon-create__radio">
+                        <input
+                          type="radio"
+                          checked={couponScope === "특정상품"}
+                          onChange={() => setCouponScope("특정상품")}
+                        />
+                        특정 상품
+                      </label>
+                    </div>
+                  </div>
+                  <div className="coupon-create__row">
+                    <label>적용 제외 상품</label>
+                    <div className="coupon-create__radio-row">
+                      <label className="coupon-create__radio">
+                        <input
+                          type="radio"
+                          checked={excludeProducts === "지정안함"}
+                          onChange={() => setExcludeProducts("지정안함")}
+                        />
+                        지정 안 함
+                      </label>
+                      <label className="coupon-create__radio">
+                        <input
+                          type="radio"
+                          checked={excludeProducts === "상품지정"}
+                          onChange={() => setExcludeProducts("상품지정")}
+                        />
+                        상품 지정
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </label>
 
@@ -485,7 +726,63 @@ function CouponCreatePage() {
               <p className="coupon-create__benefit-desc">
                 상품 금액과 상관없이 설정한 금액으로 판매할 수 있어요. 예)
                 100원딜
+                <br />
+                주문서당 1개 쿠폰만 적용 가능하며, 다른 쿠폰과 함께
+                사용할 수 없어요. 쿠폰 적용 상품이 여러 개일 경우 판매가가
+                가장 높은 상품에 자동 적용돼요.
               </p>
+
+              {benefitType === "고정가할인" && (
+                <div className="coupon-create__benefit-detail">
+                  <div className="coupon-create__row">
+                    <label>판매 고정가</label>
+                    <div className="coupon-create__input-with-unit">
+                      <input
+                        type="number"
+                        value={fixedPrice}
+                        onChange={(e) =>
+                          setFixedPrice(Number(e.target.value))
+                        }
+                      />
+                      <span>원</span>
+                    </div>
+                  </div>
+                  <div className="coupon-create__row">
+                    <label>최소 주문 금액</label>
+                    <div className="coupon-create__row-inputs">
+                      <select>
+                        <option>모든 상품</option>
+                        <option>특정 카테고리</option>
+                        <option>특정 상품</option>
+                      </select>
+                      <div className="coupon-create__input-with-unit">
+                        <input
+                          type="number"
+                          value={minOrderAmount}
+                          onChange={(e) =>
+                            setMinOrderAmount(Number(e.target.value))
+                          }
+                        />
+                        <span>원</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="coupon-create__row">
+                    <label>쿠폰 적용 상품</label>
+                    <div className="coupon-create__product-search">
+                      <span>🔍</span>
+                      <input
+                        type="text"
+                        placeholder="상품명 혹은 재고번호(SKU)로 검색해 주세요"
+                        value={appliedProductQuery}
+                        onChange={(e) =>
+                          setAppliedProductQuery(e.target.value)
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </label>
         </section>
