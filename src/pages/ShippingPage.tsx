@@ -851,64 +851,68 @@ function ShippingPage() {
 
               <div className="shipping-modal__field">
                 <label className="shipping-modal__label">출고지 주소</label>
-                <div className="shipping-modal__zip-row">
+                <div className="shipping-modal__address-group">
+                  <div className="shipping-modal__zip-row">
+                    <input
+                      type="text"
+                      className="shipping-modal__address-input"
+                      placeholder="우편번호"
+                      value={shipZip}
+                      onChange={(e) => setShipZip(e.target.value)}
+                    />
+                    <button className="shipping-modal__zip-btn">
+                      주소찾기
+                    </button>
+                  </div>
                   <input
                     type="text"
-                    className="shipping-modal__input"
-                    placeholder="우편번호"
-                    value={shipZip}
-                    onChange={(e) => setShipZip(e.target.value)}
+                    className="shipping-modal__address-input"
+                    placeholder="주소"
+                    value={shipAddress}
+                    onChange={(e) => setShipAddress(e.target.value)}
                   />
-                  <button className="shipping-modal__zip-btn">
-                    주소찾기
-                  </button>
+                  <input
+                    type="text"
+                    className="shipping-modal__address-input"
+                    placeholder="상세주소"
+                    value={shipDetailAddress}
+                    onChange={(e) => setShipDetailAddress(e.target.value)}
+                  />
                 </div>
-                <input
-                  type="text"
-                  className="shipping-modal__input"
-                  placeholder="주소"
-                  value={shipAddress}
-                  onChange={(e) => setShipAddress(e.target.value)}
-                />
-                <input
-                  type="text"
-                  className="shipping-modal__input"
-                  placeholder="상세주소"
-                  value={shipDetailAddress}
-                  onChange={(e) => setShipDetailAddress(e.target.value)}
-                />
               </div>
 
               <div className="shipping-modal__field">
                 <label className="shipping-modal__label">
                   반품/교환지 주소
                 </label>
-                <div className="shipping-modal__zip-row">
+                <div className="shipping-modal__address-group">
+                  <div className="shipping-modal__zip-row">
+                    <input
+                      type="text"
+                      className="shipping-modal__address-input"
+                      placeholder="우편번호"
+                      value={returnZip}
+                      onChange={(e) => setReturnZip(e.target.value)}
+                    />
+                    <button className="shipping-modal__zip-btn">
+                      주소찾기
+                    </button>
+                  </div>
                   <input
                     type="text"
-                    className="shipping-modal__input"
-                    placeholder="우편번호"
-                    value={returnZip}
-                    onChange={(e) => setReturnZip(e.target.value)}
+                    className="shipping-modal__address-input"
+                    placeholder="주소"
+                    value={returnAddress}
+                    onChange={(e) => setReturnAddress(e.target.value)}
                   />
-                  <button className="shipping-modal__zip-btn">
-                    주소찾기
-                  </button>
+                  <input
+                    type="text"
+                    className="shipping-modal__address-input"
+                    placeholder="상세주소"
+                    value={returnDetailAddress}
+                    onChange={(e) => setReturnDetailAddress(e.target.value)}
+                  />
                 </div>
-                <input
-                  type="text"
-                  className="shipping-modal__input"
-                  placeholder="주소"
-                  value={returnAddress}
-                  onChange={(e) => setReturnAddress(e.target.value)}
-                />
-                <input
-                  type="text"
-                  className="shipping-modal__input"
-                  placeholder="상세주소"
-                  value={returnDetailAddress}
-                  onChange={(e) => setReturnDetailAddress(e.target.value)}
-                />
               </div>
 
               <div className="shipping-modal__field">
