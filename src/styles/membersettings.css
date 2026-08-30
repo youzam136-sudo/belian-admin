@@ -115,6 +115,8 @@
   font-size: 13px;
   color: #374151;
   cursor: pointer;
+  align-self: flex-start;
+  width: auto;
 }
 
 .member-settings__btn:hover {
