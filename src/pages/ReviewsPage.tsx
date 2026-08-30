@@ -3,7 +3,7 @@ import "../styles/reviews.css";
 
 function ReviewsPage() {
   const [activeTab, setActiveTab] = useState<
-    "list" | "connect" | "settings" | "addon"
+    "list" | "connect" | "settings"
   >("list");
 
   return (
@@ -34,24 +34,11 @@ function ReviewsPage() {
           >
             구매평 설정
           </button>
-          <button
-            className={`reviews-page__tab ${
-              activeTab === "addon" ? "reviews-page__tab--active" : ""
-            }`}
-            onClick={() => setActiveTab("addon")}
-          >
-            부가 서비스
-          </button>
         </div>
 
         {activeTab === "list" && <ReviewsListTab />}
         {activeTab === "connect" && <ReviewsConnectTab />}
         {activeTab === "settings" && <ReviewsSettingsTab />}
-        {activeTab === "addon" && (
-          <p className="reviews-page__placeholder">
-            이용 가능한 부가 서비스가 없습니다.
-          </p>
-        )}
       </section>
     </div>
   );
@@ -317,6 +304,69 @@ function ReviewsConnectTab() {
     "mutual"
   );
 
+  const MOCK_PRODUCTS = [
+    { id: 1, name: "벨리안 대표 상품" },
+    { id: 2, name: "와일드 씨드 퍼밍 로션 200ml" },
+    { id: 3, name: "와인베리 퍼밍 콜라겐 젤리" },
+  ];
+
+  const [mutualProducts, setMutualProducts] = useState<
+    { id: number; name: string }[]
+  >([]);
+  const [receiveProducts, setReceiveProducts] = useState<
+    { id: number; name: string }[]
+  >([]);
+  const [provideProducts, setProvideProducts] = useState<
+    { id: number; name: string }[]
+  >([]);
+
+  const [pickerTarget, setPickerTarget] = useState<
+    "mutual" | "receive" | "provide" | null
+  >(null);
+  const [pickerQuery, setPickerQuery] = useState("");
+  const [pickerCheckedIds, setPickerCheckedIds] = useState<number[]>([]);
+
+  const openPicker = (target: "mutual" | "receive" | "provide") => {
+    setPickerTarget(target);
+    setPickerQuery("");
+    setPickerCheckedIds([]);
+  };
+
+  const closePicker = () => {
+    setPickerTarget(null);
+    setPickerQuery("");
+    setPickerCheckedIds([]);
+  };
+
+  const togglePickerChecked = (id: number) => {
+    setPickerCheckedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+
+  const confirmPickerAdd = () => {
+    const toAdd = MOCK_PRODUCTS.filter((p) =>
+      pickerCheckedIds.includes(p.id)
+    );
+    if (pickerTarget === "mutual") {
+      setMutualProducts((prev) => [
+        ...prev,
+        ...toAdd.filter((p) => !prev.some((x) => x.id === p.id)),
+      ]);
+    } else if (pickerTarget === "receive") {
+      setReceiveProducts((prev) => [
+        ...prev,
+        ...toAdd.filter((p) => !prev.some((x) => x.id === p.id)),
+      ].slice(0, 1));
+    } else if (pickerTarget === "provide") {
+      setProvideProducts((prev) => [
+        ...prev,
+        ...toAdd.filter((p) => !prev.some((x) => x.id === p.id)),
+      ]);
+    }
+    closePicker();
+  };
+
   return (
     <div className="reviews-connect">
       <div className="reviews-connect__card">
@@ -346,17 +396,17 @@ function ReviewsConnectTab() {
         <div className="reviews-connect__example">
           <div className="reviews-connect__example-product">
             <div className="reviews-connect__example-thumb reviews-connect__example-thumb--gray" />
-            <span>아임웹 티셔츠 (그레이)</span>
+            <span>와인베리 퍼밍 콜라겐 젤리</span>
             <span className="reviews-connect__example-count">
-              구매평 10개
+              구매평 8개
             </span>
           </div>
           <span className="reviews-connect__example-link">🔗</span>
           <div className="reviews-connect__example-product">
             <div className="reviews-connect__example-thumb reviews-connect__example-thumb--pink" />
-            <span>아임웹 티셔츠 (핑크)</span>
+            <span>와일드 씨드 퍼밍 로션 200ml</span>
             <span className="reviews-connect__example-count">
-              구매평 20개
+              구매평 15개
             </span>
           </div>
         </div>
@@ -408,47 +458,137 @@ function ReviewsConnectTab() {
               {connectMode === "mutual" ? (
                 <div className="reviews-connect-box">
                   <p className="reviews-connect-box__title">
-                    연결 상품 (0/20)
+                    연결 상품 ({mutualProducts.length}/20)
                   </p>
-                  <div className="reviews-connect-box__icons">
-                    <span className="reviews-connect-box__icon" />
-                    <span className="reviews-connect-box__link">🔗</span>
-                    <span className="reviews-connect-box__icon" />
-                  </div>
-                  <p className="reviews-connect-box__desc">
-                    구매평을 공유할 상품을 추가해 주세요.
-                  </p>
-                  <button className="reviews-btn">상품 추가</button>
+                  {mutualProducts.length > 0 ? (
+                    <div className="reviews-connect-box__selected-list">
+                      {mutualProducts.map((p) => (
+                        <div
+                          key={p.id}
+                          className="reviews-connect-box__selected-item"
+                        >
+                          <span className="reviews-connect-box__selected-thumb" />
+                          <span>{p.name}</span>
+                          <button
+                            onClick={() =>
+                              setMutualProducts((prev) =>
+                                prev.filter((x) => x.id !== p.id)
+                              )
+                            }
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <>
+                      <div className="reviews-connect-box__icons">
+                        <span className="reviews-connect-box__icon" />
+                        <span className="reviews-connect-box__link">🔗</span>
+                        <span className="reviews-connect-box__icon" />
+                      </div>
+                      <p className="reviews-connect-box__desc">
+                        구매평을 공유할 상품을 추가해 주세요.
+                      </p>
+                    </>
+                  )}
+                  <button
+                    className="reviews-btn"
+                    onClick={() => openPicker("mutual")}
+                  >
+                    상품 추가
+                  </button>
                 </div>
               ) : (
                 <>
                   <div className="reviews-connect-box">
                     <p className="reviews-connect-box__title">
-                      제공받을 상품 (0/1)
+                      제공받을 상품 ({receiveProducts.length}/1)
                     </p>
-                    <div className="reviews-connect-box__icons">
-                      <span className="reviews-connect-box__icon" />
-                    </div>
-                    <p className="reviews-connect-box__desc">
-                      구매평이 필요한 상품을 추가해 주세요.
-                    </p>
-                    <button className="reviews-btn">상품 추가</button>
+                    {receiveProducts.length > 0 ? (
+                      <div className="reviews-connect-box__selected-list">
+                        {receiveProducts.map((p) => (
+                          <div
+                            key={p.id}
+                            className="reviews-connect-box__selected-item"
+                          >
+                            <span className="reviews-connect-box__selected-thumb" />
+                            <span>{p.name}</span>
+                            <button
+                              onClick={() =>
+                                setReceiveProducts((prev) =>
+                                  prev.filter((x) => x.id !== p.id)
+                                )
+                              }
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <>
+                        <div className="reviews-connect-box__icons">
+                          <span className="reviews-connect-box__icon" />
+                        </div>
+                        <p className="reviews-connect-box__desc">
+                          구매평이 필요한 상품을 추가해 주세요.
+                        </p>
+                      </>
+                    )}
+                    <button
+                      className="reviews-btn"
+                      onClick={() => openPicker("receive")}
+                    >
+                      상품 추가
+                    </button>
                   </div>
 
                   <div className="reviews-connect-box__arrow">↑</div>
 
                   <div className="reviews-connect-box">
                     <p className="reviews-connect-box__title">
-                      제공할 상품 (0/20)
+                      제공할 상품 ({provideProducts.length}/20)
                     </p>
-                    <div className="reviews-connect-box__icons">
-                      <span className="reviews-connect-box__icon" />
-                      <span className="reviews-connect-box__icon" />
-                    </div>
-                    <p className="reviews-connect-box__desc">
-                      구매평을 제공할 상품을 추가해 주세요.
-                    </p>
-                    <button className="reviews-btn">상품 추가</button>
+                    {provideProducts.length > 0 ? (
+                      <div className="reviews-connect-box__selected-list">
+                        {provideProducts.map((p) => (
+                          <div
+                            key={p.id}
+                            className="reviews-connect-box__selected-item"
+                          >
+                            <span className="reviews-connect-box__selected-thumb" />
+                            <span>{p.name}</span>
+                            <button
+                              onClick={() =>
+                                setProvideProducts((prev) =>
+                                  prev.filter((x) => x.id !== p.id)
+                                )
+                              }
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <>
+                        <div className="reviews-connect-box__icons">
+                          <span className="reviews-connect-box__icon" />
+                          <span className="reviews-connect-box__icon" />
+                        </div>
+                        <p className="reviews-connect-box__desc">
+                          구매평을 제공할 상품을 추가해 주세요.
+                        </p>
+                      </>
+                    )}
+                    <button
+                      className="reviews-btn"
+                      onClick={() => openPicker("provide")}
+                    >
+                      상품 추가
+                    </button>
                   </div>
                 </>
               )}
@@ -463,7 +603,68 @@ function ReviewsConnectTab() {
               </button>
               <button
                 className="reviews-btn reviews-btn--primary"
-                disabled
+                disabled={
+                  connectMode === "mutual"
+                    ? mutualProducts.length < 2
+                    : receiveProducts.length < 1 ||
+                      provideProducts.length < 1
+                }
+                onClick={() => setIsConnectModalOpen(false)}
+              >
+                추가
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {pickerTarget && (
+        <div className="reviews-modal-overlay" onClick={closePicker}>
+          <div
+            className="reviews-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="reviews-modal__header">
+              <h3 className="reviews-modal__title">연결 상품</h3>
+              <button
+                className="reviews-modal__close"
+                onClick={closePicker}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="reviews-picker__search">
+              <span>🔍</span>
+              <input
+                type="text"
+                placeholder="상품명"
+                value={pickerQuery}
+                onChange={(e) => setPickerQuery(e.target.value)}
+              />
+            </div>
+
+            <div className="reviews-picker__list">
+              {MOCK_PRODUCTS.filter((p) =>
+                p.name.toLowerCase().includes(pickerQuery.toLowerCase())
+              ).map((p) => (
+                <label key={p.id} className="reviews-picker__item">
+                  <input
+                    type="checkbox"
+                    checked={pickerCheckedIds.includes(p.id)}
+                    onChange={() => togglePickerChecked(p.id)}
+                  />
+                  <span className="reviews-picker__thumb" />
+                  {p.name}
+                </label>
+              ))}
+            </div>
+
+            <div className="reviews-modal__footer">
+              <button
+                className="reviews-btn reviews-btn--primary reviews-picker__add-btn"
+                disabled={pickerCheckedIds.length === 0}
+                onClick={confirmPickerAdd}
               >
                 추가
               </button>
