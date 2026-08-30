@@ -9,7 +9,7 @@ function MemberSettingsPage() {
   const [checkAllTerms, setCheckAllTerms] = useState(true);
   const [generalMemberEnabled, setGeneralMemberEnabled] = useState(true);
   const [businessMemberEnabled, setBusinessMemberEnabled] = useState(false);
-  const [gradeEnabled, setGradeEnabled] = useState(false);
+
 
   const [isAddTypeModalOpen, setIsAddTypeModalOpen] = useState(false);
   const [newTypeNameEnabled, setNewTypeNameEnabled] = useState(true);
@@ -386,55 +386,6 @@ function MemberSettingsPage() {
               </button>
             </div>
 
-            <div className="member-settings__card">
-              <h3 className="member-settings__card-title">쇼핑 등급 설정</h3>
-              <div className="member-settings__notice">
-                <p>
-                  고객의 회원가입 유도 및 재구매율을 향상시키기 위해 쇼핑
-                  등급을 사용할 수 있습니다. 회원의 구매 금액에 따라 할인이나
-                  적립금 추가 지급과 같은 혜택을 차등 제공할 수 있습니다.
-                </p>
-                <button className="member-settings__link-btn">
-                  자세히 알아보기
-                </button>
-              </div>
-
-              <div className="member-settings__row">
-                <span className="member-settings__label">사용여부</span>
-                <label className="member-settings__checkbox">
-                  <input
-                    type="checkbox"
-                    checked={gradeEnabled}
-                    onChange={(e) => setGradeEnabled(e.target.checked)}
-                  />
-                  사용
-                </label>
-              </div>
-
-              <table className="member-settings__table">
-                <thead>
-                  <tr>
-                    <th>등급유형</th>
-                    <th>등급명</th>
-                    <th>등급기준</th>
-                    <th>할인</th>
-                    <th>최대 할인</th>
-                    <th>적립금 추가 적립</th>
-                    <th>최대 적립</th>
-                    <th>배송비 면제</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {!gradeEnabled && (
-                    <tr>
-                      <td colSpan={8} className="member-settings__empty">
-                        쇼핑 등급 설정을 사용하고 있지 않습니다.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
           </div>
         )}
       </section>
