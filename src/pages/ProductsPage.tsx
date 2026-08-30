@@ -59,6 +59,9 @@ function ProductsPage() {
     null
   );
   const [moreMenuOpenId, setMoreMenuOpenId] = useState<number | null>(null);
+  const [categoryMenuOpen, setCategoryMenuOpen] = useState<string | null>(
+    null
+  );
 
   const counts = {
     전체: products.length,
@@ -103,6 +106,15 @@ function ProductsPage() {
   const closeAllMenus = () => {
     setStatusMenuOpenId(null);
     setMoreMenuOpenId(null);
+    setCategoryMenuOpen(null);
+  };
+
+  const deleteCategory = (cat: string) => {
+    setCategories((prev) => prev.filter((c) => c !== cat));
+    if (activeCategory === cat) {
+      setActiveCategory("전체 카테고리");
+    }
+    setCategoryMenuOpen(null);
   };
 
   const updateProductStatus = (id: number, status: ProductStatus) => {
@@ -194,17 +206,50 @@ function ProductsPage() {
                     전체 카테고리
                   </button>
                   {categories.map((cat) => (
-                    <button
-                      key={cat}
-                      className={`products-category-list__item ${
-                        activeCategory === cat
-                          ? "products-category-list__item--active"
-                          : ""
-                      }`}
-                      onClick={() => setActiveCategory(cat)}
-                    >
-                      {cat}
-                    </button>
+                    <div key={cat} className="products-category-row">
+                      <button
+                        className={`products-category-list__item ${
+                          activeCategory === cat
+                            ? "products-category-list__item--active"
+                            : ""
+                        }`}
+                        onClick={() => setActiveCategory(cat)}
+                      >
+                        {cat}
+                      </button>
+                      <button
+                        className="products-category-row__more"
+                        onClick={() =>
+                          setCategoryMenuOpen(
+                            categoryMenuOpen === cat ? null : cat
+                          )
+                        }
+                      >
+                        ⋮
+                      </button>
+                      {categoryMenuOpen === cat && (
+                        <>
+                          <div
+                            className="products-dropdown-overlay"
+                            onClick={closeAllMenus}
+                          />
+                          <div className="products-category-menu">
+                            <button
+                              className="products-category-menu__item"
+                              onClick={() => setCategoryMenuOpen(null)}
+                            >
+                              편집
+                            </button>
+                            <button
+                              className="products-category-menu__item products-category-menu__item--danger"
+                              onClick={() => deleteCategory(cat)}
+                            >
+                              삭제
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </div>
                   ))}
                 </div>
               ))}
