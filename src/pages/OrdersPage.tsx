@@ -110,14 +110,50 @@ function OrdersPage() {
                 />
               </div>
               <button className="orders-icon-btn">⬇ 엑셀 다운로드</button>
-              <button
-                className={`orders-icon-btn ${
-                  isFilterOpen ? "orders-icon-btn--active" : ""
-                }`}
-                onClick={() => setIsFilterOpen((prev) => !prev)}
-              >
-                ⚲
-              </button>
+              <div className="orders-filter-wrap">
+                <button
+                  className={`orders-icon-btn ${
+                    isFilterOpen ? "orders-icon-btn--active" : ""
+                  }`}
+                  onClick={() => setIsFilterOpen((prev) => !prev)}
+                >
+                  ⚲
+                </button>
+
+                {isFilterOpen && (
+                  <>
+                    <div
+                      className="orders-dropdown-overlay"
+                      onClick={() => setIsFilterOpen(false)}
+                    />
+                    <div className="orders-filter-panel">
+                      <div className="orders-filter-panel__header">
+                        <div className="orders-filter-panel__tabs">
+                          <button className="orders-filter-panel__tab orders-filter-panel__tab--active">
+                            기본 필터 <span>5/20</span>
+                          </button>
+                          <button className="orders-filter-panel__add">
+                            + 새 필터
+                          </button>
+                        </div>
+                        <button
+                          className="orders-filter-panel__close"
+                          onClick={() => setIsFilterOpen(false)}
+                        >
+                          닫기
+                        </button>
+                      </div>
+                      <div className="orders-filter-panel__chips">
+                        {FILTER_CHIPS.map((chip) => (
+                          <button key={chip} className="orders-filter-chip">
+                            {chip} +
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
               <div className="orders-settings-wrap">
                 <button
                   className="orders-icon-btn"
@@ -156,34 +192,6 @@ function OrdersPage() {
               </div>
             </div>
           </div>
-
-          {isFilterOpen && (
-            <div className="orders-filter-panel">
-              <div className="orders-filter-panel__header">
-                <div className="orders-filter-panel__tabs">
-                  <button className="orders-filter-panel__tab orders-filter-panel__tab--active">
-                    기본 필터 <span>5/20</span>
-                  </button>
-                  <button className="orders-filter-panel__add">
-                    + 새 필터
-                  </button>
-                </div>
-                <button
-                  className="orders-filter-panel__close"
-                  onClick={() => setIsFilterOpen(false)}
-                >
-                  닫기
-                </button>
-              </div>
-              <div className="orders-filter-panel__chips">
-                {FILTER_CHIPS.map((chip) => (
-                  <button key={chip} className="orders-filter-chip">
-                    {chip} +
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
 
           <table className="orders-table">
             <thead>
