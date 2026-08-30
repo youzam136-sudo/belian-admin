@@ -672,3 +672,56 @@
 .shipping-modal__field .shipping-modal__input + .shipping-modal__input {
   margin-top: 8px;
 }
+
+/* 주소 입력 그룹 (출고지/반품교환지 주소) - 하나의 박스로 통합 */
+.shipping-modal__address-group {
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.shipping-modal__address-group .shipping-modal__zip-row {
+  border-bottom: 1px dashed #e5e7eb;
+}
+
+.shipping-modal__address-input {
+  width: 100%;
+  border: none;
+  padding: 13px 15px;
+  font-size: 14px;
+  color: #374151;
+  background: transparent;
+}
+
+.shipping-modal__address-input:focus {
+  outline: none;
+  background: #f9fafb;
+}
+
+.shipping-modal__address-input + .shipping-modal__address-input {
+  border-top: 1px dashed #e5e7eb;
+}
+
+.shipping-modal__address-group .shipping-modal__zip-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+}
+
+.shipping-modal__address-group .shipping-modal__zip-row .shipping-modal__address-input {
+  flex: 1;
+  border-radius: 0;
+}
+
+.shipping-modal__address-group .shipping-modal__zip-btn {
+  border-radius: 0;
+  border-left: 1px solid #e5e7eb;
+  background: #f9fafb;
+  padding: 0 20px;
+}
+
+.shipping-modal__address-group .shipping-modal__zip-btn:hover {
+  background: #eff6ff;
+  color: #2563eb;
+}
