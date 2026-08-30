@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/products.css";
 
 type ProductStatus = "판매중" | "품절" | "숨김";
@@ -17,7 +18,7 @@ interface Product {
   updatedAt: string;
 }
 
-const MOCK_PRODUCTS: Product[] = [
+const INITIAL_PRODUCTS: Product[] = [
   {
     id: 101,
     name: "와인베리 퍼밍 콜라겐 젤리",
@@ -33,24 +34,40 @@ const MOCK_PRODUCTS: Product[] = [
   },
 ];
 
+const STATUS_OPTIONS: ProductStatus[] = ["판매중", "품절", "숨김"];
+
 function ProductsPage() {
+  const navigate = useNavigate();
+  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [statusFilter, setStatusFilter] = useState<"전체" | ProductStatus>(
     "전체"
   );
   const [searchKeyword, setSearchKeyword] = useState("");
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  const [isCategoryTab, setIsCategoryTab] = useState<
-    "category" | "promotion" | "add"
-  >("category");
+  const [sidebarTab, setSidebarTab] = useState<"category" | "promotion">(
+    "category"
+  );
+
+  const [categories, setCategories] = useState<string[]>([]);
+  const [activeCategory, setActiveCategory] = useState("전체 카테고리");
+
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [categoryName, setCategoryName] = useState("");
+  const [categoryPermission, setCategoryPermission] = useState("모든 사용자");
+
+  const [statusMenuOpenId, setStatusMenuOpenId] = useState<number | null>(
+    null
+  );
+  const [moreMenuOpenId, setMoreMenuOpenId] = useState<number | null>(null);
 
   const counts = {
-    전체: MOCK_PRODUCTS.length,
-    판매중: MOCK_PRODUCTS.filter((p) => p.status === "판매중").length,
-    품절: MOCK_PRODUCTS.filter((p) => p.status === "품절").length,
-    숨김: MOCK_PRODUCTS.filter((p) => p.status === "숨김").length,
+    전체: products.length,
+    판매중: products.filter((p) => p.status === "판매중").length,
+    품절: products.filter((p) => p.status === "품절").length,
+    숨김: products.filter((p) => p.status === "숨김").length,
   };
 
-  const filteredProducts = MOCK_PRODUCTS.filter((p) => {
+  const filteredProducts = products.filter((p) => {
     const matchesStatus =
       statusFilter === "전체" ? true : p.status === statusFilter;
     const matchesKeyword = p.name
@@ -69,6 +86,37 @@ function ProductsPage() {
     );
   };
 
+  const closeCategoryModal = () => {
+    setIsCategoryModalOpen(false);
+    setCategoryName("");
+    setCategoryPermission("모든 사용자");
+  };
+
+  const addCategory = () => {
+    const trimmed = categoryName.trim();
+    if (trimmed === "") return;
+    setCategories((prev) => [...prev, trimmed]);
+    setActiveCategory(trimmed);
+    closeCategoryModal();
+  };
+
+  const closeAllMenus = () => {
+    setStatusMenuOpenId(null);
+    setMoreMenuOpenId(null);
+  };
+
+  const updateProductStatus = (id: number, status: ProductStatus) => {
+    setProducts((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, status } : p))
+    );
+    setStatusMenuOpenId(null);
+  };
+
+  const moreMenuActions = [
+    ["복제", "삭제", "진열 설정"],
+    ["맨 위로", "위로", "아래로", "맨 아래로"],
+  ];
+
   return (
     <div className="dashboard-page">
       <section className="dashboard-section products-page">
@@ -76,7 +124,10 @@ function ProductsPage() {
           <h2 className="products-page__title">상품</h2>
           <div className="products-page__header-actions">
             <button className="products-btn">상품 일괄 등록 및 수정</button>
-            <button className="products-btn products-btn--primary">
+            <button
+              className="products-btn products-btn--primary"
+              onClick={() => navigate("/products/register")}
+            >
               상품 등록
             </button>
           </div>
@@ -87,44 +138,84 @@ function ProductsPage() {
             <div className="products-sidebar__tabs">
               <button
                 className={`products-sidebar__tab ${
-                  isCategoryTab === "category"
+                  sidebarTab === "category"
                     ? "products-sidebar__tab--active"
                     : ""
                 }`}
-                onClick={() => setIsCategoryTab("category")}
+                onClick={() => setSidebarTab("category")}
               >
                 카테고리
               </button>
               <button
                 className={`products-sidebar__tab ${
-                  isCategoryTab === "promotion"
+                  sidebarTab === "promotion"
                     ? "products-sidebar__tab--active"
                     : ""
                 }`}
-                onClick={() => setIsCategoryTab("promotion")}
+                onClick={() => setSidebarTab("promotion")}
               >
                 기획전
               </button>
               <button
-                className={`products-sidebar__tab ${
-                  isCategoryTab === "add" ? "products-sidebar__tab--active" : ""
-                }`}
-                onClick={() => setIsCategoryTab("add")}
+                className="products-sidebar__tab products-sidebar__tab--link"
+                onClick={() => setIsCategoryModalOpen(true)}
               >
                 추가
               </button>
             </div>
 
-            <div className="products-sidebar__empty">
-              <div className="products-sidebar__empty-icon">📄</div>
-              <p className="products-sidebar__empty-title">
-                아직 카테고리가 없어요
-              </p>
-              <p className="products-sidebar__empty-desc">
-                상품을 체계적으로 관리하려면 카테고리를 만들어 보세요.
-              </p>
-              <button className="products-btn">카테고리 추가</button>
-            </div>
+            {sidebarTab === "category" &&
+              (categories.length === 0 ? (
+                <div className="products-sidebar__empty">
+                  <div className="products-sidebar__empty-icon">📄</div>
+                  <p className="products-sidebar__empty-title">
+                    아직 카테고리가 없어요
+                  </p>
+                  <p className="products-sidebar__empty-desc">
+                    상품을 체계적으로 관리하려면 카테고리를 만들어 보세요.
+                  </p>
+                  <button
+                    className="products-btn"
+                    onClick={() => setIsCategoryModalOpen(true)}
+                  >
+                    카테고리 추가
+                  </button>
+                </div>
+              ) : (
+                <div className="products-category-list">
+                  <button
+                    className={`products-category-list__item products-category-list__item--all ${
+                      activeCategory === "전체 카테고리"
+                        ? "products-category-list__item--active"
+                        : ""
+                    }`}
+                    onClick={() => setActiveCategory("전체 카테고리")}
+                  >
+                    전체 카테고리
+                  </button>
+                  {categories.map((cat) => (
+                    <button
+                      key={cat}
+                      className={`products-category-list__item ${
+                        activeCategory === cat
+                          ? "products-category-list__item--active"
+                          : ""
+                      }`}
+                      onClick={() => setActiveCategory(cat)}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              ))}
+
+            {sidebarTab === "promotion" && (
+              <div className="products-sidebar__empty">
+                <p className="products-sidebar__empty-desc">
+                  등록된 기획전이 없습니다.
+                </p>
+              </div>
+            )}
           </aside>
 
           <div className="products-main">
@@ -135,7 +226,10 @@ function ProductsPage() {
                 }`}
                 onClick={() => setStatusFilter("전체")}
               >
-                전체 <span className="products-status-tab__count">{counts.전체}</span>
+                전체{" "}
+                <span className="products-status-tab__count">
+                  {counts.전체}
+                </span>
               </button>
               <button
                 className={`products-status-tab ${
@@ -145,7 +239,10 @@ function ProductsPage() {
                 }`}
                 onClick={() => setStatusFilter("판매중")}
               >
-                판매중 <span className="products-status-tab__count">{counts.판매중}</span>
+                판매중{" "}
+                <span className="products-status-tab__count">
+                  {counts.판매중}
+                </span>
               </button>
               <button
                 className={`products-status-tab ${
@@ -153,7 +250,10 @@ function ProductsPage() {
                 }`}
                 onClick={() => setStatusFilter("품절")}
               >
-                품절 <span className="products-status-tab__count">{counts.품절}</span>
+                품절{" "}
+                <span className="products-status-tab__count">
+                  {counts.품절}
+                </span>
               </button>
               <button
                 className={`products-status-tab ${
@@ -161,7 +261,10 @@ function ProductsPage() {
                 }`}
                 onClick={() => setStatusFilter("숨김")}
               >
-                숨김 <span className="products-status-tab__count">{counts.숨김}</span>
+                숨김{" "}
+                <span className="products-status-tab__count">
+                  {counts.숨김}
+                </span>
               </button>
             </div>
 
@@ -236,19 +339,93 @@ function ProductsPage() {
                       </td>
                       <td>₩{product.price.toLocaleString()}</td>
                       <td>{product.discountPrice}</td>
-                      <td>
-                        <select className="products-status-select" defaultValue={product.status}>
-                          <option>판매중</option>
-                          <option>품절</option>
-                          <option>숨김</option>
-                        </select>
+                      <td className="products-table__status-cell">
+                        <button
+                          className="products-status-trigger"
+                          onClick={() =>
+                            setStatusMenuOpenId(
+                              statusMenuOpenId === product.id
+                                ? null
+                                : product.id
+                            )
+                          }
+                        >
+                          {product.status}{" "}
+                          <span className="products-status-trigger__arrow">
+                            {statusMenuOpenId === product.id ? "︿" : "﹀"}
+                          </span>
+                        </button>
+
+                        {statusMenuOpenId === product.id && (
+                          <>
+                            <div
+                              className="products-dropdown-overlay"
+                              onClick={closeAllMenus}
+                            />
+                            <div className="products-status-menu">
+                              {STATUS_OPTIONS.map((option) => (
+                                <button
+                                  key={option}
+                                  className={`products-status-menu__item ${
+                                    product.status === option
+                                      ? "products-status-menu__item--active"
+                                      : ""
+                                  }`}
+                                  onClick={() =>
+                                    updateProductStatus(product.id, option)
+                                  }
+                                >
+                                  {option}
+                                </button>
+                              ))}
+                            </div>
+                          </>
+                        )}
                       </td>
                       <td>{product.stock}</td>
                       <td>{product.category}</td>
                       <td>{product.promotion}</td>
                       <td>{product.createdAt}</td>
                       <td>{product.updatedAt}</td>
-                      <td className="products-table__more">⋮</td>
+                      <td className="products-table__more-cell">
+                        <button
+                          className="products-table__more"
+                          onClick={() =>
+                            setMoreMenuOpenId(
+                              moreMenuOpenId === product.id ? null : product.id
+                            )
+                          }
+                        >
+                          ⋮
+                        </button>
+
+                        {moreMenuOpenId === product.id && (
+                          <>
+                            <div
+                              className="products-dropdown-overlay"
+                              onClick={closeAllMenus}
+                            />
+                            <div className="products-more-menu">
+                              {moreMenuActions.map((group, i) => (
+                                <div
+                                  key={i}
+                                  className="products-more-menu__group"
+                                >
+                                  {group.map((action) => (
+                                    <button
+                                      key={action}
+                                      className="products-more-menu__item"
+                                      onClick={closeAllMenus}
+                                    >
+                                      {action}
+                                    </button>
+                                  ))}
+                                </div>
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </td>
                     </tr>
                   ))
                 )}
@@ -270,6 +447,70 @@ function ProductsPage() {
           </div>
         </div>
       </section>
+
+      {isCategoryModalOpen && (
+        <div className="products-modal-overlay" onClick={closeCategoryModal}>
+          <div
+            className="products-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="products-modal__header">
+              <h3 className="products-modal__title">카테고리 추가</h3>
+            </div>
+
+            <div className="products-modal__body">
+              <div className="products-modal__field">
+                <label className="products-modal__label">카테고리 이름</label>
+                <input
+                  type="text"
+                  className="products-modal__input"
+                  placeholder="카테고리명을 입력해주세요"
+                  value={categoryName}
+                  onChange={(e) => setCategoryName(e.target.value)}
+                />
+              </div>
+
+              <div className="products-modal__field">
+                <label className="products-modal__label">
+                  판매가 표시 및 구매 권한
+                </label>
+                <select
+                  className="products-modal__select"
+                  value={categoryPermission}
+                  onChange={(e) => setCategoryPermission(e.target.value)}
+                >
+                  <option>모든 사용자</option>
+                  <option>회원만</option>
+                  <option>특정 그룹</option>
+                </select>
+              </div>
+
+              <div className="products-modal__notice">
+                디자인 모드의 쇼핑 위젯 설정에서 카테고리를 선택하면 해당
+                카테고리에 포함된 하위 카테고리는 자동 생성됩니다.
+                <br />
+                이 때 자동 생성된 메뉴명은 카테고리명이 사용됩니다.
+              </div>
+            </div>
+
+            <div className="products-modal__footer">
+              <button
+                className="products-modal__btn"
+                onClick={closeCategoryModal}
+              >
+                취소
+              </button>
+              <button
+                className="products-modal__btn products-modal__btn--primary"
+                disabled={categoryName.trim() === ""}
+                onClick={addCategory}
+              >
+                추가
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
