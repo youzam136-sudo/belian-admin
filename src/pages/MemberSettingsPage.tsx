@@ -11,6 +11,19 @@ function MemberSettingsPage() {
   const [businessMemberEnabled, setBusinessMemberEnabled] = useState(false);
   const [gradeEnabled, setGradeEnabled] = useState(false);
 
+  const [isAddTypeModalOpen, setIsAddTypeModalOpen] = useState(false);
+  const [newTypeNameEnabled, setNewTypeNameEnabled] = useState(true);
+  const [newTypeName, setNewTypeName] = useState("");
+  const [joinProcess, setJoinProcess] = useState<"auto" | "approval" | "email">("auto");
+  const [defaultGroup, setDefaultGroup] = useState("그룹없음");
+
+  const closeModal = () => {
+    setIsAddTypeModalOpen(false);
+    setNewTypeName("");
+    setJoinProcess("auto");
+    setDefaultGroup("그룹없음");
+  };
+
   return (
     <div className="dashboard-page">
       <section className="dashboard-section member-settings">
@@ -322,7 +335,10 @@ function MemberSettingsPage() {
                 </div>
               </div>
 
-              <button className="member-settings__link-btn member-settings__link-btn--add">
+              <button
+                className="member-settings__link-btn member-settings__link-btn--add"
+                onClick={() => setIsAddTypeModalOpen(true)}
+              >
                 + 새 유형 추가
               </button>
             </div>
@@ -422,6 +438,107 @@ function MemberSettingsPage() {
           </div>
         )}
       </section>
+
+      {isAddTypeModalOpen && (
+        <div className="member-modal-overlay" onClick={closeModal}>
+          <div
+            className="member-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="member-modal__header">
+              <h3 className="member-modal__title">회원가입 유형 추가</h3>
+              <button className="member-modal__close" onClick={closeModal}>
+                ×
+              </button>
+            </div>
+
+            <div className="member-modal__body">
+              <div className="member-modal__row">
+                <span className="member-modal__label">유형 이름</span>
+                <div className="member-modal__field">
+                  <label className="member-modal__inline-check">
+                    <input
+                      type="checkbox"
+                      checked={newTypeNameEnabled}
+                      onChange={(e) =>
+                        setNewTypeNameEnabled(e.target.checked)
+                      }
+                    />
+                  </label>
+                  <input
+                    type="text"
+                    className="member-modal__input"
+                    placeholder="유형제목 ex) 학부모 회원"
+                    value={newTypeName}
+                    onChange={(e) => setNewTypeName(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="member-modal__row">
+                <span className="member-modal__label">가입 절차</span>
+                <div className="member-modal__field">
+                  <label className="member-modal__radio">
+                    <input
+                      type="radio"
+                      name="joinProcess"
+                      checked={joinProcess === "auto"}
+                      onChange={() => setJoinProcess("auto")}
+                    />
+                    자동가입
+                  </label>
+                  <label className="member-modal__radio">
+                    <input
+                      type="radio"
+                      name="joinProcess"
+                      checked={joinProcess === "approval"}
+                      onChange={() => setJoinProcess("approval")}
+                    />
+                    운영자 승인 후 가입
+                  </label>
+                  <label className="member-modal__radio">
+                    <input
+                      type="radio"
+                      name="joinProcess"
+                      checked={joinProcess === "email"}
+                      onChange={() => setJoinProcess("email")}
+                    />
+                    이메일 인증 후 가입
+                  </label>
+                </div>
+              </div>
+
+              <div className="member-modal__row">
+                <span className="member-modal__label">기본그룹</span>
+                <div className="member-modal__field">
+                  <select
+                    className="member-modal__select"
+                    value={defaultGroup}
+                    onChange={(e) => setDefaultGroup(e.target.value)}
+                  >
+                    <option>그룹없음</option>
+                  </select>
+                  <p className="member-modal__hint">
+                    새 그룹은 그룹 및 등급 설정에서 추가해주세요.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="member-modal__footer">
+              <button className="member-modal__btn" onClick={closeModal}>
+                취소
+              </button>
+              <button
+                className="member-modal__btn member-modal__btn--primary"
+                onClick={closeModal}
+              >
+                추가
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
