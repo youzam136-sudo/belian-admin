@@ -47,7 +47,15 @@ function ReviewsPage() {
 /* ---------------- 구매평 목록 ---------------- */
 
 function ReviewsListTab() {
-  const MOCK_REVIEWS = [
+  const MOCK_REVIEWS: {
+    id: number;
+    productName: string;
+    rating: number;
+    content: string;
+    authorName: string;
+    createdAt: string;
+    status: "답변대기" | "답변완료";
+  }[] = [
     {
       id: 1,
       productName: "와인베리 퍼밍 콜라겐 젤리",
@@ -56,7 +64,7 @@ function ReviewsListTab() {
         "발림성이 좋고 향도 은은해서 만족스러워요. 아침저녁으로 꾸준히 쓰고 있는데 피부가 확실히 탄력있어진 느낌이에요.",
       authorName: "김벨리",
       createdAt: "2026-08-29",
-      status: "답변대기" as const,
+      status: "답변대기",
     },
   ];
 
