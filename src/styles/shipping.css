@@ -642,3 +642,33 @@
 .shipping-origin-card__placeholder {
   color: #d1d5db;
 }
+
+/* 우편번호 + 주소찾기 */
+.shipping-modal__zip-row {
+  display: flex;
+  gap: 8px;
+}
+
+.shipping-modal__zip-row .shipping-modal__input {
+  flex: 1;
+}
+
+.shipping-modal__zip-btn {
+  background: #f3f4f6;
+  border: none;
+  border-radius: 8px;
+  padding: 0 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.shipping-modal__zip-btn:hover {
+  background: #e5e7eb;
+}
+
+.shipping-modal__field .shipping-modal__input + .shipping-modal__input {
+  margin-top: 8px;
+}
