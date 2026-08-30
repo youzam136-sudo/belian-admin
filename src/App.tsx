@@ -90,6 +90,11 @@ function App() {
                         handle={{ title: "쿠폰 만들기" }}
                     />
                     <Route
+                        path="promotions/coupons/edit/:id"
+                        element={<CouponCreatePage />}
+                        handle={{ title: "쿠폰 수정" }}
+                    />
+                    <Route
                         path="promotions/points"
                         element={<PointsPage />}
                         handle={{ title: "적립금" }}
