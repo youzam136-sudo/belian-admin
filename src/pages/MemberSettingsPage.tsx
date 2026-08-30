@@ -10,12 +10,23 @@ function MemberSettingsPage() {
   const [generalMemberEnabled, setGeneralMemberEnabled] = useState(true);
   const [businessMemberEnabled, setBusinessMemberEnabled] = useState(false);
 
-
   const [isAddTypeModalOpen, setIsAddTypeModalOpen] = useState(false);
   const [newTypeNameEnabled, setNewTypeNameEnabled] = useState(true);
   const [newTypeName, setNewTypeName] = useState("");
   const [joinProcess, setJoinProcess] = useState<"auto" | "approval" | "email">("auto");
   const [defaultGroup, setDefaultGroup] = useState("그룹없음");
+
+  const [isSocialModalOpen, setIsSocialModalOpen] = useState(false);
+  const [socialProviders, setSocialProviders] = useState({
+    naver: true,
+    kakao: true,
+    google: false,
+    apple: false,
+  });
+
+  const toggleSocialProvider = (key: keyof typeof socialProviders) => {
+    setSocialProviders((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
 
   const closeModal = () => {
     setIsAddTypeModalOpen(false);
@@ -131,7 +142,12 @@ function MemberSettingsPage() {
               <div className="member-settings__row">
                 <span className="member-settings__label">소셜 로그인</span>
                 <div className="member-settings__field">
-                  <button className="member-settings__btn">설정하기</button>
+                  <button
+                    className="member-settings__btn"
+                    onClick={() => setIsSocialModalOpen(true)}
+                  >
+                    설정하기
+                  </button>
                 </div>
               </div>
 
@@ -385,17 +401,13 @@ function MemberSettingsPage() {
                 + 새 그룹 추가
               </button>
             </div>
-
           </div>
         )}
       </section>
 
       {isAddTypeModalOpen && (
         <div className="member-modal-overlay" onClick={closeModal}>
-          <div
-            className="member-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="member-modal" onClick={(e) => e.stopPropagation()}>
             <div className="member-modal__header">
               <h3 className="member-modal__title">회원가입 유형 추가</h3>
               <button className="member-modal__close" onClick={closeModal}>
@@ -485,6 +497,120 @@ function MemberSettingsPage() {
                 onClick={closeModal}
               >
                 추가
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isSocialModalOpen && (
+        <div
+          className="member-modal-overlay"
+          onClick={() => setIsSocialModalOpen(false)}
+        >
+          <div
+            className="member-modal member-modal--social"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="member-modal__header">
+              <h3 className="member-modal__title">소셜 간편 로그인 설정</h3>
+              <button
+                className="member-modal__close"
+                onClick={() => setIsSocialModalOpen(false)}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="member-modal__body">
+              <p className="member-modal__desc">
+                사용할 소셜 로그인을 선택하면 회원가입 및 로그인 화면에
+                해당 채널의 간편 로그인 버튼이 표시됩니다.
+              </p>
+
+              <div className="social-provider-list">
+                <div className="social-provider">
+                  <div className="social-provider__info">
+                    <span className="social-provider__icon social-provider__icon--naver">
+                      N
+                    </span>
+                    <span className="social-provider__name">네이버</span>
+                  </div>
+                  <label className="social-toggle">
+                    <input
+                      type="checkbox"
+                      checked={socialProviders.naver}
+                      onChange={() => toggleSocialProvider("naver")}
+                    />
+                    <span className="social-toggle__slider" />
+                  </label>
+                </div>
+
+                <div className="social-provider">
+                  <div className="social-provider__info">
+                    <span className="social-provider__icon social-provider__icon--kakao">
+                      K
+                    </span>
+                    <span className="social-provider__name">카카오톡</span>
+                  </div>
+                  <label className="social-toggle">
+                    <input
+                      type="checkbox"
+                      checked={socialProviders.kakao}
+                      onChange={() => toggleSocialProvider("kakao")}
+                    />
+                    <span className="social-toggle__slider" />
+                  </label>
+                </div>
+
+                <div className="social-provider">
+                  <div className="social-provider__info">
+                    <span className="social-provider__icon social-provider__icon--google">
+                      G
+                    </span>
+                    <span className="social-provider__name">구글</span>
+                  </div>
+                  <label className="social-toggle">
+                    <input
+                      type="checkbox"
+                      checked={socialProviders.google}
+                      onChange={() => toggleSocialProvider("google")}
+                    />
+                    <span className="social-toggle__slider" />
+                  </label>
+                </div>
+
+                <div className="social-provider">
+                  <div className="social-provider__info">
+                    <span className="social-provider__icon social-provider__icon--apple">
+                      A
+                    </span>
+                    <span className="social-provider__name">애플</span>
+                  </div>
+                  <label className="social-toggle">
+                    <input
+                      type="checkbox"
+                      checked={socialProviders.apple}
+                      onChange={() => toggleSocialProvider("apple")}
+                    />
+                    <span className="social-toggle__slider" />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="member-modal__footer">
+              <button
+                className="member-modal__btn"
+                onClick={() => setIsSocialModalOpen(false)}
+              >
+                취소
+              </button>
+              <button
+                className="member-modal__btn member-modal__btn--primary"
+                onClick={() => setIsSocialModalOpen(false)}
+              >
+                저장
               </button>
             </div>
           </div>
