@@ -477,3 +477,28 @@
   justify-content: flex-end;
   padding-bottom: 20px;
 }
+
+.coupon-create__product-search {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0 14px;
+  background: #fff;
+}
+
+.coupon-create__product-search span {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.coupon-create__product-search input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 11px 0;
+  font-size: 14px;
+  color: #374151;
+}
