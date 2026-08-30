@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/productregister.css";
 
@@ -8,7 +8,6 @@ const SECTIONS = [
   { id: "price", label: "가격" },
   { id: "discount", label: "할인 및 적립금 설정" },
   { id: "shipping", label: "배송" },
-  { id: "stock", label: "재고 관리" },
   { id: "option", label: "옵션" },
   { id: "highlight", label: "상품 강조 설정" },
   { id: "seo", label: "SEO(검색엔진 최적화)" },
@@ -21,8 +20,10 @@ const SECTIONS = [
 
 function ProductRegisterPage() {
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeSection, setActiveSection] = useState("info");
 
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [productName, setProductName] = useState("");
   const [category, setCategory] = useState("");
   const [origin, setOrigin] = useState("");
@@ -30,9 +31,13 @@ function ProductRegisterPage() {
   const [brand, setBrand] = useState("");
   const [shippingNote, setShippingNote] = useState("");
 
-  const [skuCode, setSkuCode] = useState("");
-  const [customCode, setCustomCode] = useState("");
-  const [sellMethod, setSellMethod] = useState("소매");
+  const [gradeDiscount, setGradeDiscount] = useState(true);
+  const [couponDiscount, setCouponDiscount] = useState(true);
+
+  const [productWeight, setProductWeight] = useState(1);
+  const [shippingTemplateMode, setShippingTemplateMode] = useState<
+    "default" | "select"
+  >("default");
 
   const [seoTitle, setSeoTitle] = useState("");
   const [seoMeta, setSeoMeta] = useState("");
@@ -42,6 +47,7 @@ function ProductRegisterPage() {
   const [maxQtyPerOrder, setMaxQtyPerOrder] = useState(0);
   const [maxQtyPerPerson, setMaxQtyPerPerson] = useState(0);
   const [minorRestricted, setMinorRestricted] = useState(false);
+
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
 
   const scrollToSection = (id: string) => {
@@ -49,6 +55,20 @@ function ProductRegisterPage() {
     const el = document.getElementById(`section-${id}`);
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImagePreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const removeImage = () => {
+    setImagePreviewUrl(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -90,19 +110,47 @@ function ProductRegisterPage() {
 
           <div className="product-register__main">
             {/* 상품 정보 */}
-            <section
-              id="section-info"
-              className="product-register__card"
-            >
+            <section id="section-info" className="product-register__card">
               <h3 className="product-register__card-title">상품 정보</h3>
 
               <div className="product-register__field">
                 <label className="product-register__label">
                   이미지 <span className="product-register__required">•</span>
                 </label>
-                <div className="product-register__image-upload">
-                  <span>+</span>
-                </div>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="product-register__file-input"
+                  onChange={handleImageSelect}
+                />
+
+                {imagePreviewUrl ? (
+                  <div className="product-register__image-preview-wrap">
+                    <img
+                      src={imagePreviewUrl}
+                      alt="상품 이미지"
+                      className="product-register__image-preview"
+                      onClick={() => fileInputRef.current?.click()}
+                    />
+                    <button
+                      className="product-register__image-remove"
+                      onClick={removeImage}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    className="product-register__image-upload"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <span>+</span>
+                  </button>
+                )}
+
                 <p className="product-register__hint">
                   이미지 형식: PNG, GIF, JPG/JPEG, BMP | 권장 해상도
                   750px*750px 이상, GIF 3MB 이하 (초과 시 정지 이미지로 변환)
@@ -152,7 +200,7 @@ function ProductRegisterPage() {
                 <textarea
                   className="product-register__textarea"
                   placeholder="내용을 입력해주세요."
-                  rows={6}
+                  rows={5}
                 />
               </div>
 
@@ -189,31 +237,194 @@ function ProductRegisterPage() {
                   />
                 </div>
               </div>
+            </section>
 
-              <div className="product-register__summary-box">
-                <div className="product-register__summary-row">
-                  <span>배송 가능 국가</span>
-                  <span>대한민국</span>
+            {/* 상품 상세 설명 */}
+            <section id="section-detail" className="product-register__card">
+              <h3 className="product-register__card-title">상품 상세 설명</h3>
+              <textarea
+                className="product-register__textarea"
+                placeholder="상세 설명 내용을 입력해주세요."
+                rows={6}
+              />
+            </section>
+
+            {/* 가격 */}
+            <section id="section-price" className="product-register__card">
+              <div className="product-register__card-header-row">
+                <h3 className="product-register__card-title">가격</h3>
+                <div className="product-register__toggle-inline">
+                  <span>가격 없음</span>
+                  <label className="product-register__toggle">
+                    <input type="checkbox" />
+                    <span className="product-register__toggle-slider" />
+                  </label>
                 </div>
-                <div className="product-register__summary-row">
-                  <span>배송방법</span>
-                  <span>택배</span>
+              </div>
+
+              <div className="product-register__row">
+                <div className="product-register__field">
+                  <label className="product-register__label">
+                    판매가 <span className="product-register__required">•</span>
+                  </label>
+                  <div className="product-register__input-with-unit">
+                    <input
+                      type="number"
+                      className="product-register__input"
+                      placeholder="0"
+                    />
+                    <span className="product-register__unit">KRW</span>
+                  </div>
                 </div>
-                <div className="product-register__summary-row">
-                  <span>배송비 결제방법</span>
-                  <span>선결제</span>
+                <div className="product-register__field">
+                  <label className="product-register__label">정상가</label>
+                  <div className="product-register__input-with-unit">
+                    <input
+                      type="number"
+                      className="product-register__input"
+                      placeholder="0"
+                    />
+                    <span className="product-register__unit">KRW</span>
+                  </div>
                 </div>
-                <div className="product-register__summary-row">
-                  <span>배송비</span>
-                  <span>2,500 원 (50,000 원 이상 구매 시 무료배송)</span>
+              </div>
+
+              <label className="product-register__checkbox">
+                <input type="checkbox" defaultChecked />
+                세금이 포함된 가격
+              </label>
+
+              <div className="product-register__toggle-row">
+                <span>즉시/기간할인</span>
+                <label className="product-register__toggle">
+                  <input type="checkbox" />
+                  <span className="product-register__toggle-slider" />
+                </label>
+              </div>
+            </section>
+
+            {/* 할인 및 적립금 설정 */}
+            <section id="section-discount" className="product-register__card">
+              <h3 className="product-register__card-title">
+                할인 및 적립금 설정
+              </h3>
+
+              <div className="product-register__field">
+                <label className="product-register__label">
+                  적용 가능 할인
+                </label>
+                <div className="product-register__checkbox-group">
+                  <label className="product-register__checkbox">
+                    <input
+                      type="checkbox"
+                      checked={gradeDiscount}
+                      onChange={(e) => setGradeDiscount(e.target.checked)}
+                    />
+                    쇼핑 등급 할인
+                  </label>
+                  <label className="product-register__checkbox">
+                    <input
+                      type="checkbox"
+                      checked={couponDiscount}
+                      onChange={(e) => setCouponDiscount(e.target.checked)}
+                    />
+                    쿠폰 할인
+                  </label>
                 </div>
-                <div className="product-register__summary-row">
-                  <span>묶음배송</span>
-                  <span>가능</span>
+              </div>
+
+              <div className="product-register__notice">
+                <p>
+                  여러 할인이 함께 적용되면, 즉시/기간 할인 적용 후 남은
+                  금액에 앞 단계의 할인이 먼저 적용된 가격을 기준으로
+                  계산돼요.
+                </p>
+                <p>
+                  할인 설정을 끄면, 해당 할인은 적용 대상에서 제외돼요.
+                  예를 들어 쿠폰 할인을 껐을 경우 '2만원 이상 구매 시 10%
+                  할인' 조건이 있어도, 구매 금액 산정에 포함되지 않으며,
+                  10% 할인도 적용되지 않아요.
+                </p>
+              </div>
+            </section>
+
+            {/* 배송 */}
+            <section id="section-shipping" className="product-register__card">
+              <h3 className="product-register__card-title">배송</h3>
+
+              <div className="product-register__field">
+                <label className="product-register__label">상품무게</label>
+                <div className="product-register__input-with-unit">
+                  <input
+                    type="number"
+                    className="product-register__input"
+                    value={productWeight}
+                    onChange={(e) =>
+                      setProductWeight(Number(e.target.value))
+                    }
+                  />
+                  <span className="product-register__unit">kg</span>
                 </div>
-                <div className="product-register__summary-row">
-                  <span>별도 설치비</span>
-                  <span>없음</span>
+              </div>
+
+              <div className="product-register__field">
+                <div className="product-register__label-row">
+                  <label className="product-register__label">
+                    배송 템플릿
+                  </label>
+                  <button className="product-register__link-btn">
+                    배송 템플릿 설정 ↗
+                  </button>
+                </div>
+                <div className="product-register__segment">
+                  <button
+                    className={`product-register__segment-item ${
+                      shippingTemplateMode === "default"
+                        ? "product-register__segment-item--active"
+                        : ""
+                    }`}
+                    onClick={() => setShippingTemplateMode("default")}
+                  >
+                    기본 템플릿 연동
+                  </button>
+                  <button
+                    className={`product-register__segment-item ${
+                      shippingTemplateMode === "select"
+                        ? "product-register__segment-item--active"
+                        : ""
+                    }`}
+                    onClick={() => setShippingTemplateMode("select")}
+                  >
+                    배송 템플릿 선택
+                  </button>
+                </div>
+
+                {shippingTemplateMode === "select" && (
+                  <select className="product-register__select">
+                    <option>배송 템플릿 A</option>
+                  </select>
+                )}
+
+                <div className="product-register__summary-box">
+                  <p className="product-register__summary-title">
+                    배송 템플릿 정보
+                  </p>
+                  <div className="product-register__summary-row">
+                    <span>배송 가능 국가</span>
+                    <span>대한민국</span>
+                  </div>
+                  <div className="product-register__summary-row">
+                    <span>배송방법</span>
+                    <span>택배</span>
+                  </div>
+                  <div className="product-register__summary-row">
+                    <span>배송비 결제방법</span>
+                    <span>선결제</span>
+                  </div>
+                  <div className="product-register__summary-row">
+                    <span>배송비</span>
+                    <span>2,500 원 (50,000 원 이상 구매 시 무료배송)</span>
+                  </div>
                 </div>
               </div>
 
@@ -235,132 +446,6 @@ function ProductRegisterPage() {
               </div>
             </section>
 
-            {/* 상품 상세 설명 */}
-            <section
-              id="section-detail"
-              className="product-register__card"
-            >
-              <h3 className="product-register__card-title">상품 상세 설명</h3>
-              <textarea
-                className="product-register__textarea"
-                placeholder="상세 설명 내용을 입력해주세요."
-                rows={6}
-              />
-            </section>
-
-            {/* 가격 */}
-            <section id="section-price" className="product-register__card">
-              <h3 className="product-register__card-title">가격</h3>
-              <div className="product-register__field">
-                <label className="product-register__label">판매가</label>
-                <input
-                  type="number"
-                  className="product-register__input"
-                  placeholder="0"
-                />
-              </div>
-            </section>
-
-            {/* 할인 및 적립금 설정 */}
-            <section id="section-discount" className="product-register__card">
-              <h3 className="product-register__card-title">
-                할인 및 적립금 설정
-              </h3>
-              <p className="product-register__placeholder-text">
-                할인 및 적립금 옵션은 추후 단계에서 설정할 수 있어요.
-              </p>
-            </section>
-
-            {/* 배송 */}
-            <section id="section-shipping" className="product-register__card">
-              <h3 className="product-register__card-title">배송</h3>
-              <p className="product-register__placeholder-text">
-                배송 정책은 기본값(택배, 2,500원, 무료배송 기준 50,000원)이
-                적용됩니다.
-              </p>
-            </section>
-
-            {/* 재고 관리 */}
-            <section id="section-stock" className="product-register__card">
-              <h3 className="product-register__card-title">재고 관리</h3>
-
-              <div className="product-register__row">
-                <div className="product-register__field">
-                  <label className="product-register__label">
-                    재고번호(SKU)
-                  </label>
-                  <input
-                    type="text"
-                    className="product-register__input"
-                    value={skuCode}
-                    onChange={(e) => setSkuCode(e.target.value)}
-                  />
-                </div>
-                <div className="product-register__field">
-                  <label className="product-register__label">
-                    자체 상품 코드
-                  </label>
-                  <input
-                    type="text"
-                    className="product-register__input"
-                    value={customCode}
-                    onChange={(e) => setCustomCode(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="product-register__field">
-                <label className="product-register__label">
-                  네이버 쇼핑 카테고리 ID
-                </label>
-                <input
-                  type="text"
-                  className="product-register__input"
-                  placeholder="숫자만 입력이 가능합니다."
-                />
-              </div>
-
-              <div className="product-register__field">
-                <label className="product-register__label">상품상태</label>
-                <select className="product-register__select">
-                  <option>신상품</option>
-                  <option>중고상품</option>
-                </select>
-                <div className="product-register__checkbox-group">
-                  <label className="product-register__checkbox">
-                    <input type="checkbox" />
-                    주문제작상품
-                  </label>
-                  <label className="product-register__checkbox">
-                    <input type="checkbox" />
-                    병행수입
-                  </label>
-                  <label className="product-register__checkbox">
-                    <input type="checkbox" />
-                    해외구매대행
-                  </label>
-                  <label className="product-register__checkbox">
-                    <input type="checkbox" />
-                    도서공연비 소득공제
-                  </label>
-                </div>
-              </div>
-
-              <div className="product-register__field">
-                <label className="product-register__label">
-                  네이버 쇼핑, 카카오 쇼핑하우 판매방식
-                </label>
-                <select
-                  className="product-register__select"
-                  value={sellMethod}
-                  onChange={(e) => setSellMethod(e.target.value)}
-                >
-                  <option>소매</option>
-                  <option>도매</option>
-                </select>
-              </div>
-            </section>
-
             {/* 옵션 */}
             <section id="section-option" className="product-register__card">
               <h3 className="product-register__card-title">옵션</h3>
@@ -371,7 +456,10 @@ function ProductRegisterPage() {
             </section>
 
             {/* 상품 강조 설정 */}
-            <section id="section-highlight" className="product-register__card">
+            <section
+              id="section-highlight"
+              className="product-register__card"
+            >
               <h3 className="product-register__card-title">
                 상품 강조 설정
               </h3>
@@ -464,13 +552,15 @@ function ProductRegisterPage() {
                 <label className="product-register__label">
                   최소 구매수량
                 </label>
-                <input
-                  type="number"
-                  className="product-register__input product-register__input--suffix"
-                  value={minQty}
-                  onChange={(e) => setMinQty(Number(e.target.value))}
-                />
-                <span className="product-register__suffix">개</span>
+                <div className="product-register__input-with-unit">
+                  <input
+                    type="number"
+                    className="product-register__input"
+                    value={minQty}
+                    onChange={(e) => setMinQty(Number(e.target.value))}
+                  />
+                  <span className="product-register__unit">개</span>
+                </div>
               </div>
 
               <div className="product-register__row">
@@ -490,22 +580,24 @@ function ProductRegisterPage() {
                         setMaxQtyPerOrder(Number(e.target.value))
                       }
                     />
-                    <span className="product-register__suffix">개</span>
+                    <span className="product-register__unit">개</span>
                   </div>
                 </div>
                 <div className="product-register__field">
                   <label className="product-register__label">
                     1인 최대 구매 수량
                   </label>
-                  <input
-                    type="number"
-                    className="product-register__input"
-                    value={maxQtyPerPerson}
-                    onChange={(e) =>
-                      setMaxQtyPerPerson(Number(e.target.value))
-                    }
-                  />
-                  <span className="product-register__suffix">개</span>
+                  <div className="product-register__input-with-unit">
+                    <input
+                      type="number"
+                      className="product-register__input"
+                      value={maxQtyPerPerson}
+                      onChange={(e) =>
+                        setMaxQtyPerPerson(Number(e.target.value))
+                      }
+                    />
+                    <span className="product-register__unit">개</span>
+                  </div>
                 </div>
               </div>
 
@@ -549,32 +641,41 @@ function ProductRegisterPage() {
                 <span>📶 🔋</span>
               </div>
               <div className="product-register__phone-body">
-                {[1, 2, 3].map((i) => (
-                  <div className="product-register__preview-card" key={i}>
-                    <div className="product-register__preview-image" />
-                    <p className="product-register__preview-name">
-                      {productName || "상품명"}
-                    </p>
-                    <p className="product-register__preview-price">0 원</p>
-                    <div className="product-register__preview-icons">
-                      <span>♡</span>
-                      <span>↗</span>
-                    </div>
-                    <p className="product-register__preview-shipping">
-                      배송 &nbsp; 택배 · 기본 2,500원
-                      <br />
-                      50,000원 이상 구매 시 무료배송
-                    </p>
-                    <div className="product-register__preview-buttons">
-                      <button className="product-register__preview-btn">
-                        장바구니
-                      </button>
-                      <button className="product-register__preview-btn product-register__preview-btn--primary">
-                        구매하기
-                      </button>
-                    </div>
+                <div className="product-register__preview-card">
+                  <div
+                    className="product-register__preview-image"
+                    style={
+                      imagePreviewUrl
+                        ? {
+                            backgroundImage: `url(${imagePreviewUrl})`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                          }
+                        : undefined
+                    }
+                  />
+                  <p className="product-register__preview-name">
+                    {productName || "상품명"}
+                  </p>
+                  <p className="product-register__preview-price">0 원</p>
+                  <div className="product-register__preview-icons">
+                    <span>♡</span>
+                    <span>↗</span>
                   </div>
-                ))}
+                  <p className="product-register__preview-shipping">
+                    배송 &nbsp; 택배 · 기본 2,500원
+                    <br />
+                    50,000원 이상 구매 시 무료배송
+                  </p>
+                  <div className="product-register__preview-buttons">
+                    <button className="product-register__preview-btn">
+                      장바구니
+                    </button>
+                    <button className="product-register__preview-btn product-register__preview-btn--primary">
+                      구매하기
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
             <p className="product-register__preview-note">
@@ -609,7 +710,18 @@ function ProductRegisterPage() {
             </p>
 
             <div className="product-register-modal__product">
-              <div className="product-register-modal__product-image" />
+              <div
+                className="product-register-modal__product-image"
+                style={
+                  imagePreviewUrl
+                    ? {
+                        backgroundImage: `url(${imagePreviewUrl})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }
+                    : undefined
+                }
+              />
               <div className="product-register-modal__product-info">
                 <span className="product-register-modal__product-name">
                   {productName || "상품명"}
