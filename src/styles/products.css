@@ -567,3 +567,63 @@
 .products-more-menu__item:hover {
   background: #f9fafb;
 }
+
+/* 카테고리 항목 더보기 메뉴 */
+.products-category-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.products-category-row .products-category-list__item {
+  flex: 1;
+}
+
+.products-category-row__more {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 6px 10px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.products-category-row:hover .products-category-row__more {
+  opacity: 1;
+}
+
+.products-category-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  padding: 6px;
+  width: 110px;
+  z-index: 950;
+}
+
+.products-category-menu__item {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.products-category-menu__item:hover {
+  background: #f9fafb;
+}
+
+.products-category-menu__item--danger {
+  color: #ef4444;
+}
