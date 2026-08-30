@@ -253,6 +253,14 @@
   color: #374151;
 }
 
+.coupons-table__row {
+  cursor: pointer;
+}
+
+.coupons-table__row:hover {
+  background: #f7f8f9;
+}
+
 .coupons-table__name-cell {
   font-weight: 600;
   color: #1a1a1a;
