@@ -414,3 +414,10 @@
   color: #6b7280;
   margin: 0;
 }
+
+.search-icon-svg {
+  width: 14px;
+  height: 14px;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
