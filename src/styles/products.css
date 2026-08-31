@@ -72,9 +72,16 @@
 }
 
 .products-sidebar__empty-icon {
-  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 12px;
-  opacity: 0.5;
+}
+
+.empty-document-icon {
+  width: 36px;
+  height: 36px;
+  color: #d1d5db;
 }
 
 .products-sidebar__empty-title {
