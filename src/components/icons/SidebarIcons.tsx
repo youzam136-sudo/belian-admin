@@ -208,7 +208,127 @@ export function BoardIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-/** 일반(설정) */
+/** SEO */
+export function SeoIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 13 12.556"
+      {...props}
+    >
+      <path
+        d="M7.977,7.025l-2-.747,2-.747.747-2,.747,2,2,.747-2,.747-.747,2ZM8.724,0,7.02,4.574l-4.574,1.7,4.574,1.7,1.7,4.574,1.7-4.574L15,6.278l-4.574-1.7Z"
+        transform="translate(-2.229)"
+        fill="currentColor"
+      />
+      <path
+        d="M106,2.554V3.785h-1.231V5.017H106V6.248h1.231V5.017h1.231V3.785H107.23V2.554Z"
+        transform="translate(-95.461 -2.327)"
+        fill="currentColor"
+      />
+      <path
+        d="M1.231,98.321v1.231H0v1.231H1.231v1.231H2.463v-1.231H3.694V99.553H2.463V98.321Z"
+        transform="translate(0 -89.588)"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+/** 약관 */
+export function TermsIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 15" {...props}>
+      <g transform="translate(2.21 1.427)">
+        <line
+          x2="11.538"
+          y2="11.538"
+          fill="none"
+          stroke="currentColor"
+          strokeLinejoin="round"
+          strokeWidth="1"
+        />
+        <line
+          x1="11.538"
+          y2="11.538"
+          fill="none"
+          stroke="currentColor"
+          strokeLinejoin="round"
+          strokeWidth="1"
+        />
+      </g>
+      <g transform="translate(6.945 0.795)">
+        <circle
+          cx="1.236"
+          cy="1.236"
+          r="1.236"
+          fill="none"
+          stroke="currentColor"
+          strokeLinejoin="round"
+          strokeWidth="1"
+        />
+        <circle
+          cx="1.236"
+          cy="1.236"
+          r="1.236"
+          transform="translate(0 10.714)"
+          fill="none"
+          stroke="currentColor"
+          strokeLinejoin="round"
+          strokeWidth="1"
+        />
+      </g>
+      <g transform="translate(1.578 6.162)">
+        <circle
+          cx="1.236"
+          cy="1.236"
+          r="1.236"
+          fill="none"
+          stroke="currentColor"
+          strokeLinejoin="round"
+          strokeWidth="1"
+        />
+        <circle
+          cx="1.236"
+          cy="1.236"
+          r="1.236"
+          transform="translate(10.714 0)"
+          fill="none"
+          stroke="currentColor"
+          strokeLinejoin="round"
+          strokeWidth="1"
+        />
+      </g>
+    </svg>
+  );
+}
+
+/** 전자결제 (카드) */
+export function PaymentIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 14" {...props}>
+      <rect
+        x="0.6"
+        y="0.6"
+        width="16.8"
+        height="12.8"
+        rx="2"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+      <rect x="0.6" y="3.8" width="16.8" height="2.6" fill="currentColor" />
+      <rect
+        x="2.4"
+        y="9.2"
+        width="5.2"
+        height="1.6"
+        rx="0.6"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
 export function GeneralIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
