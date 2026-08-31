@@ -65,6 +65,12 @@ function CouponsPage() {
   const [moreMenuOpenId, setMoreMenuOpenId] = useState<number | null>(null);
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [isIssueMoreOpen, setIsIssueMoreOpen] = useState(false);
+  const [isRevokeOpen, setIsRevokeOpen] = useState(false);
+  const [issueMemberQuery, setIssueMemberQuery] = useState("");
+  const [issueQuantity, setIssueQuantity] = useState(1);
+
   const counts = {
     전체: coupons.length,
     대기: coupons.filter((c) => c.status === "대기").length,
@@ -93,6 +99,30 @@ function CouponsPage() {
 
   const goToEdit = (coupon: Coupon) => {
     navigate(`/promotions/coupons/edit/${coupon.id}`, { state: coupon });
+  };
+
+  const toggleSelectAll = (checked: boolean) => {
+    setSelectedIds(checked ? filteredCoupons.map((c) => c.id) : []);
+  };
+
+  const toggleSelectOne = (id: number) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+
+  const closeIssueMore = () => {
+    setIsIssueMoreOpen(false);
+    setIssueMemberQuery("");
+    setIssueQuantity(1);
+  };
+
+  const confirmIssueMore = () => {
+    closeIssueMore();
+  };
+
+  const confirmRevoke = () => {
+    setIsRevokeOpen(false);
   };
 
   return (
@@ -157,62 +187,103 @@ function CouponsPage() {
 
         <div className="coupons-list">
           <div className="coupons-list__toolbar">
-            <div className="coupons-status-tabs">
-              <button
-                className={`coupons-status-tab ${
-                  statusFilter === "전체" ? "coupons-status-tab--active" : ""
-                }`}
-                onClick={() => setStatusFilter("전체")}
-              >
-                전체{" "}
-                <span className="coupons-status-tab__count">
-                  {counts.전체}
+            {selectedIds.length > 0 ? (
+              <>
+                <span className="coupons-bulk-count">
+                  {selectedIds.length}개 선택됨
                 </span>
-              </button>
-              <button
-                className={`coupons-status-tab ${
-                  statusFilter === "대기" ? "coupons-status-tab--active" : ""
-                }`}
-                onClick={() => setStatusFilter("대기")}
-              >
-                대기{" "}
-                <span className="coupons-status-tab__count">
-                  {counts.대기}
-                </span>
-              </button>
-              <button
-                className={`coupons-status-tab ${
-                  statusFilter === "진행중"
-                    ? "coupons-status-tab--active"
-                    : ""
-                }`}
-                onClick={() => setStatusFilter("진행중")}
-              >
-                진행 중{" "}
-                <span className="coupons-status-tab__count">
-                  {counts.진행중}
-                </span>
-              </button>
-              <button
-                className={`coupons-status-tab ${
-                  statusFilter === "종료" ? "coupons-status-tab--active" : ""
-                }`}
-                onClick={() => setStatusFilter("종료")}
-              >
-                종료{" "}
-                <span className="coupons-status-tab__count">
-                  {counts.종료}
-                </span>
-              </button>
-            </div>
+                <div className="coupons-bulk-actions">
+                  <button
+                    className="coupons-btn"
+                    onClick={() => setIsIssueMoreOpen(true)}
+                  >
+                    쿠폰 추가 발급
+                  </button>
+                  <button
+                    className="coupons-btn"
+                    onClick={() => setIsRevokeOpen(true)}
+                  >
+                    쿠폰 회수
+                  </button>
+                  <button
+                    className="coupons-btn coupons-btn--danger"
+                    onClick={() => {
+                      setCoupons((prev) =>
+                        prev.filter((c) => !selectedIds.includes(c.id))
+                      );
+                      setSelectedIds([]);
+                    }}
+                  >
+                    삭제
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="coupons-status-tabs">
+                  <button
+                    className={`coupons-status-tab ${
+                      statusFilter === "전체"
+                        ? "coupons-status-tab--active"
+                        : ""
+                    }`}
+                    onClick={() => setStatusFilter("전체")}
+                  >
+                    전체{" "}
+                    <span className="coupons-status-tab__count">
+                      {counts.전체}
+                    </span>
+                  </button>
+                  <button
+                    className={`coupons-status-tab ${
+                      statusFilter === "대기"
+                        ? "coupons-status-tab--active"
+                        : ""
+                    }`}
+                    onClick={() => setStatusFilter("대기")}
+                  >
+                    대기{" "}
+                    <span className="coupons-status-tab__count">
+                      {counts.대기}
+                    </span>
+                  </button>
+                  <button
+                    className={`coupons-status-tab ${
+                      statusFilter === "진행중"
+                        ? "coupons-status-tab--active"
+                        : ""
+                    }`}
+                    onClick={() => setStatusFilter("진행중")}
+                  >
+                    진행 중{" "}
+                    <span className="coupons-status-tab__count">
+                      {counts.진행중}
+                    </span>
+                  </button>
+                  <button
+                    className={`coupons-status-tab ${
+                      statusFilter === "종료"
+                        ? "coupons-status-tab--active"
+                        : ""
+                    }`}
+                    onClick={() => setStatusFilter("종료")}
+                  >
+                    종료{" "}
+                    <span className="coupons-status-tab__count">
+                      {counts.종료}
+                    </span>
+                  </button>
+                </div>
 
-            <input
-              type="text"
-              className="coupons-search"
-              placeholder="쿠폰명"
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-            />
+                <input
+                  type="text"
+                  className="coupons-search"
+                  placeholder="쿠폰명"
+                  value={searchKeyword}
+                  onChange={(e) => setSearchKeyword(e.target.value)}
+                />
+              </>
+            )}
           </div>
 
           <div className="coupons-list__body">
@@ -222,6 +293,16 @@ function CouponsPage() {
               <table className="coupons-table">
                 <thead>
                   <tr>
+                    <th className="coupons-table__checkbox-cell">
+                      <input
+                        type="checkbox"
+                        checked={
+                          filteredCoupons.length > 0 &&
+                          selectedIds.length === filteredCoupons.length
+                        }
+                        onChange={(e) => toggleSelectAll(e.target.checked)}
+                      />
+                    </th>
                     <th>쿠폰명</th>
                     <th>발행 대상</th>
                     <th>혜택</th>
@@ -237,6 +318,16 @@ function CouponsPage() {
                       className="coupons-table__row"
                       onClick={() => goToEdit(coupon)}
                     >
+                      <td
+                        className="coupons-table__checkbox-cell"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(coupon.id)}
+                          onChange={() => toggleSelectOne(coupon.id)}
+                        />
+                      </td>
                       <td className="coupons-table__name-cell">
                         {coupon.name}
                       </td>
@@ -392,6 +483,98 @@ function CouponsPage() {
                 onClick={confirmDeleteCoupon}
               >
                 삭제
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isIssueMoreOpen && (
+        <div className="coupons-modal-overlay" onClick={closeIssueMore}>
+          <div
+            className="coupons-modal coupons-modal--small"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="coupons-modal__header">
+              <h3 className="coupons-modal__title">쿠폰 추가 발급</h3>
+              <button
+                className="coupons-modal__close"
+                onClick={closeIssueMore}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="coupons-modal__form-body">
+              <div className="coupons-modal__field">
+                <label>대상 회원</label>
+                <input
+                  type="text"
+                  placeholder="이름, 아이디, 연락처로 검색"
+                  value={issueMemberQuery}
+                  onChange={(e) => setIssueMemberQuery(e.target.value)}
+                />
+              </div>
+              <div className="coupons-modal__field">
+                <label>발급 수량</label>
+                <input
+                  type="number"
+                  value={issueQuantity}
+                  onChange={(e) =>
+                    setIssueQuantity(Number(e.target.value))
+                  }
+                />
+              </div>
+              <p className="coupons-modal__note">
+                선택한 쿠폰 {selectedIds.length}개를 위 대상에게 추가로
+                발급해요.
+              </p>
+            </div>
+
+            <div className="coupons-modal__footer">
+              <button className="coupons-btn" onClick={closeIssueMore}>
+                취소
+              </button>
+              <button
+                className="coupons-btn coupons-btn--primary"
+                disabled={issueMemberQuery.trim() === ""}
+                onClick={confirmIssueMore}
+              >
+                발급하기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isRevokeOpen && (
+        <div
+          className="coupons-modal-overlay"
+          onClick={() => setIsRevokeOpen(false)}
+        >
+          <div
+            className="coupons-modal coupons-modal--small"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="coupons-modal__header">
+              <h3 className="coupons-modal__title">쿠폰 회수</h3>
+            </div>
+            <p className="coupons-modal__confirm-text">
+              선택한 쿠폰 {selectedIds.length}개를 회수하시겠어요? 이미
+              발급된 고객의 쿠폰은 즉시 사용할 수 없게 돼요.
+            </p>
+            <div className="coupons-modal__footer">
+              <button
+                className="coupons-btn"
+                onClick={() => setIsRevokeOpen(false)}
+              >
+                취소
+              </button>
+              <button
+                className="coupons-btn coupons-btn--danger"
+                onClick={confirmRevoke}
+              >
+                회수
               </button>
             </div>
           </div>
