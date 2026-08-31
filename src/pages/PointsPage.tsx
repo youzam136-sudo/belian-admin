@@ -40,6 +40,48 @@ function PointsPage() {
   const [expiryEnabled, setExpiryEnabled] = useState(false);
   const [expiryMonths, setExpiryMonths] = useState(12);
 
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editAmount, setEditAmount] = useState(0);
+  const [editReason, setEditReason] = useState("");
+  const [editType, setEditType] = useState<"지급" | "차감">("지급");
+
+  const editingEntry = history.find((h) => h.id === editingId) ?? null;
+
+  const openEditModal = (entry: PointHistory) => {
+    setEditingId(entry.id);
+    setEditType(entry.amount >= 0 ? "지급" : "차감");
+    setEditAmount(Math.abs(entry.amount));
+    setEditReason(entry.reason);
+  };
+
+  const closeEditModal = () => {
+    setEditingId(null);
+  };
+
+  const saveEdit = () => {
+    if (editingId == null) return;
+    setHistory((prev) =>
+      prev.map((h) =>
+        h.id === editingId
+          ? {
+              ...h,
+              amount: editType === "지급" ? editAmount : -editAmount,
+              reason: editReason || h.reason,
+            }
+          : h
+      )
+    );
+    closeEditModal();
+  };
+
+  const deleteEdit = () => {
+    if (editingId == null) return;
+    const ok = window.confirm("이 내역을 삭제할까요?");
+    if (!ok) return;
+    setHistory((prev) => prev.filter((h) => h.id !== editingId));
+    closeEditModal();
+  };
+
   const filteredHistory = history.filter((h) => {
     const matchesTab =
       activeTab === "전체"
@@ -180,7 +222,11 @@ function PointsPage() {
               </thead>
               <tbody>
                 {filteredHistory.map((h) => (
-                  <tr key={h.id}>
+                  <tr
+                    key={h.id}
+                    className="points-table__row--clickable"
+                    onClick={() => openEditModal(h)}
+                  >
                     <td>{h.date}</td>
                     <td>{h.memberName}</td>
                     <td>
@@ -365,6 +411,108 @@ function PointsPage() {
               >
                 저장
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {editingEntry && (
+        <div className="points-modal-overlay" onClick={closeEditModal}>
+          <div
+            className="points-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="points-modal__header">
+              <h3 className="points-modal__title">적립금 내역 수정</h3>
+              <button className="points-modal__close" onClick={closeEditModal}>
+                ×
+              </button>
+            </div>
+
+            <div className="points-modal__body">
+              <div className="points-modal__field">
+                <label>일자</label>
+                <input
+                  type="text"
+                  className="points-modal__text-input"
+                  value={editingEntry.date}
+                  disabled
+                />
+              </div>
+
+              <div className="points-modal__field">
+                <label>이름(닉네임)</label>
+                <input
+                  type="text"
+                  className="points-modal__text-input"
+                  value={editingEntry.memberName}
+                  disabled
+                />
+              </div>
+
+              <div className="points-modal__field">
+                <label>유형</label>
+                <div className="points-modal__radio-row">
+                  <label className="points-modal__radio">
+                    <input
+                      type="radio"
+                      checked={editType === "지급"}
+                      onChange={() => setEditType("지급")}
+                    />
+                    지급
+                  </label>
+                  <label className="points-modal__radio">
+                    <input
+                      type="radio"
+                      checked={editType === "차감"}
+                      onChange={() => setEditType("차감")}
+                    />
+                    차감
+                  </label>
+                </div>
+              </div>
+
+              <div className="points-modal__field">
+                <label>금액</label>
+                <div className="points-modal__input-with-unit">
+                  <input
+                    type="number"
+                    value={editAmount}
+                    onChange={(e) => setEditAmount(Number(e.target.value))}
+                  />
+                  <span>원</span>
+                </div>
+              </div>
+
+              <div className="points-modal__field">
+                <label>사유</label>
+                <input
+                  type="text"
+                  className="points-modal__text-input"
+                  value={editReason}
+                  onChange={(e) => setEditReason(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="points-modal__footer points-modal__footer--between">
+              <button
+                className="points-btn points-btn--danger"
+                onClick={deleteEdit}
+              >
+                삭제
+              </button>
+              <div className="points-modal__footer-right">
+                <button className="points-btn" onClick={closeEditModal}>
+                  취소
+                </button>
+                <button
+                  className="points-btn points-btn--primary"
+                  disabled={editAmount <= 0}
+                  onClick={saveEdit}
+                >
+                  저장
+                </button>
+              </div>
             </div>
           </div>
         </div>
