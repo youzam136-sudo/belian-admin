@@ -231,6 +231,15 @@
   color: #2563eb;
   cursor: pointer;
   font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.export-icon-svg {
+  width: 15px;
+  height: auto;
+  flex-shrink: 0;
 }
 
 .reviews-list__bulk-delete {
