@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/orders.css";
 
 interface Order {
@@ -53,6 +54,7 @@ const FILTER_CHIPS = [
 ];
 
 function OrdersPage() {
+  const navigate = useNavigate();
   const [tabs, setTabs] = useState(INITIAL_TABS);
   const [activeTab, setActiveTab] = useState("전체");
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -339,7 +341,16 @@ function OrdersPage() {
                     <td>
                       <input type="checkbox" />
                     </td>
-                    <td>{order.orderNo}</td>
+                    <td
+                      className="orders-table__orderno-cell"
+                      onClick={() =>
+                        navigate(`/orders/${order.id}`, {
+                          state: { order },
+                        })
+                      }
+                    >
+                      {order.orderNo}
+                    </td>
                     <td>{order.orderDate}</td>
                     <td>
                       <span className="orders-badge orders-badge--paid">
