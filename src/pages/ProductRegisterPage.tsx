@@ -1,6 +1,13 @@
 import { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../styles/productregister.css";
+
+interface EditableProduct {
+  id: number;
+  name: string;
+  price: number;
+  category: string;
+}
 
 const SECTIONS = [
   { id: "info", label: "상품 정보" },
@@ -20,12 +27,21 @@ const SECTIONS = [
 
 function ProductRegisterPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const editProduct = (location.state as { product?: EditableProduct } | null)
+    ?.product;
+  const isEditMode = Boolean(editProduct);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeSection, setActiveSection] = useState("info");
 
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
-  const [productName, setProductName] = useState("");
-  const [category, setCategory] = useState("");
+  const [productName, setProductName] = useState(editProduct?.name ?? "");
+  const [category, setCategory] = useState(
+    editProduct?.category && editProduct.category !== "미지정"
+      ? editProduct.category
+      : ""
+  );
   const [origin, setOrigin] = useState("");
   const [manufacturer, setManufacturer] = useState("");
   const [brand, setBrand] = useState("");
@@ -214,12 +230,14 @@ function ProductRegisterPage() {
           >
             ←
           </button>
-          <h2 className="product-register__title">상품 등록</h2>
+          <h2 className="product-register__title">
+            {isEditMode ? "상품 수정" : "상품 등록"}
+          </h2>
           <button
             className="product-register__complete-btn"
             onClick={() => setIsCompleteModalOpen(true)}
           >
-            상품 등록 완료
+            {isEditMode ? "수정 완료" : "상품 등록 완료"}
           </button>
         </div>
 
@@ -404,6 +422,7 @@ function ProductRegisterPage() {
                       type="number"
                       className="product-register__input"
                       placeholder="0"
+                      defaultValue={editProduct?.price}
                     />
                     <span className="product-register__unit">KRW</span>
                   </div>
