@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/reviews.css";
+import { SearchIcon } from "../components/icons/SearchIcon";
 
 function ReviewsPage() {
   const [activeTab, setActiveTab] = useState<
@@ -296,7 +297,7 @@ function ReviewsListTab() {
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
           />
-          <span className="reviews-search__icon">🔍</span>
+          <span className="reviews-search__icon"><SearchIcon className="search-icon-svg" /></span>
         </div>
       </div>
 
@@ -1007,7 +1008,7 @@ function ReviewsConnectTab() {
             </div>
 
             <div className="reviews-picker__search">
-              <span>🔍</span>
+              <span><SearchIcon className="search-icon-svg" /></span>
               <input
                 type="text"
                 placeholder="상품명"
