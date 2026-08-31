@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/inquiries.css";
 import { getInquiries } from "../utils/inquiriesStore";
+import { EmptyDocumentIcon } from "../components/icons/EmptyDocumentIcon";
 import { SearchIcon } from "../components/icons/SearchIcon";
 
 function ProductInquiriesPage() {
@@ -165,7 +166,9 @@ function ProductInquiriesPage() {
         <div className="inquiries-body">
           {filteredInquiries.length === 0 ? (
             <div className="inquiries-empty">
-              <div className="inquiries-empty__icon">📄</div>
+              <div className="inquiries-empty__icon">
+                <EmptyDocumentIcon className="empty-document-icon" />
+              </div>
               <p className="inquiries-empty__text">작성된 문의가 없어요</p>
             </div>
           ) : (
