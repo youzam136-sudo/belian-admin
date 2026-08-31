@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/inquiries.css";
 import { getInquiries } from "../utils/inquiriesStore";
+import { SearchIcon } from "../components/icons/SearchIcon";
 
 function ProductInquiriesPage() {
   const navigate = useNavigate();
@@ -66,7 +67,7 @@ function ProductInquiriesPage() {
 
           <div className="inquiries-header__actions">
             <div className="inquiries-search">
-              <span className="inquiries-search__icon">🔍</span>
+              <span className="inquiries-search__icon"><SearchIcon className="search-icon-svg" /></span>
               <input
                 type="text"
                 placeholder="문의 제목/본문 검색"
