@@ -32,58 +32,9 @@ const INITIAL_PRODUCTS: Product[] = [
     createdAt: "2026-08-21",
     updatedAt: "2026-08-28",
   },
-  // 페이지네이션 동작 확인용 목업 데이터 (실제 상품 데이터 연동 시 이 아래 생성 로직은 지워주세요)
-  ...Array.from({ length: 119 }, (_, i) => {
-    const statuses: ProductStatus[] = ["판매중", "품절", "숨김"];
-    return {
-      id: 102 + i,
-      name: `테스트 상품 ${i + 1}`,
-      imageLabel: "IMG",
-      price: 10000 + i * 500,
-      discountPrice: "-",
-      status: statuses[i % statuses.length],
-      stock: "-",
-      category: "미지정",
-      promotion: "-",
-      createdAt: "2026-08-21",
-      updatedAt: "2026-08-28",
-    };
-  }),
 ];
 
 const STATUS_OPTIONS: ProductStatus[] = ["판매중", "품절", "숨김"];
-
-const PAGE_SIZE_OPTIONS = [50, 100] as const;
-
-function buildPageList(current: number, total: number): (number | "...")[] {
-  if (total <= 7) {
-    return Array.from({ length: total }, (_, i) => i + 1);
-  }
-
-  const pages = new Set<number>([
-    1,
-    2,
-    total - 1,
-    total,
-    current - 1,
-    current,
-    current + 1,
-  ]);
-
-  const sorted = Array.from(pages)
-    .filter((p) => p >= 1 && p <= total)
-    .sort((a, b) => a - b);
-
-  const result: (number | "...")[] = [];
-  sorted.forEach((page, idx) => {
-    if (idx > 0 && page - sorted[idx - 1] > 1) {
-      result.push("...");
-    }
-    result.push(page);
-  });
-
-  return result;
-}
 
 function ProductsPage() {
   const navigate = useNavigate();
@@ -112,9 +63,6 @@ function ProductsPage() {
     null
   );
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState<number>(PAGE_SIZE_OPTIONS[0]);
-
   const counts = {
     전체: products.length,
     판매중: products.filter((p) => p.status === "판매중").length,
@@ -130,34 +78,6 @@ function ProductsPage() {
       .includes(searchKeyword.toLowerCase());
     return matchesStatus && matchesKeyword;
   });
-
-  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
-  const safeCurrentPage = Math.min(currentPage, totalPages);
-  const pagedProducts = filteredProducts.slice(
-    (safeCurrentPage - 1) * pageSize,
-    safeCurrentPage * pageSize
-  );
-  const pageList = buildPageList(safeCurrentPage, totalPages);
-
-  const goToPage = (page: number) => {
-    if (page < 1 || page > totalPages) return;
-    setCurrentPage(page);
-  };
-
-  const handleStatusFilterChange = (status: "전체" | ProductStatus) => {
-    setStatusFilter(status);
-    setCurrentPage(1);
-  };
-
-  const handleSearchKeywordChange = (value: string) => {
-    setSearchKeyword(value);
-    setCurrentPage(1);
-  };
-
-  const handlePageSizeChange = (size: number) => {
-    setPageSize(size);
-    setCurrentPage(1);
-  };
 
   const toggleSelectAll = (checked: boolean) => {
     setSelectedIds(checked ? filteredProducts.map((p) => p.id) : []);
@@ -349,7 +269,7 @@ function ProductsPage() {
                 className={`products-status-tab ${
                   statusFilter === "전체" ? "products-status-tab--active" : ""
                 }`}
-                onClick={() => handleStatusFilterChange("전체")}
+                onClick={() => setStatusFilter("전체")}
               >
                 전체{" "}
                 <span className="products-status-tab__count">
@@ -362,7 +282,7 @@ function ProductsPage() {
                     ? "products-status-tab--active"
                     : ""
                 }`}
-                onClick={() => handleStatusFilterChange("판매중")}
+                onClick={() => setStatusFilter("판매중")}
               >
                 판매중{" "}
                 <span className="products-status-tab__count">
@@ -373,7 +293,7 @@ function ProductsPage() {
                 className={`products-status-tab ${
                   statusFilter === "품절" ? "products-status-tab--active" : ""
                 }`}
-                onClick={() => handleStatusFilterChange("품절")}
+                onClick={() => setStatusFilter("품절")}
               >
                 품절{" "}
                 <span className="products-status-tab__count">
@@ -384,7 +304,7 @@ function ProductsPage() {
                 className={`products-status-tab ${
                   statusFilter === "숨김" ? "products-status-tab--active" : ""
                 }`}
-                onClick={() => handleStatusFilterChange("숨김")}
+                onClick={() => setStatusFilter("숨김")}
               >
                 숨김{" "}
                 <span className="products-status-tab__count">
@@ -402,7 +322,7 @@ function ProductsPage() {
                   type="text"
                   placeholder="상품명, 상품 재고번호, 자체 상품 코드로 검색해 보세요."
                   value={searchKeyword}
-                  onChange={(e) => handleSearchKeywordChange(e.target.value)}
+                  onChange={(e) => setSearchKeyword(e.target.value)}
                 />
               </div>
               <button className="products-btn products-btn--primary">
@@ -445,7 +365,7 @@ function ProductsPage() {
                     </td>
                   </tr>
                 ) : (
-                  pagedProducts.map((product) => (
+                  filteredProducts.map((product) => (
                     <tr key={product.id}>
                       <td>
                         <input
@@ -455,7 +375,14 @@ function ProductsPage() {
                         />
                       </td>
                       <td>{product.id}</td>
-                      <td className="products-table__name-cell">
+                      <td
+                        className="products-table__name-cell products-table__name-cell--clickable"
+                        onClick={() =>
+                          navigate(`/products/${product.id}`, {
+                            state: { product },
+                          })
+                        }
+                      >
                         <span className="products-table__thumb">
                           {product.imageLabel}
                         </span>
@@ -558,58 +485,15 @@ function ProductsPage() {
             </table>
 
             <div className="products-pagination">
-              <button
-                type="button"
-                className="products-pagination__arrow"
-                disabled={safeCurrentPage <= 1}
-                onClick={() => goToPage(safeCurrentPage - 1)}
-              >
-                ‹
+              <button className="products-pagination__arrow">‹</button>
+              <button className="products-pagination__page products-pagination__page--active">
+                1
               </button>
+              <button className="products-pagination__arrow">›</button>
 
-              {pageList.map((page, idx) =>
-                page === "..." ? (
-                  <span
-                    key={`ellipsis-${idx}`}
-                    className="products-pagination__ellipsis"
-                  >
-                    …
-                  </span>
-                ) : (
-                  <button
-                    key={page}
-                    type="button"
-                    className={`products-pagination__page ${
-                      page === safeCurrentPage
-                        ? "products-pagination__page--active"
-                        : ""
-                    }`}
-                    onClick={() => goToPage(page)}
-                  >
-                    {page}
-                  </button>
-                )
-              )}
-
-              <button
-                type="button"
-                className="products-pagination__arrow"
-                disabled={safeCurrentPage >= totalPages}
-                onClick={() => goToPage(safeCurrentPage + 1)}
-              >
-                ›
-              </button>
-
-              <select
-                className="products-select products-select--right"
-                value={pageSize}
-                onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-              >
-                {PAGE_SIZE_OPTIONS.map((size) => (
-                  <option key={size} value={size}>
-                    {size}개씩 보기
-                  </option>
-                ))}
+              <select className="products-select products-select--right">
+                <option>50개씩 보기</option>
+                <option>100개씩 보기</option>
               </select>
             </div>
           </div>
