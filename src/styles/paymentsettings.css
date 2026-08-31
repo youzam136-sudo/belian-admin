@@ -37,6 +37,136 @@
   color: #2563eb;
 }
 
+.payment-settings-header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.payment-btn-primary {
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #2563eb;
+  border: 1px solid #2563eb;
+  color: #ffffff;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.payment-btn-primary:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.payment-btn-primary:disabled {
+  background: #e5e7eb;
+  border-color: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.payment-config-card {
+  background: #ffffff;
+  border: 1px solid #f0f1f3;
+  border-radius: 14px;
+  padding: 28px;
+}
+
+.payment-config-section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 24px 0;
+}
+
+.payment-config-group {
+  padding: 20px 0;
+  border-top: 1px solid #eef0f2;
+}
+
+.payment-config-group:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.payment-config-label-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.payment-config-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.payment-config-help {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid #9ca3af;
+  color: #9ca3af;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+
+.payment-config-checkbox-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 28px;
+}
+
+.payment-config-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  color: #374151;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.payment-config-checkbox input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: #2563eb;
+  cursor: pointer;
+}
+
+.payment-config-note {
+  margin: 14px 0 0 0;
+  font-size: 13px;
+  color: #9ca3af;
+  line-height: 1.6;
+}
+
+.payment-config-radio-row {
+  display: flex;
+  gap: 24px;
+}
+
+.payment-config-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.payment-config-radio input[type='radio'] {
+  width: 18px;
+  height: 18px;
+  accent-color: #2563eb;
+  cursor: pointer;
+}
+
 .payment-settings-layout {
   display: grid;
   grid-template-columns: 2fr 1fr;
