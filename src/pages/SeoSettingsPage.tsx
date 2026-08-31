@@ -95,7 +95,7 @@ function SeoSettingsPage() {
             <div>
               <span className="seo-field__label">상품별 SEO 자동 생성</span>
               <p className="seo-field__hint">
-                쇼핑>상품 페이지에 업로드한 상품이 포털 사이트 검색 결과에
+                쇼핑&gt;상품 페이지에 업로드한 상품이 포털 사이트 검색 결과에
                 노출되도록 자동으로 SEO를 설정해요.
               </p>
             </div>
