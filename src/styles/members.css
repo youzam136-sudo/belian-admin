@@ -170,3 +170,10 @@
     color: #9ca3af;
     font-size: 14px;
 }
+
+.search-icon-svg {
+  width: 14px;
+  height: 14px;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
