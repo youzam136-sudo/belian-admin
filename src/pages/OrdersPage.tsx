@@ -29,7 +29,7 @@ const MOCK_ORDERS: Order[] = [
   },
 ];
 
-const TABS = [
+const INITIAL_TABS = [
   { key: "전체", count: MOCK_ORDERS.length },
   { key: "결제대기", count: 0 },
   { key: "상품준비중", count: 0 },
@@ -53,10 +53,13 @@ const FILTER_CHIPS = [
 ];
 
 function OrdersPage() {
+  const [tabs, setTabs] = useState(INITIAL_TABS);
   const [activeTab, setActiveTab] = useState("전체");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [editingTab, setEditingTab] = useState<string | null>(null);
+  const [editingTabName, setEditingTabName] = useState("");
 
   const filteredOrders = MOCK_ORDERS.filter((o) => {
     const matchesTab =
@@ -73,22 +76,125 @@ function OrdersPage() {
     setIsSettingsOpen(false);
   };
 
+  const isDefaultTab = activeTab === "전체";
+
+  const handleAddTab = () => {
+    let name = "새 탭";
+    let suffix = 2;
+    const existingKeys = new Set(tabs.map((t) => t.key));
+    while (existingKeys.has(name)) {
+      name = `새 탭 ${suffix}`;
+      suffix += 1;
+    }
+    setTabs((prev) => [...prev, { key: name, count: 0 }]);
+    setActiveTab(name);
+  };
+
+  const handleDuplicateTab = () => {
+    const current = tabs.find((t) => t.key === activeTab);
+    if (!current) return;
+    let name = `${current.key} 사본`;
+    let suffix = 2;
+    const existingKeys = new Set(tabs.map((t) => t.key));
+    while (existingKeys.has(name)) {
+      name = `${current.key} 사본 ${suffix}`;
+      suffix += 1;
+    }
+    setTabs((prev) => [...prev, { key: name, count: current.count }]);
+    setActiveTab(name);
+    closeMenus();
+  };
+
+  const startEditTab = () => {
+    if (isDefaultTab) return;
+    setEditingTabName(activeTab);
+    setEditingTab(activeTab);
+    setIsSettingsOpen(false);
+  };
+
+  const cancelEditTab = () => {
+    setEditingTab(null);
+    setEditingTabName("");
+  };
+
+  const saveEditTab = () => {
+    const trimmed = editingTabName.trim();
+    if (!editingTab || !trimmed) {
+      cancelEditTab();
+      return;
+    }
+    if (trimmed !== editingTab && tabs.some((t) => t.key === trimmed)) {
+      window.alert("이미 사용 중인 탭 이름이에요.");
+      return;
+    }
+    setTabs((prev) =>
+      prev.map((t) => (t.key === editingTab ? { ...t, key: trimmed } : t))
+    );
+    setActiveTab(trimmed);
+    cancelEditTab();
+  };
+
+  const handleDeleteTab = () => {
+    if (isDefaultTab) return;
+    const ok = window.confirm(`"${activeTab}" 탭을 삭제할까요?`);
+    if (!ok) return;
+    setTabs((prev) => prev.filter((t) => t.key !== activeTab));
+    setActiveTab("전체");
+    closeMenus();
+  };
+
   return (
     <div className="dashboard-page">
       <section className="dashboard-section orders-page">
         <div className="orders-tabs">
-          {TABS.map((tab) => (
-            <button
-              key={tab.key}
-              className={`orders-tab ${
-                activeTab === tab.key ? "orders-tab--active" : ""
-              }`}
-              onClick={() => setActiveTab(tab.key)}
-            >
-              {tab.key} <span className="orders-tab__count">{tab.count}</span>
-            </button>
-          ))}
-          <button className="orders-tab orders-tab--add">+ 새 탭</button>
+          {tabs.map((tab) =>
+            editingTab === tab.key ? (
+              <div key={tab.key} className="orders-tab orders-tab--editing">
+                <input
+                  type="text"
+                  className="orders-tab__edit-input"
+                  value={editingTabName}
+                  autoFocus
+                  onChange={(e) => setEditingTabName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") saveEditTab();
+                    if (e.key === "Escape") cancelEditTab();
+                  }}
+                />
+                <button
+                  type="button"
+                  className="orders-tab__edit-confirm"
+                  onClick={saveEditTab}
+                >
+                  ✓
+                </button>
+                <button
+                  type="button"
+                  className="orders-tab__edit-cancel"
+                  onClick={cancelEditTab}
+                >
+                  ×
+                </button>
+              </div>
+            ) : (
+              <button
+                key={tab.key}
+                className={`orders-tab ${
+                  activeTab === tab.key ? "orders-tab--active" : ""
+                }`}
+                onClick={() => setActiveTab(tab.key)}
+              >
+                {tab.key} <span className="orders-tab__count">{tab.count}</span>
+              </button>
+            )
+          )}
+          <button
+            type="button"
+            className="orders-tab orders-tab--add"
+            onClick={handleAddTab}
+          >
+            + 새 탭
+          </button>
         </div>
 
         <div className="orders-main">
@@ -169,20 +275,30 @@ function OrdersPage() {
                     />
                     <div className="orders-settings-menu">
                       <button
-                        className="orders-settings-menu__item"
-                        disabled
+                        className={`orders-settings-menu__item ${
+                          !isDefaultTab
+                            ? "orders-settings-menu__item--enabled"
+                            : ""
+                        }`}
+                        disabled={isDefaultTab}
+                        onClick={startEditTab}
                       >
                         탭 수정
                       </button>
                       <button
                         className="orders-settings-menu__item orders-settings-menu__item--enabled"
-                        onClick={closeMenus}
+                        onClick={handleDuplicateTab}
                       >
                         탭 복제
                       </button>
                       <button
-                        className="orders-settings-menu__item"
-                        disabled
+                        className={`orders-settings-menu__item ${
+                          !isDefaultTab
+                            ? "orders-settings-menu__item--enabled orders-settings-menu__item--danger"
+                            : ""
+                        }`}
+                        disabled={isDefaultTab}
+                        onClick={handleDeleteTab}
                       >
                         삭제
                       </button>
