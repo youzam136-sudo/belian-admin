@@ -490,3 +490,10 @@
 .points-btn--primary:not(:disabled):hover {
   background: #1d4ed8;
 }
+
+.search-icon-svg {
+  width: 14px;
+  height: 14px;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
