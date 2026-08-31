@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/board.css";
+import { AdminAvatarIcon } from "../components/icons/AdminAvatarIcon";
 
 type BoardType = "일반" | "갤러리" | "상품문의";
 
@@ -281,7 +282,7 @@ function BoardPage() {
             ))}
 
             <div className="board-comment-form">
-              <span className="board-comment-form__avatar">👤</span>
+              <AdminAvatarIcon className="board-comment-form__avatar" />
               <div className="board-comment-form__field">
                 <span className="board-comment-form__label">관리자</span>
                 <textarea
