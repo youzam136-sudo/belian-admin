@@ -587,3 +587,10 @@
   margin-top: 14px;
   cursor: default;
 }
+
+.search-icon-svg {
+  width: 14px;
+  height: 14px;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
