@@ -759,22 +759,23 @@
   gap: 10px;
 }
 
-.board-modal__type-option {
+.board-modal__type-options label.board-modal__type-option {
   display: flex;
   align-items: center;
   gap: 10px;
   font-size: 16px;
+  font-weight: 400;
   line-height: 1;
   color: #374151;
   cursor: pointer;
   padding: 14px 12px;
+  margin-bottom: 0;
   border: 1px solid #eef0f2;
   border-radius: 8px;
 }
 
 .board-modal__type-option span {
-  display: flex;
-  align-items: center;
+  display: inline;
 }
 
 .board-modal__type-option input {
