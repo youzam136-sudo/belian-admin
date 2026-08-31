@@ -69,6 +69,12 @@
     border-color: #c7cad1;
 }
 
+.excel-download-icon {
+    width: 14px;
+    height: auto;
+    flex-shrink: 0;
+}
+
 .members-add-btn {
     padding: 11px 20px;
     border: none;
