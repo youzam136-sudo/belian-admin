@@ -45,6 +45,12 @@
   background: #eff9ff;
 }
 
+.points-card__icon-img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
 .points-card__title {
   font-size: 18px;
   font-weight: 700;
