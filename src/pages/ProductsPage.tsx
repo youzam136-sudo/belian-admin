@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/products.css";
+import { ExcelDownloadIcon } from "../components/icons/ExcelDownloadIcon";
 import {
   getProducts,
   updateProductStatus as persistStatus,
@@ -301,7 +302,9 @@ function ProductsPage() {
               <button className="products-btn products-btn--primary">
                 검색
               </button>
-              <button className="products-btn">⬇ 엑셀 다운로드</button>
+              <button className="products-btn">
+                <ExcelDownloadIcon className="excel-download-icon" /> 엑셀 다운로드
+              </button>
             </div>
 
             <table className="products-table">
