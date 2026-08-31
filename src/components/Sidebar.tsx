@@ -1,19 +1,35 @@
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import "../styles/layout.css";
+import {
+    DashboardIcon,
+    MembersIcon,
+    ProductsIcon,
+    OrdersIcon,
+    ShippingIcon,
+    InquiriesIcon,
+    ReviewsIcon,
+    CouponsIcon,
+    PointsIcon,
+    BoardIcon,
+    GeneralIcon,
+} from "./icons/SidebarIcons";
+
+const svgIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+    "대시보드": DashboardIcon,
+    "회원 관리": MembersIcon,
+    "상품": ProductsIcon,
+    "주문": OrdersIcon,
+    "배송": ShippingIcon,
+    "상품문의": InquiriesIcon,
+    "구매평": ReviewsIcon,
+    "쿠폰": CouponsIcon,
+    "적립금": PointsIcon,
+    "게시판": BoardIcon,
+    "일반": GeneralIcon,
+};
 
 const icons: Record<string, string> = {
-    "대시보드": "▦",
-    "회원 관리": "◉",
-    "상품": "◧",
-    "주문": "▧",
-    "배송": "▥",
-    "상품문의": "◎",
-    "구매평": "★",
-    "쿠폰": "▤",
-    "적립금": "◈",
-    "게시판": "▦",
-    "일반": "⚙",
     "SEO": "◉",
     "약관": "▥",
     "전자결제": "◈",
@@ -94,6 +110,14 @@ function Sidebar() {
         setOpenParents((prev) => ({ ...prev, [label]: !prev[label] }));
     };
 
+    const renderIcon = (label: string) => {
+        const SvgIcon = svgIcons[label];
+        if (SvgIcon) {
+            return <SvgIcon className="admin-sidebar-icon-svg" />;
+        }
+        return icons[label];
+    };
+
     return (
         <aside className="admin-sidebar">
             <div className="admin-sidebar-logo">
@@ -121,7 +145,7 @@ function Sidebar() {
                                         }
                                     >
                                         <span className="admin-sidebar-icon">
-                                            {icons[item.label]}
+                                            {renderIcon(item.label)}
                                         </span>
                                         {item.label}
                                     </NavLink>
@@ -148,7 +172,7 @@ function Sidebar() {
                                         onClick={() => toggleParent(item.label)}
                                     >
                                         <span className="admin-sidebar-icon">
-                                            {icons[item.label]}
+                                            {renderIcon(item.label)}
                                         </span>
                                         {item.label}
                                         <span
