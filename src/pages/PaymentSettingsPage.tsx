@@ -1,6 +1,29 @@
 import { useState, type ReactNode } from 'react';
 import '../styles/paymentsettings.css';
 
+const DOMESTIC_METHODS = [
+  '무통장입금',
+  '신용카드',
+  '실시간계좌이체',
+  '가상계좌',
+  '토스페이',
+  '카카오페이(직연동)',
+  '카카오페이(이니시스)',
+  'PAYCO',
+  '네이버페이(결제형)',
+  '삼성페이',
+];
+
+const OVERSEAS_METHODS = [
+  '페이버스',
+  'PayPal',
+  '엑심베이',
+  '알리페이',
+  '몰페이',
+  '위챗페이',
+  '이컨텍스트',
+];
+
 interface PaymentMethodCardProps {
   title: string;
   description: string;
@@ -8,7 +31,7 @@ interface PaymentMethodCardProps {
   highlighted?: boolean;
   children?: ReactNode;
   connected: boolean;
-  onToggleConnect: () => void;
+  onConnectClick: () => void;
 }
 
 function PaymentMethodCard({
@@ -18,7 +41,7 @@ function PaymentMethodCard({
   highlighted,
   children,
   connected,
-  onToggleConnect,
+  onConnectClick,
 }: PaymentMethodCardProps) {
   return (
     <div
@@ -41,7 +64,7 @@ function PaymentMethodCard({
         className={`payment-connect-btn ${
           connected ? 'payment-connect-btn-connected' : ''
         }`}
-        onClick={onToggleConnect}
+        onClick={onConnectClick}
       >
         {connected ? '연결됨' : '+ 연결'}
       </button>
@@ -80,10 +103,23 @@ function ChecklistItem({ title, isOpen, onToggle, children }: ChecklistItemProps
   );
 }
 
+type ViewMode = 'list' | 'pgConfig';
+type PhoneOption = 'none' | 'phone';
+
 function PaymentSettingsPage() {
+  const [view, setView] = useState<ViewMode>('list');
+
   const [pgConnected, setPgConnected] = useState(false);
   const [easyPayConnected, setEasyPayConnected] = useState(false);
   const [etcConnected, setEtcConnected] = useState(false);
+
+  const [selectedDomestic, setSelectedDomestic] = useState<Set<string>>(
+    new Set()
+  );
+  const [selectedOverseas, setSelectedOverseas] = useState<Set<string>>(
+    new Set()
+  );
+  const [phoneOption, setPhoneOption] = useState<PhoneOption>('none');
 
   const [openChecklistKey, setOpenChecklistKey] = useState<string | null>(
     'businessInfo'
@@ -96,6 +132,141 @@ function PaymentSettingsPage() {
   const completedCount = [pgConnected, easyPayConnected, etcConnected].filter(
     Boolean
   ).length;
+
+  const toggleDomestic = (method: string) => {
+    setSelectedDomestic((prev) => {
+      const next = new Set(prev);
+      if (next.has(method)) {
+        next.delete(method);
+      } else {
+        next.add(method);
+      }
+      return next;
+    });
+  };
+
+  const toggleOverseas = (method: string) => {
+    setSelectedOverseas((prev) => {
+      const next = new Set(prev);
+      if (next.has(method)) {
+        next.delete(method);
+      } else {
+        next.add(method);
+      }
+      return next;
+    });
+  };
+
+  const canSavePgConfig = selectedDomestic.size > 0;
+
+  const handleSavePgConfig = () => {
+    if (!canSavePgConfig) return;
+    setPgConnected(true);
+    setView('list');
+  };
+
+  const handleCancelPgConfig = () => {
+    setView('list');
+  };
+
+  if (view === 'pgConfig') {
+    return (
+      <div className="payment-settings-page">
+        <div className="payment-settings-header">
+          <h1 className="payment-settings-title">기본 결제(PG)</h1>
+          <div className="payment-settings-header-actions">
+            <button
+              type="button"
+              className="payment-btn-outline"
+              onClick={handleCancelPgConfig}
+            >
+              뒤로 가기
+            </button>
+            <button
+              type="button"
+              className="payment-btn-primary"
+              disabled={!canSavePgConfig}
+              onClick={handleSavePgConfig}
+            >
+              저장
+            </button>
+          </div>
+        </div>
+
+        <div className="payment-config-card">
+          <h2 className="payment-config-section-title">공통 설정</h2>
+
+          <div className="payment-config-group">
+            <div className="payment-config-label-row">
+              <span className="payment-config-label">국내 결제설정</span>
+              <span className="payment-config-help">?</span>
+            </div>
+            <div className="payment-config-checkbox-grid">
+              {DOMESTIC_METHODS.map((method) => (
+                <label key={method} className="payment-config-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={selectedDomestic.has(method)}
+                    onChange={() => toggleDomestic(method)}
+                  />
+                  {method}
+                </label>
+              ))}
+            </div>
+            <p className="payment-config-note">
+              - 가상계좌는 채권매입 처리 기준에 따라 PG사의 심사 완료 이후
+              활성화 해주세요. (심사 전 활성화 시 정상 결제 불가)
+            </p>
+          </div>
+
+          <div className="payment-config-group">
+            <div className="payment-config-label-row">
+              <span className="payment-config-label">해외 결제설정</span>
+              <span className="payment-config-help">?</span>
+            </div>
+            <div className="payment-config-checkbox-grid">
+              {OVERSEAS_METHODS.map((method) => (
+                <label key={method} className="payment-config-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={selectedOverseas.has(method)}
+                    onChange={() => toggleOverseas(method)}
+                  />
+                  {method}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className="payment-config-group">
+            <div className="payment-config-label-row">
+              <span className="payment-config-label">휴대폰 결제</span>
+            </div>
+            <div className="payment-config-radio-row">
+              <label className="payment-config-radio">
+                <input
+                  type="radio"
+                  name="phoneOption"
+                  checked={phoneOption === 'none'}
+                  onChange={() => setPhoneOption('none')}
+                />
+                사용안함
+              </label>
+              <label className="payment-config-radio">
+                <input
+                  type="radio"
+                  name="phoneOption"
+                  checked={phoneOption === 'phone'}
+                  onChange={() => setPhoneOption('phone')}
+                />
+                휴대폰결제
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="payment-settings-page">
@@ -114,7 +285,7 @@ function PaymentSettingsPage() {
             required
             highlighted
             connected={pgConnected}
-            onToggleConnect={() => setPgConnected((v) => !v)}
+            onConnectClick={() => setView('pgConfig')}
           >
             <div className="payment-pg-option-row">
               <div className="payment-pg-logo">KG</div>
@@ -127,9 +298,9 @@ function PaymentSettingsPage() {
               <button
                 type="button"
                 className="payment-pg-connect-small"
-                onClick={() => setPgConnected(true)}
+                onClick={() => setView('pgConfig')}
               >
-                + 연결
+                {pgConnected ? '연결됨' : '+ 연결'}
               </button>
             </div>
           </PaymentMethodCard>
@@ -138,14 +309,14 @@ function PaymentSettingsPage() {
             title="간편 결제"
             description="네이버, 토스, 카카오, 삼성페이를 연결해요"
             connected={easyPayConnected}
-            onToggleConnect={() => setEasyPayConnected((v) => !v)}
+            onConnectClick={() => setEasyPayConnected((v) => !v)}
           />
 
           <PaymentMethodCard
             title="기타 결제"
             description="무통장 입금, 휴대폰 결제 등 보조 결제 수단을 연결해요"
             connected={etcConnected}
-            onToggleConnect={() => setEtcConnected((v) => !v)}
+            onConnectClick={() => setEtcConnected((v) => !v)}
           />
         </div>
 
