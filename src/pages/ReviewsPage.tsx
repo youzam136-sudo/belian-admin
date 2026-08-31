@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/reviews.css";
 import { SearchIcon } from "../components/icons/SearchIcon";
+import { ExportIcon } from "../components/icons/ExportIcon";
 
 function ReviewsPage() {
   const [activeTab, setActiveTab] = useState<
@@ -324,7 +325,7 @@ function ReviewsListTab() {
             className="reviews-list__export"
             onClick={() => setIsExportModalOpen(true)}
           >
-            ☁ 내보내기
+            <ExportIcon className="export-icon-svg" /> 내보내기
           </button>
           <select className="reviews-list__page-size">
             <option>5개씩 보기</option>
