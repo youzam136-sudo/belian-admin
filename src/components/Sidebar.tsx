@@ -17,7 +17,6 @@ const icons: Record<string, string> = {
     "SEO": "◉",
     "약관": "▥",
     "전자결제": "◈",
-    "보안 개인정보보호": "⚑",
 };
 
 type MenuLeaf = {
@@ -81,11 +80,6 @@ const menuGroups: MenuGroup[] = [
             { type: "link", label: "SEO", to: "/settings/seo" },
             { type: "link", label: "약관", to: "/settings/terms" },
             { type: "link", label: "전자결제", to: "/settings/payment" },
-            {
-                type: "link",
-                label: "보안 개인정보보호",
-                to: "/settings/security",
-            },
         ],
     },
 ];
