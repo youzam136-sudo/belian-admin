@@ -310,7 +310,7 @@ function GeneralSettingsPage() {
                     <p className="gs-og-preview__title">{siteName}</p>
                     <p className="gs-og-preview__desc">(사이트 설명)</p>
                     <p className="gs-og-preview__url">
-                      https://{siteName}123.imweb.me
+                      https://{siteName}.co.kr
                     </p>
                   </div>
                 </div>
