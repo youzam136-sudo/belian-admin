@@ -1,12 +1,14 @@
 import { useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../styles/productregister.css";
+import { upsertProduct, type ProductStatus } from "../utils/productsStore";
 
 interface EditableProduct {
   id: number;
   name: string;
   price: number;
   category: string;
+  status?: ProductStatus;
 }
 
 const SECTIONS = [
@@ -41,6 +43,9 @@ function ProductRegisterPage() {
     editProduct?.category && editProduct.category !== "미지정"
       ? editProduct.category
       : ""
+  );
+  const [productPrice, setProductPrice] = useState<number | "">(
+    editProduct?.price ?? ""
   );
   const [origin, setOrigin] = useState("");
   const [manufacturer, setManufacturer] = useState("");
@@ -144,7 +149,7 @@ function ProductRegisterPage() {
   const [bottomBadgeText, setBottomBadgeText] = useState("");
 
   const [saleStatus, setSaleStatus] = useState<"판매중" | "품절" | "숨김">(
-    "판매중"
+    editProduct?.status ?? "판매중"
   );
   const [salePeriodEnabled, setSalePeriodEnabled] = useState(false);
 
@@ -220,6 +225,22 @@ function ProductRegisterPage() {
     }
   };
 
+  const handleComplete = () => {
+    upsertProduct({
+      id: editProduct?.id,
+      name: productName,
+      price: typeof productPrice === "number" ? productPrice : 0,
+      category,
+      status: saleStatus,
+    });
+    setIsCompleteModalOpen(true);
+  };
+
+  const goToProductList = () => {
+    setIsCompleteModalOpen(false);
+    navigate("/products");
+  };
+
   return (
     <div className="dashboard-page">
       <div className="product-register">
@@ -235,7 +256,7 @@ function ProductRegisterPage() {
           </h2>
           <button
             className="product-register__complete-btn"
-            onClick={() => setIsCompleteModalOpen(true)}
+            onClick={handleComplete}
           >
             {isEditMode ? "수정 완료" : "상품 등록 완료"}
           </button>
@@ -422,7 +443,12 @@ function ProductRegisterPage() {
                       type="number"
                       className="product-register__input"
                       placeholder="0"
-                      defaultValue={editProduct?.price}
+                      value={productPrice}
+                      onChange={(e) =>
+                        setProductPrice(
+                          e.target.value === "" ? "" : Number(e.target.value)
+                        )
+                      }
                     />
                     <span className="product-register__unit">KRW</span>
                   </div>
@@ -1262,7 +1288,7 @@ function ProductRegisterPage() {
       {isCompleteModalOpen && (
         <div
           className="product-register-modal-overlay"
-          onClick={() => setIsCompleteModalOpen(false)}
+          onClick={goToProductList}
         >
           <div
             className="product-register-modal"
@@ -1270,17 +1296,21 @@ function ProductRegisterPage() {
           >
             <div className="product-register-modal__header">
               <h3 className="product-register-modal__title">
-                첫 상품 등록을 축하드려요!
+                {isEditMode
+                  ? "상품이 수정됐어요!"
+                  : "첫 상품 등록을 축하드려요!"}
               </h3>
               <button
                 className="product-register-modal__close"
-                onClick={() => setIsCompleteModalOpen(false)}
+                onClick={goToProductList}
               >
                 ×
               </button>
             </div>
             <p className="product-register-modal__desc">
-              상품을 바로 판매해 볼까요?
+              {isEditMode
+                ? "변경한 내용이 상품 목록에 반영됐어요."
+                : "상품을 바로 판매해 볼까요?"}
             </p>
 
             <div className="product-register-modal__product">
@@ -1301,14 +1331,18 @@ function ProductRegisterPage() {
                   {productName || "상품명"}
                 </span>
                 <span className="product-register-modal__product-price">
-                  0원
+                  {(typeof productPrice === "number"
+                    ? productPrice
+                    : 0
+                  ).toLocaleString()}
+                  원
                 </span>
               </div>
             </div>
 
             <button
               className="product-register-modal__sell-btn"
-              onClick={() => setIsCompleteModalOpen(false)}
+              onClick={goToProductList}
             >
               판매하기
             </button>
