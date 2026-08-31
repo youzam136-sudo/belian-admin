@@ -798,3 +798,10 @@
   gap: 10px;
   padding: 20px 28px 28px;
 }
+
+.search-icon-svg {
+  width: 14px;
+  height: 14px;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
