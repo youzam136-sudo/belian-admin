@@ -658,24 +658,26 @@
   border-color: #2563eb;
 }
 
-.board-form__image-upload {
+.board-form__field label.board-form__image-upload {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 160px;
   height: 160px;
+  margin-bottom: 0;
   border: 1px dashed #e5e7eb;
   border-radius: 10px;
   cursor: pointer;
   color: #9ca3af;
   font-size: 15px;
+  font-weight: 400;
 }
 
 .board-form__image-upload input {
   display: none;
 }
 
-.board-form__image-upload:hover {
+.board-form__field label.board-form__image-upload:hover {
   border-color: #2563eb;
   color: #2563eb;
 }
