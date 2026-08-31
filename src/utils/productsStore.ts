@@ -33,7 +33,7 @@ const SEED_PRODUCTS: StoredProduct[] = [
     status: "판매중",
     stock: "-",
     category: "미지정",
-    promotion: "Belian",
+    promotion: "Velian",
     createdAt: "2026-08-21",
     updatedAt: "2026-08-28",
   },
