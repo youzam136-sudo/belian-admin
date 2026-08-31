@@ -464,7 +464,7 @@ function BoardPage() {
                   }`}
                   onClick={() => setActiveBoardId(board.id)}
                 >
-                  🇰🇷 {board.name}{" "}
+                  {board.name}{" "}
                   <span className="board-sidebar__count">
                     {boardCount(board.id)}
                   </span>
@@ -614,7 +614,7 @@ function BoardPage() {
                               onChange={() => toggleSelectOne(post.id)}
                             />
                           </td>
-                          <td>🇰🇷</td>
+                          <td>대한민국</td>
                           <td>{board?.name}</td>
                           <td className="board-table__title-cell">
                             {post.isNotice && (
