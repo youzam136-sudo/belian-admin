@@ -13,6 +13,9 @@ import {
     PointsIcon,
     BoardIcon,
     GeneralIcon,
+    SeoIcon,
+    TermsIcon,
+    PaymentIcon,
 } from "./icons/SidebarIcons";
 
 const svgIcons: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -27,12 +30,9 @@ const svgIcons: Record<string, React.ComponentType<{ className?: string }>> = {
     "적립금": PointsIcon,
     "게시판": BoardIcon,
     "일반": GeneralIcon,
-};
-
-const icons: Record<string, string> = {
-    "SEO": "◉",
-    "약관": "▥",
-    "전자결제": "◈",
+    "SEO": SeoIcon,
+    "약관": TermsIcon,
+    "전자결제": PaymentIcon,
 };
 
 type MenuLeaf = {
@@ -115,7 +115,7 @@ function Sidebar() {
         if (SvgIcon) {
             return <SvgIcon className="admin-sidebar-icon-svg" />;
         }
-        return icons[label];
+        return null;
     };
 
     return (
