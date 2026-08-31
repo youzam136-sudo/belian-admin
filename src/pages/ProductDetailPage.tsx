@@ -70,7 +70,17 @@ function ProductDetailPage() {
 
       <div className="product-detail__card">
         <div className="product-detail__top">
-          <div className="product-detail__thumb">{product.imageLabel}</div>
+          <div className="product-detail__thumb">
+            {product.imageDataUrl ? (
+              <img
+                src={product.imageDataUrl}
+                alt={product.name}
+                className="product-detail__thumb-img"
+              />
+            ) : (
+              product.imageLabel
+            )}
+          </div>
           <div className="product-detail__top-info">
             <span
               className={`product-detail__badge ${STATUS_BADGE_CLASS[product.status]}`}
@@ -81,6 +91,12 @@ function ProductDetailPage() {
             <p className="product-detail__id">상품 번호 {id ?? product.id}</p>
             <p className="product-detail__price">
               ₩{product.price.toLocaleString()}
+              {typeof product.regularPrice === "number" &&
+                product.regularPrice > 0 && (
+                  <span className="product-detail__regular-price">
+                    ₩{product.regularPrice.toLocaleString()}
+                  </span>
+                )}
             </p>
           </div>
         </div>
@@ -105,6 +121,24 @@ function ProductDetailPage() {
             <span className="product-detail__value">{product.promotion}</span>
           </div>
           <div className="product-detail__row">
+            <span className="product-detail__label">원산지</span>
+            <span className="product-detail__value">
+              {product.origin || "-"}
+            </span>
+          </div>
+          <div className="product-detail__row">
+            <span className="product-detail__label">제조사</span>
+            <span className="product-detail__value">
+              {product.manufacturer || "-"}
+            </span>
+          </div>
+          <div className="product-detail__row">
+            <span className="product-detail__label">브랜드</span>
+            <span className="product-detail__value">
+              {product.brand || "-"}
+            </span>
+          </div>
+          <div className="product-detail__row">
             <span className="product-detail__label">등록일</span>
             <span className="product-detail__value">{product.createdAt}</span>
           </div>
@@ -113,6 +147,20 @@ function ProductDetailPage() {
             <span className="product-detail__value">{product.updatedAt}</span>
           </div>
         </div>
+
+        {product.summary && (
+          <div className="product-detail__text-section">
+            <h3 className="product-detail__text-title">요약 설명</h3>
+            <p className="product-detail__text-body">{product.summary}</p>
+          </div>
+        )}
+
+        {product.description && (
+          <div className="product-detail__text-section">
+            <h3 className="product-detail__text-title">상품 상세 설명</h3>
+            <p className="product-detail__text-body">{product.description}</p>
+          </div>
+        )}
       </div>
     </div>
   );
