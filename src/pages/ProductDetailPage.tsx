@@ -1,21 +1,8 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "../styles/productdetail.css";
+import { getProducts, type StoredProduct as Product } from "../utils/productsStore";
 
-type ProductStatus = "판매중" | "품절" | "숨김";
-
-interface Product {
-  id: number;
-  name: string;
-  imageLabel: string;
-  price: number;
-  discountPrice: string;
-  status: ProductStatus;
-  stock: string;
-  category: string;
-  promotion: string;
-  createdAt: string;
-  updatedAt: string;
-}
+type ProductStatus = Product["status"];
 
 const STATUS_BADGE_CLASS: Record<ProductStatus, string> = {
   판매중: "product-detail__badge--active",
@@ -27,7 +14,10 @@ function ProductDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const product = (location.state as { product?: Product } | null)?.product;
+  const stateProduct = (location.state as { product?: Product } | null)
+    ?.product;
+  const product =
+    stateProduct ?? getProducts().find((p) => String(p.id) === id);
 
   if (!product) {
     return (
