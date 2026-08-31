@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import "../styles/staff.css";
+import { SearchIcon } from "../components/icons/SearchIcon";
 
 type StaffMember = {
     id: string;
@@ -75,7 +76,7 @@ function StaffPage() {
                 </div>
 
                 <div className="staff-search">
-                    <span className="staff-search-icon">🔍</span>
+                    <span className="staff-search-icon"><SearchIcon className="search-icon-svg" /></span>
                     <input
                         type="text"
                         placeholder="전체 운영자 검색"
