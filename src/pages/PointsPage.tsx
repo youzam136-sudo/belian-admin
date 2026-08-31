@@ -2,6 +2,8 @@ import { useState } from "react";
 import "../styles/points.css";
 import { SearchIcon } from "../components/icons/SearchIcon";
 import { ExportIcon } from "../components/icons/ExportIcon";
+import pointsIssueIcon from "../assets/points-issue-icon.png";
+import pointsExpiryIcon from "../assets/points-expiry-icon.png";
 
 interface PointHistory {
   id: number;
@@ -129,7 +131,7 @@ function PointsPage() {
         <div className="points-page__cards">
           <div className="points-card">
             <div className="points-card__icon points-card__icon--issue">
-              💠
+              <img src={pointsIssueIcon} alt="" className="points-card__icon-img" />
             </div>
             <h3 className="points-card__title">지급 · 차감</h3>
             <p className="points-card__desc">
@@ -145,7 +147,7 @@ function PointsPage() {
 
           <div className="points-card">
             <div className="points-card__icon points-card__icon--expiry">
-              📅
+              <img src={pointsExpiryIcon} alt="" className="points-card__icon-img" />
             </div>
             <h3 className="points-card__title">자동 소멸</h3>
             <p className="points-card__desc">
