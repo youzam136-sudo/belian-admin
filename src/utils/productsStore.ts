@@ -12,6 +12,13 @@ export interface StoredProduct {
   promotion: string;
   createdAt: string;
   updatedAt: string;
+  regularPrice?: number;
+  summary?: string;
+  description?: string;
+  origin?: string;
+  manufacturer?: string;
+  brand?: string;
+  imageDataUrl?: string;
 }
 
 const STORAGE_KEY = "belian-admin-products";
@@ -72,6 +79,13 @@ export function upsertProduct(input: {
   price: number;
   category: string;
   status: ProductStatus;
+  regularPrice?: number;
+  summary?: string;
+  description?: string;
+  origin?: string;
+  manufacturer?: string;
+  brand?: string;
+  imageDataUrl?: string;
 }): StoredProduct[] {
   const products = getProducts();
   const today = todayStr();
@@ -85,6 +99,13 @@ export function upsertProduct(input: {
         price: input.price,
         category: input.category || "미지정",
         status: input.status,
+        regularPrice: input.regularPrice,
+        summary: input.summary,
+        description: input.description,
+        origin: input.origin,
+        manufacturer: input.manufacturer,
+        brand: input.brand,
+        imageDataUrl: input.imageDataUrl,
         updatedAt: today,
       };
       saveProducts(products);
@@ -104,6 +125,13 @@ export function upsertProduct(input: {
     promotion: "-",
     createdAt: today,
     updatedAt: today,
+    regularPrice: input.regularPrice,
+    summary: input.summary,
+    description: input.description,
+    origin: input.origin,
+    manufacturer: input.manufacturer,
+    brand: input.brand,
+    imageDataUrl: input.imageDataUrl,
   };
 
   const next = [newProduct, ...products];
