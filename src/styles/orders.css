@@ -164,7 +164,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   box-sizing: border-box;
+}
+
+.excel-download-icon {
+  width: 14px;
+  height: auto;
+  flex-shrink: 0;
 }
 
 .orders-icon-btn:hover {
