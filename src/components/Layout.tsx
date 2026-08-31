@@ -4,7 +4,7 @@ import Header from "./Header";
 import "../styles/layout.css";
 
 const titleMap: Record<string, string> = {
-    "/": "BELIAN",
+    "/": "VELIAN",
     "/members": "회원 목록",
     "/members/staff": "운영진",
     "/members/settings": "고객 설정",
@@ -25,7 +25,7 @@ const titleMap: Record<string, string> = {
 
 function Layout() {
     const location = useLocation();
-    const title = titleMap[location.pathname] ?? "BELIAN";
+    const title = titleMap[location.pathname] ?? "VELIAN";
 
     return (
         <div className="admin-layout">
