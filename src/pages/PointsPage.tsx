@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/points.css";
+import { SearchIcon } from "../components/icons/SearchIcon";
 
 interface PointHistory {
   id: number;
@@ -193,7 +194,7 @@ function PointsPage() {
             </div>
 
             <div className="points-history__search">
-              <span>🔍</span>
+              <span><SearchIcon className="search-icon-svg" /></span>
               <input
                 type="text"
                 placeholder="사유"
@@ -272,7 +273,7 @@ function PointsPage() {
               <div className="points-modal__field">
                 <label>회원 검색</label>
                 <div className="points-modal__search">
-                  <span>🔍</span>
+                  <span><SearchIcon className="search-icon-svg" /></span>
                   <input
                     type="text"
                     placeholder="이름, 아이디, 연락처로 검색"
