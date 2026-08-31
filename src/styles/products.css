@@ -177,6 +177,15 @@
   color: #374151;
   cursor: pointer;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.excel-download-icon {
+  width: 14px;
+  height: auto;
+  flex-shrink: 0;
 }
 
 .products-btn:hover {
