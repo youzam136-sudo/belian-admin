@@ -282,6 +282,17 @@
   padding: 6px 10px;
 }
 
+.products-pagination__arrow:disabled {
+  color: #e5e7eb;
+  cursor: not-allowed;
+}
+
+.products-pagination__ellipsis {
+  color: #d1d5db;
+  font-size: 14px;
+  padding: 0 4px;
+}
+
 .products-pagination__page {
   background: none;
   border: none;
