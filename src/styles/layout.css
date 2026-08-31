@@ -91,6 +91,12 @@ html, body {
     width: 18px;
     font-size: 15px;
 }
+
+.admin-sidebar-icon-svg {
+    width: 14px;
+    height: 14px;
+    color: inherit;
+}
 .admin-sidebar-link:hover {
     background: var(--admin-accent-soft);
     color: var(--admin-accent-dark);
