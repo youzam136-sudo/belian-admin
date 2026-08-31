@@ -731,22 +731,45 @@ function GeneralSettingsPage() {
               </div>
 
               <div className="gs-purchase-preview">
-                <p className="gs-purchase-preview__title">
-                  결제가 완료되었습니다
-                </p>
-                <div className="gs-purchase-preview__row">
-                  <span>배송 정보</span>
-                  <span>서울시 강남구 테헤란로</span>
-                </div>
-                <div className="gs-purchase-preview__row">
-                  <span>결제 금액</span>
-                  <span>10,000원</span>
-                </div>
-                <button className="gs-purchase-preview__btn">
-                  {buttonNameChangeEnabled && buttonNameValue
-                    ? buttonNameValue
-                    : "홈으로"}
-                </button>
+                {purchaseButtonTab === "home" ? (
+                  <>
+                    <p className="gs-purchase-preview__title">
+                      결제가 완료되었습니다
+                    </p>
+                    <div className="gs-purchase-preview__row">
+                      <span>배송 정보</span>
+                      <span>서울시 강남구 테헤란로</span>
+                    </div>
+                    <div className="gs-purchase-preview__row">
+                      <span>결제 금액</span>
+                      <span>10,000원</span>
+                    </div>
+                    <button className="gs-purchase-preview__btn">
+                      {buttonNameChangeEnabled && buttonNameValue
+                        ? buttonNameValue
+                        : "홈으로"}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <p className="gs-purchase-preview__title">
+                      주문 내역을 확인해 보세요
+                    </p>
+                    <div className="gs-purchase-preview__row">
+                      <span>주문 번호</span>
+                      <span>20260831-0001</span>
+                    </div>
+                    <div className="gs-purchase-preview__row">
+                      <span>주문 상태</span>
+                      <span>결제 완료</span>
+                    </div>
+                    <button className="gs-purchase-preview__btn">
+                      {buttonNameChangeEnabled && buttonNameValue
+                        ? buttonNameValue
+                        : "주문서로"}
+                    </button>
+                  </>
+                )}
               </div>
 
               <div className="gs-toggle-row">
