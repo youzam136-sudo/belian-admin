@@ -46,6 +46,48 @@
   font-size: 14px;
 }
 
+.orders-tab--editing {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+}
+
+.orders-tab__edit-input {
+  width: 110px;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid #2563eb;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #1a1a1a;
+}
+
+.orders-tab__edit-input:focus {
+  outline: none;
+}
+
+.orders-tab__edit-confirm,
+.orders-tab__edit-cancel {
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.orders-tab__edit-confirm {
+  background: #2563eb;
+  color: #fff;
+}
+
+.orders-tab__edit-cancel {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
 .orders-main {
   background: #fff;
   border: 1px solid #e5e7eb;
@@ -179,6 +221,14 @@
 
 .orders-settings-menu__item--enabled:hover {
   background: #f9fafb;
+}
+
+.orders-settings-menu__item--danger.orders-settings-menu__item--enabled {
+  color: #dc2626;
+}
+
+.orders-settings-menu__item--danger.orders-settings-menu__item--enabled:hover {
+  background: #fef2f2;
 }
 
 /* 검색 필터 패널 - 컨텐츠 위에 뜨는 오버레이 방식 */
