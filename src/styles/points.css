@@ -217,6 +217,14 @@
   font-weight: 600;
 }
 
+.points-table__row--clickable {
+  cursor: pointer;
+}
+
+.points-table__row--clickable:hover {
+  background: #f9fafb;
+}
+
 /* 모달 공통 */
 .points-modal-overlay {
   position: fixed;
@@ -357,6 +365,12 @@
   border-color: #2563eb;
 }
 
+.points-modal__text-input:disabled {
+  background: #f8f9fb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
 .points-modal__toggle-row {
   display: flex;
   align-items: center;
@@ -431,6 +445,24 @@
   justify-content: flex-end;
   gap: 10px;
   padding: 20px 28px 28px;
+}
+
+.points-modal__footer--between {
+  justify-content: space-between;
+}
+
+.points-modal__footer-right {
+  display: flex;
+  gap: 10px;
+}
+
+.points-btn--danger {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.points-btn--danger:hover {
+  background: #fee2e2;
 }
 
 .points-btn {
