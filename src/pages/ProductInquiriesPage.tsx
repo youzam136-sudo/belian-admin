@@ -1,29 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/inquiries.css";
-
-interface Inquiry {
-  id: number;
-  title: string;
-  productName: string;
-  authorName: string;
-  isSecret: boolean;
-  createdAt: string;
-  status: "답변대기" | "답변완료";
-}
-
-const MOCK_INQUIRIES: Inquiry[] = [
-  {
-    id: 1,
-    title: "배송은 얼마나 걸리나요?",
-    productName: "와인베리 퍼밍 콜라겐 젤리",
-    authorName: "김벨리",
-    isSecret: false,
-    createdAt: "2026-08-29",
-    status: "답변대기",
-  },
-];
+import { getInquiries } from "../utils/inquiriesStore";
 
 function ProductInquiriesPage() {
+  const navigate = useNavigate();
+  const [inquiries] = useState(() => getInquiries());
   const [activeTab, setActiveTab] = useState<"전체" | "답변대기" | "답변완료">(
     "전체"
   );
@@ -42,7 +24,7 @@ function ProductInquiriesPage() {
     setPeriodRange("");
   };
 
-  const filteredInquiries = MOCK_INQUIRIES.filter((inquiry) => {
+  const filteredInquiries = inquiries.filter((inquiry) => {
     const matchesTab =
       activeTab === "전체" ? true : inquiry.status === activeTab;
     const matchesKeyword = inquiry.title
@@ -211,7 +193,14 @@ function ProductInquiriesPage() {
                         {inquiry.status}
                       </span>
                     </td>
-                    <td className="inquiries-table__title-cell">
+                    <td
+                      className="inquiries-table__title-cell inquiries-table__title-cell--clickable"
+                      onClick={() =>
+                        navigate(`/products/inquiries/${inquiry.id}`, {
+                          state: { inquiry },
+                        })
+                      }
+                    >
                       {inquiry.title}
                     </td>
                     <td>{inquiry.productName}</td>
