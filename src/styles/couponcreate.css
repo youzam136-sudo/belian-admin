@@ -502,3 +502,10 @@
   font-size: 14px;
   color: #374151;
 }
+
+.search-icon-svg {
+  width: 14px;
+  height: 14px;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
