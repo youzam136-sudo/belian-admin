@@ -352,6 +352,16 @@
   white-space: normal;
 }
 
+.orders-table__orderno-cell {
+  color: #2563eb;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.orders-table__orderno-cell:hover {
+  text-decoration: underline;
+}
+
 .orders-table__thumb {
   width: 36px;
   height: 36px;
