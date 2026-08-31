@@ -226,6 +226,14 @@
   white-space: normal;
 }
 
+.products-table__name-cell--clickable {
+  cursor: pointer;
+}
+
+.products-table__name-cell--clickable:hover span:not(.products-table__thumb) {
+  color: #2563eb;
+}
+
 .products-table__thumb {
   width: 36px;
   height: 36px;
@@ -280,17 +288,6 @@
   font-size: 16px;
   cursor: pointer;
   padding: 6px 10px;
-}
-
-.products-pagination__arrow:disabled {
-  color: #e5e7eb;
-  cursor: not-allowed;
-}
-
-.products-pagination__ellipsis {
-  color: #d1d5db;
-  font-size: 14px;
-  padding: 0 4px;
 }
 
 .products-pagination__page {
@@ -480,7 +477,9 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: space-between;
   gap: 6px;
+  width: 92px;
 }
 
 .products-status-trigger__arrow {
