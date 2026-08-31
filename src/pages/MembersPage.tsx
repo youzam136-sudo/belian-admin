@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import "../styles/members.css";
+import { ExcelDownloadIcon } from "../components/icons/ExcelDownloadIcon";
 
 type Member = {
     id: string;
@@ -88,7 +89,7 @@ function MembersPage() {
 
                 <div className="members-toolbar-actions">
                     <button type="button" className="members-export-btn">
-                        <span>⬇</span>
+                        <ExcelDownloadIcon className="excel-download-icon" />
                         엑셀 다운로드
                     </button>
 
