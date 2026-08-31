@@ -9,6 +9,13 @@ interface EditableProduct {
   price: number;
   category: string;
   status?: ProductStatus;
+  regularPrice?: number;
+  summary?: string;
+  description?: string;
+  origin?: string;
+  manufacturer?: string;
+  brand?: string;
+  imageDataUrl?: string;
 }
 
 const SECTIONS = [
@@ -37,7 +44,9 @@ function ProductRegisterPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeSection, setActiveSection] = useState("info");
 
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(
+    editProduct?.imageDataUrl ?? null
+  );
   const [productName, setProductName] = useState(editProduct?.name ?? "");
   const [category, setCategory] = useState(
     editProduct?.category && editProduct.category !== "미지정"
@@ -47,9 +56,20 @@ function ProductRegisterPage() {
   const [productPrice, setProductPrice] = useState<number | "">(
     editProduct?.price ?? ""
   );
-  const [origin, setOrigin] = useState("");
-  const [manufacturer, setManufacturer] = useState("");
-  const [brand, setBrand] = useState("");
+  const [regularPrice, setRegularPrice] = useState<number | "">(
+    editProduct?.regularPrice ?? ""
+  );
+  const [summaryDescription, setSummaryDescription] = useState(
+    editProduct?.summary ?? ""
+  );
+  const [description, setDescription] = useState(
+    editProduct?.description ?? ""
+  );
+  const [origin, setOrigin] = useState(editProduct?.origin ?? "");
+  const [manufacturer, setManufacturer] = useState(
+    editProduct?.manufacturer ?? ""
+  );
+  const [brand, setBrand] = useState(editProduct?.brand ?? "");
   const [shippingNote, setShippingNote] = useState("");
   const [shippingNoteEnabled, setShippingNoteEnabled] = useState(false);
 
@@ -214,7 +234,11 @@ function ProductRegisterPage() {
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setImagePreviewUrl(URL.createObjectURL(file));
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagePreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -232,6 +256,13 @@ function ProductRegisterPage() {
       price: typeof productPrice === "number" ? productPrice : 0,
       category,
       status: saleStatus,
+      regularPrice: typeof regularPrice === "number" ? regularPrice : undefined,
+      summary: summaryDescription,
+      description,
+      origin,
+      manufacturer,
+      brand,
+      imageDataUrl: imagePreviewUrl ?? undefined,
     });
     setIsCompleteModalOpen(true);
   };
@@ -372,6 +403,8 @@ function ProductRegisterPage() {
                   className="product-register__textarea"
                   placeholder="내용을 입력해주세요."
                   rows={5}
+                  value={summaryDescription}
+                  onChange={(e) => setSummaryDescription(e.target.value)}
                 />
               </div>
 
@@ -417,6 +450,8 @@ function ProductRegisterPage() {
                 className="product-register__textarea"
                 placeholder="상세 설명 내용을 입력해주세요."
                 rows={6}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </section>
 
@@ -460,6 +495,12 @@ function ProductRegisterPage() {
                       type="number"
                       className="product-register__input"
                       placeholder="0"
+                      value={regularPrice}
+                      onChange={(e) =>
+                        setRegularPrice(
+                          e.target.value === "" ? "" : Number(e.target.value)
+                        )
+                      }
                     />
                     <span className="product-register__unit">KRW</span>
                   </div>
