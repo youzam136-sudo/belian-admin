@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../styles/productregister.css";
 import { upsertProduct, type ProductStatus } from "../utils/productsStore";
+import { SearchIcon } from "../components/icons/SearchIcon";
 
 interface EditableProduct {
   id: number;
@@ -1000,7 +1001,7 @@ function ProductRegisterPage() {
                 </label>
                 <div className="product-register__product-search">
                   <span className="product-register__product-search-icon">
-                    🔍
+                    <SearchIcon className="search-icon-svg" />
                   </span>
                   <input
                     type="text"
@@ -1092,7 +1093,7 @@ function ProductRegisterPage() {
                 </label>
                 <div className="product-register__product-search">
                   <span className="product-register__product-search-icon">
-                    🔍
+                    <SearchIcon className="search-icon-svg" />
                   </span>
                   <input
                     type="text"
