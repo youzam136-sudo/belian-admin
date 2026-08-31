@@ -133,9 +133,18 @@
 }
 
 .shipping-template-card__origin {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-size: 13px;
   color: #6b7280;
   margin: 0 0 16px;
+}
+
+.location-icon-svg {
+  width: 13px;
+  height: auto;
+  flex-shrink: 0;
 }
 
 .shipping-template-card__country {
@@ -573,6 +582,9 @@
 }
 
 .shipping-origin-card__name {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-size: 15px;
   font-weight: 700;
   color: #1a1a1a;
