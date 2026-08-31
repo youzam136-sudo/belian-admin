@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/points.css";
 import { SearchIcon } from "../components/icons/SearchIcon";
+import { ExportIcon } from "../components/icons/ExportIcon";
 
 interface PointHistory {
   id: number;
@@ -162,7 +163,9 @@ function PointsPage() {
         <div className="points-history">
           <div className="points-history__header">
             <h3 className="points-history__title">내역</h3>
-            <button className="points-history__export">내보내기 ⬇</button>
+            <button className="points-history__export">
+              <ExportIcon className="export-icon-svg" /> 내보내기
+            </button>
           </div>
 
           <div className="points-history__toolbar">
