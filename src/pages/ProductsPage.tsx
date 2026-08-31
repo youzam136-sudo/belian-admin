@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/products.css";
 import { ExcelDownloadIcon } from "../components/icons/ExcelDownloadIcon";
+import { EmptyDocumentIcon } from "../components/icons/EmptyDocumentIcon";
 import {
   getProducts,
   updateProductStatus as persistStatus,
@@ -153,7 +154,9 @@ function ProductsPage() {
             {sidebarTab === "category" &&
               (categories.length === 0 ? (
                 <div className="products-sidebar__empty">
-                  <div className="products-sidebar__empty-icon">📄</div>
+                  <div className="products-sidebar__empty-icon">
+                    <EmptyDocumentIcon className="empty-document-icon" />
+                  </div>
                   <p className="products-sidebar__empty-title">
                     아직 카테고리가 없어요
                   </p>
