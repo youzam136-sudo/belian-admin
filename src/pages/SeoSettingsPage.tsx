@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/seosettings.css";
+import { SearchIcon } from "../components/icons/SearchIcon";
 
 function SeoSettingsPage() {
   // SEO 권한 설정
@@ -147,7 +148,7 @@ function SeoSettingsPage() {
                   </span>
                   <span className="seo-preview-diagram__arrow">→</span>
                   <div className="seo-preview-diagram__search">
-                    <span>🔍</span>
+                    <span><SearchIcon className="search-icon-svg" /></span>
                     <input
                       readOnly
                       placeholder="메타 키워드를 입력해 주세요"
