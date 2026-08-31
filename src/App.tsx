@@ -12,6 +12,7 @@ import OrdersPage from "./pages/OrdersPage";
 import OrderDetailPage from "./pages/OrderDetailPage";
 import ShippingPage from "./pages/ShippingPage";
 import ProductInquiriesPage from "./pages/ProductInquiriesPage";
+import InquiryDetailPage from "./pages/InquiryDetailPage";
 import ReviewsPage from "./pages/ReviewsPage";
 import CouponsPage from "./pages/CouponsPage";
 import CouponCreatePage from "./pages/CouponCreatePage";
@@ -84,6 +85,11 @@ function App() {
                         path="products/inquiries"
                         element={<ProductInquiriesPage />}
                         handle={{ title: "상품문의" }}
+                    />
+                    <Route
+                        path="products/inquiries/:id"
+                        element={<InquiryDetailPage />}
+                        handle={{ title: "상품문의 상세" }}
                     />
                     <Route
                         path="products/reviews"
