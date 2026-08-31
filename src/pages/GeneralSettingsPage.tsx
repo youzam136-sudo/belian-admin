@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import "../styles/generalsettings.css";
 import { SearchIcon } from "../components/icons/SearchIcon";
+import { ImagePlaceholderIcon } from "../components/icons/ImagePlaceholderIcon";
 
 function GeneralSettingsPage() {
   const [activeTab, setActiveTab] = useState<"basic" | "shop" | "access">(
@@ -304,7 +305,9 @@ function GeneralSettingsPage() {
                     {ogImage ? (
                       <img src={ogImage} alt="" />
                     ) : (
-                      <span className="gs-og-preview__placeholder">🖼</span>
+                      <span className="gs-og-preview__placeholder">
+                        <ImagePlaceholderIcon className="image-placeholder-icon" />
+                      </span>
                     )}
                   </div>
                   <div className="gs-og-preview__text">
