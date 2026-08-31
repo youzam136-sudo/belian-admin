@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/board.css";
 import { AdminAvatarIcon } from "../components/icons/AdminAvatarIcon";
+import { SearchIcon } from "../components/icons/SearchIcon";
 
 type BoardType = "일반" | "갤러리" | "상품문의";
 
@@ -436,7 +437,7 @@ function BoardPage() {
         <div className="board-page__body">
           <aside className="board-sidebar">
             <div className="board-sidebar__search">
-              <span>🔍</span>
+              <span><SearchIcon className="search-icon-svg" /></span>
               <input
                 type="text"
                 placeholder="게시판 이름으로 검색"
@@ -537,7 +538,7 @@ function BoardPage() {
                   </span>
                 </h3>
                 <div className="board-main__search">
-                  <span>🔍</span>
+                  <span><SearchIcon className="search-icon-svg" /></span>
                   <input
                     type="text"
                     placeholder="제목, 작성자로 검색"
