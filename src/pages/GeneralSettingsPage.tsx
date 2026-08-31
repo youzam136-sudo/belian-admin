@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import "../styles/generalsettings.css";
+import { SearchIcon } from "../components/icons/SearchIcon";
 
 function GeneralSettingsPage() {
   const [activeTab, setActiveTab] = useState<"basic" | "shop" | "access">(
@@ -262,7 +263,7 @@ function GeneralSettingsPage() {
                     <span>←</span>
                     <span>→</span>
                     <span>⟳</span>
-                    <span>🔍</span>
+                    <span><SearchIcon className="search-icon-svg" /></span>
                   </div>
                 </div>
               </div>
