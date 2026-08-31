@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams, useParams, useLocation } from "react-router-dom";
 import "../styles/couponcreate.css";
+import { SearchIcon } from "../components/icons/SearchIcon";
 
 type CouponType = "down" | "auto" | "create" | "targeted";
 
@@ -807,7 +808,7 @@ function CouponCreatePage() {
                   <div className="coupon-create__row">
                     <label>쿠폰 적용 상품</label>
                     <div className="coupon-create__product-search">
-                      <span>🔍</span>
+                      <span><SearchIcon className="search-icon-svg" /></span>
                       <input
                         type="text"
                         placeholder="상품명 혹은 재고번호(SKU)로 검색해 주세요"
