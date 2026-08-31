@@ -524,6 +524,7 @@
 /* 구매 완료 후 버튼 미리보기 */
 .gs-purchase-tabs {
   display: inline-flex;
+  align-self: flex-start;
   border: 1px solid #d1d5db;
   border-radius: 8px;
   overflow: hidden;
