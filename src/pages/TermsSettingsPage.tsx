@@ -7,27 +7,42 @@ type TabKey =
   | 'domesticTravel'
   | 'overseasTravel'
   | 'marketing'
-  | 'thirdParty'
-  | 'minor'
-  | 'coupon';
+  | 'thirdParty';
 
 type PrivacySubTabKey = 'full' | 'memberSignup' | 'guestPurchase';
+type ThirdPartyUsage = 'required' | 'optional' | 'none';
 
-const TABS: { key: TabKey; label: string }[] = [
+const TABS: { key: TabKey; label: string; dot?: boolean }[] = [
   { key: 'usage', label: '이용약관' },
   { key: 'privacy', label: '개인정보처리방침' },
   { key: 'domesticTravel', label: '국내여행약관' },
   { key: 'overseasTravel', label: '해외여행약관' },
-  { key: 'marketing', label: '마케팅활용동의 및 광고수신동의' },
-  { key: 'thirdParty', label: '개인정보제3자제공동의' },
-  { key: 'minor', label: '만 14세 이상 동의' },
-  { key: 'coupon', label: '쿠폰 정기 혜택 서비스' },
+  { key: 'marketing', label: '마케팅활용동의 및 광고수신동의', dot: true },
+  { key: 'thirdParty', label: '개인정보제3자제공동의', dot: true },
 ];
 
 const PRIVACY_SUB_TABS: { key: PrivacySubTabKey; label: string }[] = [
   { key: 'full', label: '개인정보 처리방침 전체내용' },
   { key: 'memberSignup', label: '개인정보 수집 및 이용 동의(회원가입시)' },
   { key: 'guestPurchase', label: '개인정보 수집 및 이용 동의(비회원 구매시)' },
+];
+
+const DEFAULT_NOTICES = [
+  '법률 자문이나 법적 검토가 이루어지지 않았다면, 공정거래위원회의 표준약관을 수정 없이 사용해야 합니다.',
+  '아래 양식은 샘플로 제공되는 서식으로 운영형태에 따른 수정이 필요합니다.',
+  'HTML태그 사용이 가능하지만 줄바꿈(BR태그)은 자동으로 처리되어 입력하실 필요가 없습니다.',
+];
+
+const MARKETING_NOTICES = [
+  '마케팅 활용 동의의 사용시 회원가입시 이벤트/혜택 소식 수신 여부 항목(E-mail, 메시지)이 생성되며, 가입 후 정보수정을 통해 변경할 수 있습니다.',
+  '아래 양식은 샘플로 제공되는 서식으로 운영형태에 따른 수정이 필요합니다.',
+  'HTML태그 사용이 가능하지만 줄바꿈(BR태그)은 자동으로 처리되어 입력하실 필요가 없습니다.',
+];
+
+const THIRD_PARTY_NOTICES = [
+  '사이트 운영 도중 이 설정을 사용하게 될 경우 사전에 메일, 사이트에 게시 등으로 적용 예고를 안내해야 법적 분쟁을 피할 수 있습니다.',
+  '아래 양식은 샘플로 제공되는 서식으로 운영형태에 따른 수정이 필요합니다.',
+  'HTML태그 사용이 가능하지만 줄바꿈(BR태그)은 자동으로 처리되어 입력하실 필요가 없습니다.',
 ];
 
 const DEFAULT_USAGE_TERMS = `제1조 (목적)
@@ -102,10 +117,10 @@ const DEFAULT_PRIVACY_FULL = `회사(이하 "회사"라 한다)는 개인정보 
 회원 가입 의사 확인, 회원제 서비스 제공에 따른 본인 식별·인증, 회원자격 유지·관리, 서비스 부정 이용 방지, 만 14세 미만 아동의 개인정보처리 시 법정대리인의 동의 여부 확인, 각종 고지·통지 등을 목적으로 개인정보를 처리합니다.
 
 2. 재화 또는 서비스 제공
-물품 배송, 서비스 제공, 계약서 및 청구서 발송, 콘텐츠 제공, 맞춤서비스 제공, 본인인증, 요금 결제 및 정산, 채권추심 등을 목적으로 개인정보를 처리합니다.
+물품 배송, 서비스 제공, 계약서 및 청구서 발송, 콘텐츠 제공, 맞춤서비스 제공, 본인인증, 연령인증, 요금 결제 및 정산, 채권추심 등을 목적으로 개인정보를 처리합니다.
 
 3. 고충 처리
-민원인의 신원 확인, 민원사항 확인, 처리결과 통보 등을 목적으로 개인정보를 처리합니다.
+민원인의 신원 확인, 민원사항 확인, 사실조사를 위한 연락·통지, 처리 결과 통보 등의 목적으로 개인정보를 처리합니다.
 
 제2조 (개인정보의 처리 및 보유기간)
 
@@ -209,45 +224,53 @@ const DEFAULT_PRIVACY_FULL = `회사(이하 "회사"라 한다)는 개인정보 
 
 이 개인정보처리방침은 사이트에 게시한 날로부터 시행합니다.`;
 
-const DEFAULT_PRIVACY_MEMBER_SIGNUP = `개인정보 수집 및 이용 동의 (회원가입 시)
+const DEFAULT_PRIVACY_MEMBER_SIGNUP = `<strong>1. 개인정보 수집목적 및 이용목적</strong>
 
-1. 수집 항목
-- 필수항목 : 성명, 아이디, 비밀번호, 휴대전화번호, 이메일주소
-- 선택항목 : 생년월일, 성별
+(1) 홈페이지 회원 가입 및 관리
+회원 가입 의사 확인, 회원제 서비스 제공에 따른 본인 식별·인증, 회원자격 유지·관리, 제한적 본인확인제 시행에 따른 본인확인, 서비스 부정 이용 방지, 만 14세 미만 아동의 개인정보 처리시 법정대리인의 동의 여부 확인, 각종 고지·통지, 고충 처리 등의 목적
 
-2. 수집 및 이용목적
-- 회원 가입 의사 확인, 회원제 서비스 제공에 따른 본인 식별·인증
-- 부정 이용 방지 및 서비스 관련 고지·통지
+(2) 재화 또는 서비스 제공
+물품 배송, 서비스 제공, 계약서·청구서 발송, 콘텐츠 제공, 맞춤 서비스 제공, 본인인증, 연령인증, 요금 결제 및 정산, 채권추심 등의 목적
 
-3. 보유 및 이용기간
-- 회원 탈퇴 시까지 보유하며, 관계 법령에 따라 보존이 필요한 경우 해당 기간 동안 보관합니다.
+(3) 고충 처리
+민원인의 신원 확인, 민원사항 확인, 사실조사를 위한 연락·통지, 처리 결과 통보 등
 
-※ 위 개인정보 수집·이용에 대한 동의를 거부할 권리가 있으며, 동의를 거부할 경우 회원가입이 제한될 수 있습니다.`;
+<strong>2. 수집하는 개인정보 항목</strong>
+ID, 성명, 비밀번호, 주소, 휴대폰 번호, 이메일, 14세 미만 가입자의 경우 법정대리인 정보
 
-const DEFAULT_PRIVACY_GUEST_PURCHASE = `개인정보 수집 및 이용 동의 (비회원 구매 시)
+<strong>3. 개인정보 보유 및 이용기간</strong>
+<strong>회원탈퇴 시까지</strong> (단, 관계 법령에 보존 근거가 있는 경우 해당 기간 시까지 보유, 개인정보처리방침에서 확인 가능)`;
 
-1. 수집 항목
-- 필수항목 : 성명, 휴대전화번호, 이메일주소, 배송지 주소, 결제정보
+const DEFAULT_PRIVACY_GUEST_PURCHASE = `<strong>1. 개인정보 수집 및 이용 목적</strong>
+(1) 비회원 구매 서비스 제공
+비회원 구매에 따른 본인 확인, 물품 배송, 서비스 제공, 계약서·청구서 발송, 본인인증, 연령인증, 요금결제 및 정산, 채권추심, 서비스 부정 이용 방지, 각종 고지 및 통지 등의 목적
 
-2. 수집 및 이용목적
-- 주문 확인 및 상품 배송, 고객 문의 응대
-- 결제 및 정산, 청약철회 등 거래 관련 업무 처리
+(2) 고충처리
+민원인의 신원 확인, 민원사항 확인, 사실조사를 위한 연락·통지, 처리 결과 통보 등
 
-3. 보유 및 이용기간
-- 재화 또는 서비스 공급이 완료되고 요금결제·정산이 완료된 시점까지 보유하며, 관계 법령에 따라 보존이 필요한 경우 해당 기간 동안 보관합니다.
+<strong>2. 수집하는 개인정보 항목</strong>
+성명, 주소, 휴대폰번호, 이메일, 결제 정보
 
-※ 위 개인정보 수집·이용에 대한 동의를 거부할 권리가 있으며, 동의를 거부할 경우 비회원 주문 진행이 제한될 수 있습니다.`;
+<strong>3. 개인정보 보유 및 이용 기간</strong>
+<strong>전자상거래법 등 관계 법령에 의거 구매 후 5년간 보관</strong>
+
+<strong>※ 동의를 거부할 수 있으나 거부 시 비회원 구매 서비스 이용이 불가합니다.</strong>`;
+
+const DEFAULT_MARKETING = `서비스와 관련된 신상품 소식, 이벤트 안내, 고객 혜택 등 다양한 정보를 제공합니다.`;
+
+const DEFAULT_THIRD_PARTY = `다음과 같이 개인정보를 제3자에게 제공하고 있습니다.
+
+<strong>1. 개인정보를 제공받는 자 : 예) ㅇㅇㅇ카드</strong>
+<strong>2. 제공받는 자의 개인정보 이용목적 : 예) 이벤트 공동개최 등 업무제휴 및 제휴카드 발급</strong>
+<strong>3. 제공하는 개인정보 항목 : 예) 성명, 주소, 휴대폰번호, 이메일</strong>
+<strong>4. 제공받는 자의 보유 및 이용기간 : 예) 회원탈퇴 시 또는 개인정보 제3자 제공 철회 시까지</strong>`;
 
 const OTHER_TAB_PLACEHOLDERS: Record<
-  Exclude<TabKey, 'usage' | 'privacy'>,
+  Extract<TabKey, 'domesticTravel' | 'overseasTravel'>,
   string
 > = {
   domesticTravel: '국내여행약관 내용을 입력해 주세요.',
   overseasTravel: '해외여행약관 내용을 입력해 주세요.',
-  marketing: '마케팅활용동의 및 광고수신동의 내용을 입력해 주세요.',
-  thirdParty: '개인정보제3자제공동의 내용을 입력해 주세요.',
-  minor: '만 14세 이상 동의 내용을 입력해 주세요.',
-  coupon: '쿠폰 정기 혜택 서비스 안내 내용을 입력해 주세요.',
 };
 
 function getPrivacyKey(subTab: PrivacySubTabKey) {
@@ -266,23 +289,26 @@ function TermsSettingsPage() {
     [getPrivacyKey('guestPurchase')]: DEFAULT_PRIVACY_GUEST_PURCHASE,
     domesticTravel: '',
     overseasTravel: '',
-    marketing: '',
-    thirdParty: '',
-    minor: '',
-    coupon: '',
+    marketing: DEFAULT_MARKETING,
+    thirdParty: DEFAULT_THIRD_PARTY,
   });
   const [saved, setSaved] = useState(false);
+
+  const [smsConsent, setSmsConsent] = useState(false);
+  const [emailConsent, setEmailConsent] = useState(false);
+
+  const [thirdPartyUsage, setThirdPartyUsage] =
+    useState<ThirdPartyUsage>('none');
+  const [applyToExistingMembers, setApplyToExistingMembers] = useState(false);
 
   const activeContentKey =
     activeTab === 'privacy' ? getPrivacyKey(activePrivacySubTab) : activeTab;
 
   const currentValue = contents[activeContentKey] ?? '';
   const currentPlaceholder =
-    activeTab === 'usage' || activeTab === 'privacy'
-      ? ''
-      : OTHER_TAB_PLACEHOLDERS[
-          activeTab as Exclude<TabKey, 'usage' | 'privacy'>
-        ];
+    activeTab === 'domesticTravel' || activeTab === 'overseasTravel'
+      ? OTHER_TAB_PLACEHOLDERS[activeTab]
+      : '';
 
   const handleContentChange = (value: string) => {
     setContents((prev) => ({ ...prev, [activeContentKey]: value }));
@@ -320,10 +346,29 @@ function TermsSettingsPage() {
     }));
   };
 
+  const resetMarketingToDefault = () => {
+    setContents((prev) => ({ ...prev, marketing: DEFAULT_MARKETING }));
+    setSmsConsent(false);
+    setEmailConsent(false);
+  };
+
+  const resetThirdPartyToDefault = () => {
+    setContents((prev) => ({ ...prev, thirdParty: DEFAULT_THIRD_PARTY }));
+    setThirdPartyUsage('none');
+    setApplyToExistingMembers(false);
+  };
+
   const handleSave = () => {
     setSaved(true);
     window.setTimeout(() => setSaved(false), 2000);
   };
+
+  const notices =
+    activeTab === 'marketing'
+      ? MARKETING_NOTICES
+      : activeTab === 'thirdParty'
+      ? THIRD_PARTY_NOTICES
+      : DEFAULT_NOTICES;
 
   return (
     <div className="terms-settings-page">
@@ -355,23 +400,91 @@ function TermsSettingsPage() {
               onClick={() => handleTabClick(tab.key)}
             >
               {tab.label}
+              {tab.dot && <span className="terms-tab-dot" />}
             </button>
           ))}
         </div>
 
+        {activeTab === 'marketing' && (
+          <div className="terms-checkbox-row">
+            <label className="terms-checkbox-label">
+              <input
+                type="checkbox"
+                checked={smsConsent}
+                onChange={(e) => setSmsConsent(e.target.checked)}
+              />
+              메시지(SMS, 카카오톡 등) 수신 동의
+            </label>
+            <label className="terms-checkbox-label">
+              <input
+                type="checkbox"
+                checked={emailConsent}
+                onChange={(e) => setEmailConsent(e.target.checked)}
+              />
+              E-Mail 수신 동의
+            </label>
+          </div>
+        )}
+
+        {activeTab === 'thirdParty' && (
+          <div className="terms-radio-block">
+            <div className="terms-radio-row">
+              <label className="terms-radio-label">
+                <input
+                  type="radio"
+                  name="thirdPartyUsage"
+                  checked={thirdPartyUsage === 'required'}
+                  onChange={() => setThirdPartyUsage('required')}
+                />
+                사용(필수)
+              </label>
+              <label className="terms-radio-label">
+                <input
+                  type="radio"
+                  name="thirdPartyUsage"
+                  checked={thirdPartyUsage === 'optional'}
+                  onChange={() => setThirdPartyUsage('optional')}
+                />
+                사용(선택)
+              </label>
+              <label className="terms-radio-label">
+                <input
+                  type="radio"
+                  name="thirdPartyUsage"
+                  checked={thirdPartyUsage === 'none'}
+                  onChange={() => setThirdPartyUsage('none')}
+                />
+                사용안함
+              </label>
+            </div>
+            {thirdPartyUsage === 'required' && (
+              <label className="terms-checkbox-label terms-checkbox-sub">
+                <input
+                  type="checkbox"
+                  checked={applyToExistingMembers}
+                  onChange={(e) =>
+                    setApplyToExistingMembers(e.target.checked)
+                  }
+                />
+                기존 회원을 모두 개인정보제3자제공 동의로 처리하기
+              </label>
+            )}
+          </div>
+        )}
+
         <div className="terms-notice-box">
-          <p className="terms-notice-item">
-            법률 자문이나 법적 검토가 이루어지지 않았다면, 공정거래위원회의
-            표준약관을 수정 없이 사용해야 합니다.
-          </p>
-          <p className="terms-notice-item">
-            아래 양식은 샘플로 제공되는 서식으로 운영형태에 따른 수정이
-            필요합니다.
-          </p>
-          <p className="terms-notice-item">
-            HTML태그 사용이 가능하지만 줄바꿈(BR태그)은 자동으로 처리되어
-            입력하실 필요가 없습니다.
-          </p>
+          {notices.map((notice, idx) => (
+            <p
+              key={notice}
+              className={`terms-notice-item ${
+                activeTab === 'thirdParty' && idx === 0
+                  ? 'terms-notice-item-danger'
+                  : ''
+              }`}
+            >
+              {notice}
+            </p>
+          ))}
         </div>
 
         {activeTab === 'usage' && (
@@ -394,33 +507,55 @@ function TermsSettingsPage() {
         )}
 
         {activeTab === 'privacy' && (
-          <>
-            <div className="terms-sub-tabs-row">
-              <div className="terms-sub-tabs">
-                {PRIVACY_SUB_TABS.map((sub) => (
-                  <button
-                    key={sub.key}
-                    type="button"
-                    className={`terms-sub-tab ${
-                      activePrivacySubTab === sub.key
-                        ? 'terms-sub-tab-active'
-                        : ''
-                    }`}
-                    onClick={() => setActivePrivacySubTab(sub.key)}
-                  >
-                    {sub.label}
-                  </button>
-                ))}
-              </div>
-              <button
-                type="button"
-                className="terms-btn terms-btn-outline"
-                onClick={resetPrivacyToDefault}
-              >
-                기본값으로 되돌리기
-              </button>
+          <div className="terms-sub-tabs-row">
+            <div className="terms-sub-tabs">
+              {PRIVACY_SUB_TABS.map((sub) => (
+                <button
+                  key={sub.key}
+                  type="button"
+                  className={`terms-sub-tab ${
+                    activePrivacySubTab === sub.key
+                      ? 'terms-sub-tab-active'
+                      : ''
+                  }`}
+                  onClick={() => setActivePrivacySubTab(sub.key)}
+                >
+                  {sub.label}
+                </button>
+              ))}
             </div>
-          </>
+            <button
+              type="button"
+              className="terms-btn terms-btn-outline"
+              onClick={resetPrivacyToDefault}
+            >
+              기본값으로 되돌리기
+            </button>
+          </div>
+        )}
+
+        {activeTab === 'marketing' && (
+          <div className="terms-actions-row">
+            <button
+              type="button"
+              className="terms-btn terms-btn-outline"
+              onClick={resetMarketingToDefault}
+            >
+              기본값으로 되돌리기
+            </button>
+          </div>
+        )}
+
+        {activeTab === 'thirdParty' && (
+          <div className="terms-actions-row">
+            <button
+              type="button"
+              className="terms-btn terms-btn-outline"
+              onClick={resetThirdPartyToDefault}
+            >
+              기본값으로 되돌리기
+            </button>
+          </div>
         )}
 
         <textarea
