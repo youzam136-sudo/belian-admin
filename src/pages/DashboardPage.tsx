@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/dashboard.css";
+import { AdminAvatarIcon } from "../components/icons/AdminAvatarIcon";
 
 type ChecklistItem = {
     label: string;
@@ -343,7 +344,7 @@ function DashboardPage() {
             <aside className="dashboard-side">
 
                 <div className="dashboard-profile-card">
-                    <div className="dashboard-profile-avatar" />
+                    <AdminAvatarIcon className="dashboard-profile-avatar" />
 
                     <div>
                         <strong>관리자</strong>
@@ -390,7 +391,7 @@ function DashboardPage() {
                     <strong>운영진</strong>
 
                     <div className="dashboard-side-member">
-                        <div className="dashboard-profile-avatar small" />
+                        <AdminAvatarIcon className="dashboard-profile-avatar small" />
                         <span>관리자</span>
                         <em>관리</em>
                     </div>
