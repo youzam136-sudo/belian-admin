@@ -9,6 +9,7 @@ import ProductsPage from "./pages/ProductsPage";
 import ProductRegisterPage from "./pages/ProductRegisterPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import OrdersPage from "./pages/OrdersPage";
+import OrderDetailPage from "./pages/OrderDetailPage";
 import ShippingPage from "./pages/ShippingPage";
 import ProductInquiriesPage from "./pages/ProductInquiriesPage";
 import ReviewsPage from "./pages/ReviewsPage";
@@ -68,6 +69,11 @@ function App() {
                         path="orders"
                         element={<OrdersPage />}
                         handle={{ title: "주문" }}
+                    />
+                    <Route
+                        path="orders/:id"
+                        element={<OrderDetailPage />}
+                        handle={{ title: "주문 상세" }}
                     />
                     <Route
                         path="shipping"
