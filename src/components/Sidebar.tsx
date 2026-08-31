@@ -121,7 +121,7 @@ function Sidebar() {
     return (
         <aside className="admin-sidebar">
             <div className="admin-sidebar-logo">
-                BELIAN <span>Admin</span>
+                VELIAN <span>Admin</span>
             </div>
 
             <nav className="admin-sidebar-nav">
