@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import "../styles/members.css";
 import { ExcelDownloadIcon } from "../components/icons/ExcelDownloadIcon";
+import { SearchIcon } from "../components/icons/SearchIcon";
 
 type Member = {
     id: string;
@@ -78,7 +79,7 @@ function MembersPage() {
         <div className="members-page">
             <div className="members-toolbar">
                 <div className="members-search">
-                    <span className="members-search-icon">🔍</span>
+                    <span className="members-search-icon"><SearchIcon className="search-icon-svg" /></span>
                     <input
                         type="text"
                         placeholder="이름, 아이디, 이메일, 연락처로 검색"
