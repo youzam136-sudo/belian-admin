@@ -244,3 +244,10 @@
   background: #eff6ff;
   color: #2563eb;
 }
+
+.search-icon-svg {
+  width: 14px;
+  height: 14px;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
