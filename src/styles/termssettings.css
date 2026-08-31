@@ -133,6 +133,45 @@
   margin-bottom: 12px;
 }
 
+.terms-sub-tabs-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.terms-sub-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.terms-sub-tab {
+  background: #f8f9fb;
+  border: 1px solid #eef0f2;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.terms-sub-tab:hover {
+  color: #374151;
+  border-color: #e5e7eb;
+}
+
+.terms-sub-tab-active {
+  background: #eff4ff;
+  border-color: #2563eb;
+  color: #2563eb;
+  font-weight: 700;
+}
+
 .terms-editor {
   width: 100%;
   min-height: 640px;
