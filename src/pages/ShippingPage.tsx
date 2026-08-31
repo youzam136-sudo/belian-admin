@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/shipping.css";
+import { LocationIcon } from "../components/icons/LocationIcon";
 
 function ShippingPage() {
   const [activeTab, setActiveTab] = useState<"template" | "origin">(
@@ -143,7 +144,8 @@ function ShippingPage() {
                     </button>
                   </div>
                   <p className="shipping-template-card__origin">
-                    📍 출고 및 반품/교환지명 A
+                    <LocationIcon className="location-icon-svg" /> 출고 및
+                    반품/교환지명 A
                   </p>
 
                   <div className="shipping-template-card__country">
@@ -361,7 +363,8 @@ function ShippingPage() {
                 <div className="shipping-origin-card">
                   <div className="shipping-origin-card__header">
                     <span className="shipping-origin-card__name">
-                      📍 출고 및 반품/교환지명 A
+                      <LocationIcon className="location-icon-svg" /> 출고 및
+                      반품/교환지명 A
                     </span>
                     <div className="shipping-origin-card__menu-wrap">
                       <button
