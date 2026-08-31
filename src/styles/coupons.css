@@ -484,3 +484,58 @@
   padding: 20px 28px 4px;
   margin: 0;
 }
+
+/* 체크박스, 대량선택 툴바 */
+.coupons-table__checkbox-cell {
+  width: 40px;
+}
+
+.coupons-bulk-count {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.coupons-bulk-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.coupons-modal__form-body {
+  padding: 20px 28px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.coupons-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.coupons-modal__field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.coupons-modal__field input {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 11px 14px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.coupons-modal__field input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.coupons-modal__note {
+  font-size: 13px;
+  color: #9ca3af;
+  line-height: 1.6;
+  margin: 0;
+}
