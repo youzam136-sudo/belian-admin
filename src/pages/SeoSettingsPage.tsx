@@ -74,7 +74,7 @@ function SeoSettingsPage() {
                   onChange={() => setDomainOption("default")}
                 />
                 <div>
-                  <span>아임웹 기본 도메인(-.imweb.me)이 검색되는 것을 허용해요.</span>
+                  <span>기본 도메인이 검색되는 것을 허용해요.</span>
                 </div>
               </label>
               <label className="seo-radio">
@@ -84,7 +84,7 @@ function SeoSettingsPage() {
                   onChange={() => setDomainOption("none")}
                 />
                 <div>
-                  <span>아임웹 기본 도메인만 검색되지 않도록 해요.</span>
+                  <span>기본 도메인만 검색되지 않도록 해요.</span>
                   <p>별도의 커스텀 도메인이 설정된 경우 추천</p>
                 </div>
               </label>
@@ -167,7 +167,7 @@ function SeoSettingsPage() {
                         {metaTitle || "ddddd"}
                       </p>
                       <p className="seo-preview-diagram__url">
-                        https://ddddd123.imweb.me
+                        https://ddddd123.co.kr
                       </p>
                     </div>
                   </div>
@@ -290,10 +290,10 @@ function SeoSettingsPage() {
                 </p>
                 <p className="seo-link-line">
                   나의 사이트맵 주소:{" "}
-                  <a href="#">https://ddddd123.imweb.me/sitemap.xml</a>
+                  <a href="#">https://ddddd123.co.kr/sitemap.xml</a>
                 </p>
                 <p className="seo-link-line">
-                  나의 RSS 주소: <a href="#">https://ddddd123.imweb.me/rss</a>
+                  나의 RSS 주소: <a href="#">https://ddddd123.co.kr/rss</a>
                 </p>
               </div>
 
