@@ -1,44 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/products.css";
-
-type ProductStatus = "판매중" | "품절" | "숨김";
-
-interface Product {
-  id: number;
-  name: string;
-  imageLabel: string;
-  price: number;
-  discountPrice: string;
-  status: ProductStatus;
-  stock: string;
-  category: string;
-  promotion: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-const INITIAL_PRODUCTS: Product[] = [
-  {
-    id: 101,
-    name: "와인베리 퍼밍 콜라겐 젤리",
-    imageLabel: "IMG",
-    price: 30000,
-    discountPrice: "-",
-    status: "판매중",
-    stock: "-",
-    category: "미지정",
-    promotion: "Belian",
-    createdAt: "2026-08-21",
-    updatedAt: "2026-08-28",
-  },
-];
+import {
+  getProducts,
+  updateProductStatus as persistStatus,
+  type ProductStatus,
+  type StoredProduct as Product,
+} from "../utils/productsStore";
 
 const STATUS_OPTIONS: ProductStatus[] = ["판매중", "품절", "숨김"];
 
 function ProductsPage() {
   const navigate = useNavigate();
-  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
+  const [products, setProducts] = useState<Product[]>(() => getProducts());
   const [statusFilter, setStatusFilter] = useState<"전체" | ProductStatus>(
     "전체"
   );
@@ -118,9 +92,8 @@ function ProductsPage() {
   };
 
   const updateProductStatus = (id: number, status: ProductStatus) => {
-    setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, status } : p))
-    );
+    const next = persistStatus(id, status);
+    setProducts(next);
     setStatusMenuOpenId(null);
   };
 
