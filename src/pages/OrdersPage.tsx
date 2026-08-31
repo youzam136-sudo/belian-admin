@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/orders.css";
+import { ExcelDownloadIcon } from "../components/icons/ExcelDownloadIcon";
 
 interface Order {
   id: string;
@@ -217,7 +218,9 @@ function OrdersPage() {
                   onChange={(e) => setSearchKeyword(e.target.value)}
                 />
               </div>
-              <button className="orders-icon-btn">⬇ 엑셀 다운로드</button>
+              <button className="orders-icon-btn">
+                <ExcelDownloadIcon className="excel-download-icon" /> 엑셀 다운로드
+              </button>
               <div className="orders-filter-wrap">
                 <button
                   className={`orders-icon-btn ${
