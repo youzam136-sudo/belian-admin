@@ -357,7 +357,15 @@ function ProductsPage() {
                         }
                       >
                         <span className="products-table__thumb">
-                          {product.imageLabel}
+                          {product.imageDataUrl ? (
+                            <img
+                              src={product.imageDataUrl}
+                              alt={product.name}
+                              className="products-table__thumb-img"
+                            />
+                          ) : (
+                            product.imageLabel
+                          )}
                         </span>
                         <span>{product.name}</span>
                         <span className="products-table__link">↗</span>
