@@ -8,6 +8,8 @@ const STATUS_BADGE_CLASS: Record<ProductStatus, string> = {
   판매중: "product-detail__badge--active",
   품절: "product-detail__badge--soldout",
   숨김: "product-detail__badge--hidden",
+  예약중: "product-detail__badge--hidden",
+  승인대기: "product-detail__badge--hidden",
 };
 
 function ProductDetailPage() {
