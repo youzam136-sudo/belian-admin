@@ -6,11 +6,27 @@ import { EmptyDocumentIcon } from "../components/icons/EmptyDocumentIcon";
 import {
   getProducts,
   updateProductStatus as persistStatus,
+  approveProduct,
   type ProductStatus,
   type StoredProduct as Product,
 } from "../utils/productsStore";
 
-const STATUS_OPTIONS: ProductStatus[] = ["판매중", "품절", "숨김"];
+const STATUS_OPTIONS: ProductStatus[] = [
+  "판매중",
+  "품절",
+  "숨김",
+  "예약중",
+  "승인대기",
+];
+
+const FILTER_OPTIONS: ("전체" | ProductStatus)[] = [
+  "전체",
+  "판매중",
+  "품절",
+  "숨김",
+  "예약중",
+  "승인대기",
+];
 
 function ProductsPage() {
   const navigate = useNavigate();
@@ -44,6 +60,8 @@ function ProductsPage() {
     판매중: products.filter((p) => p.status === "판매중").length,
     품절: products.filter((p) => p.status === "품절").length,
     숨김: products.filter((p) => p.status === "숨김").length,
+    예약중: products.filter((p) => p.status === "예약중").length,
+    승인대기: products.filter((p) => p.status === "승인대기").length,
   };
 
   const filteredProducts = products.filter((p) => {
@@ -95,6 +113,12 @@ function ProductsPage() {
 
   const updateProductStatus = (id: number, status: ProductStatus) => {
     const next = persistStatus(id, status);
+    setProducts(next);
+    setStatusMenuOpenId(null);
+  };
+
+  const handleApprove = (id: number) => {
+    const next = approveProduct(id);
     setProducts(next);
     setStatusMenuOpenId(null);
   };
@@ -242,52 +266,22 @@ function ProductsPage() {
 
           <div className="products-main">
             <div className="products-main__status-tabs">
-              <button
-                className={`products-status-tab ${
-                  statusFilter === "전체" ? "products-status-tab--active" : ""
-                }`}
-                onClick={() => setStatusFilter("전체")}
-              >
-                전체{" "}
-                <span className="products-status-tab__count">
-                  {counts.전체}
-                </span>
-              </button>
-              <button
-                className={`products-status-tab ${
-                  statusFilter === "판매중"
-                    ? "products-status-tab--active"
-                    : ""
-                }`}
-                onClick={() => setStatusFilter("판매중")}
-              >
-                판매중{" "}
-                <span className="products-status-tab__count">
-                  {counts.판매중}
-                </span>
-              </button>
-              <button
-                className={`products-status-tab ${
-                  statusFilter === "품절" ? "products-status-tab--active" : ""
-                }`}
-                onClick={() => setStatusFilter("품절")}
-              >
-                품절{" "}
-                <span className="products-status-tab__count">
-                  {counts.품절}
-                </span>
-              </button>
-              <button
-                className={`products-status-tab ${
-                  statusFilter === "숨김" ? "products-status-tab--active" : ""
-                }`}
-                onClick={() => setStatusFilter("숨김")}
-              >
-                숨김{" "}
-                <span className="products-status-tab__count">
-                  {counts.숨김}
-                </span>
-              </button>
+              {FILTER_OPTIONS.map((option) => (
+                <button
+                  key={option}
+                  className={`products-status-tab ${
+                    statusFilter === option
+                      ? "products-status-tab--active"
+                      : ""
+                  }`}
+                  onClick={() => setStatusFilter(option)}
+                >
+                  {option}{" "}
+                  <span className="products-status-tab__count">
+                    {counts[option]}
+                  </span>
+                </button>
+              ))}
             </div>
 
             <div className="products-main__toolbar">
@@ -389,11 +383,27 @@ function ProductsPage() {
                             )
                           }
                         >
-                          {product.status}{" "}
+                          {product.status}
+                          {product.status === "예약중" && product.scheduledAt && (
+                            <span className="products-status-trigger__hint">
+                              {" "}
+                              ({product.scheduledAt.replace("T", " ")})
+                            </span>
+                          )}
+                          {" "}
                           <span className="products-status-trigger__arrow">
                             {statusMenuOpenId === product.id ? "︿" : "﹀"}
                           </span>
                         </button>
+
+                        {product.status === "승인대기" && (
+                          <button
+                            className="products-btn products-btn--primary products-status-approve-btn"
+                            onClick={() => handleApprove(product.id)}
+                          >
+                            승인
+                          </button>
+                        )}
 
                         {statusMenuOpenId === product.id && (
                           <>
