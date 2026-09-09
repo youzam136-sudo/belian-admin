@@ -1,4 +1,4 @@
-export type ProductStatus = "판매중" | "품절" | "숨김";
+export type ProductStatus = "판매중" | "품절" | "숨김" | "예약중" | "승인대기";
 
 export interface StoredProduct {
   id: number;
@@ -19,6 +19,12 @@ export interface StoredProduct {
   manufacturer?: string;
   brand?: string;
   imageDataUrl?: string;
+  /** 예약 게시 시각 (ISO, 예: "2026-09-10T09:00"). 이 시각이 지나면
+   *  approvalRequired가 true면 "승인대기"로, 아니면 지정된 status로 전환된다. */
+  scheduledAt?: string;
+  /** true면 예약 시각 도달 후(또는 즉시) "승인대기" 상태가 되어
+   *  관리자가 승인해야만 실제 판매 상태로 바뀐다. */
+  approvalRequired?: boolean;
 }
 
 const STORAGE_KEY = "belian-admin-products";
@@ -43,19 +49,53 @@ function todayStr() {
   return new Date().toISOString().slice(0, 10);
 }
 
+/** 예약 게시 시각이 지난 상품을 찾아 다음 상태로 승격시킨다.
+ *  - approvalRequired가 true면 "승인대기"로
+ *  - 아니면 등록 시 선택했던 status(판매중/품절/숨김)로 */
+function promoteScheduled(products: StoredProduct[]): {
+  products: StoredProduct[];
+  changed: boolean;
+} {
+  const now = Date.now();
+  let changed = false;
+
+  const next = products.map((p) => {
+    if (
+      p.status === "예약중" &&
+      p.scheduledAt &&
+      new Date(p.scheduledAt).getTime() <= now
+    ) {
+      changed = true;
+      return {
+        ...p,
+        status: (p.approvalRequired ? "승인대기" : "판매중") as ProductStatus,
+        updatedAt: todayStr(),
+      };
+    }
+    return p;
+  });
+
+  return { products: next, changed };
+}
+
 export function getProducts(): StoredProduct[] {
   if (typeof window === "undefined") return SEED_PRODUCTS;
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
+    let products: StoredProduct[];
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
+      products = Array.isArray(parsed) ? parsed : SEED_PRODUCTS;
+    } else {
+      products = SEED_PRODUCTS;
     }
+
+    const { products: promoted, changed } = promoteScheduled(products);
+    if (changed) saveProducts(promoted);
+    return promoted;
   } catch {
-    // localStorage를 사용할 수 없는 환경이면 시드 데이터로 대체
+    return SEED_PRODUCTS;
   }
-  saveProducts(SEED_PRODUCTS);
-  return SEED_PRODUCTS;
 }
 
 export function saveProducts(products: StoredProduct[]) {
@@ -72,7 +112,8 @@ export function nextProductId(products: StoredProduct[]) {
   return Math.max(...products.map((p) => p.id)) + 1;
 }
 
-/** 상품 등록/수정 폼에서 저장할 때 사용. id가 이미 있으면 수정, 없으면 새로 추가 */
+/** 상품 등록/수정 폼에서 저장할 때 사용. id가 이미 있으면 수정, 없으면 새로 추가.
+ *  scheduledAt/approvalRequired가 있으면 최종 상태를 그에 맞게 재계산한다. */
 export function upsertProduct(input: {
   id?: number;
   name: string;
@@ -86,9 +127,22 @@ export function upsertProduct(input: {
   manufacturer?: string;
   brand?: string;
   imageDataUrl?: string;
+  scheduledAt?: string;
+  approvalRequired?: boolean;
 }): StoredProduct[] {
   const products = getProducts();
   const today = todayStr();
+
+  // 예약/승인 설정에 따라 실제 저장될 최초 상태를 계산한다.
+  let resolvedStatus: ProductStatus = input.status;
+  const hasFutureSchedule =
+    !!input.scheduledAt && new Date(input.scheduledAt).getTime() > Date.now();
+
+  if (hasFutureSchedule) {
+    resolvedStatus = "예약중";
+  } else if (input.approvalRequired) {
+    resolvedStatus = "승인대기";
+  }
 
   if (input.id != null) {
     const idx = products.findIndex((p) => p.id === input.id);
@@ -98,7 +152,7 @@ export function upsertProduct(input: {
         name: input.name || products[idx].name,
         price: input.price,
         category: input.category || "미지정",
-        status: input.status,
+        status: resolvedStatus,
         regularPrice: input.regularPrice,
         summary: input.summary,
         description: input.description,
@@ -106,6 +160,8 @@ export function upsertProduct(input: {
         manufacturer: input.manufacturer,
         brand: input.brand,
         imageDataUrl: input.imageDataUrl,
+        scheduledAt: input.scheduledAt,
+        approvalRequired: input.approvalRequired,
         updatedAt: today,
       };
       saveProducts(products);
@@ -119,7 +175,7 @@ export function upsertProduct(input: {
     imageLabel: "IMG",
     price: input.price,
     discountPrice: "-",
-    status: input.status,
+    status: resolvedStatus,
     stock: "-",
     category: input.category || "미지정",
     promotion: "-",
@@ -132,6 +188,8 @@ export function upsertProduct(input: {
     manufacturer: input.manufacturer,
     brand: input.brand,
     imageDataUrl: input.imageDataUrl,
+    scheduledAt: input.scheduledAt,
+    approvalRequired: input.approvalRequired,
   };
 
   const next = [newProduct, ...products];
@@ -144,6 +202,19 @@ export function updateProductStatus(id: number, status: ProductStatus) {
   const today = todayStr();
   const next = products.map((p) =>
     p.id === id ? { ...p, status, updatedAt: today } : p
+  );
+  saveProducts(next);
+  return next;
+}
+
+/** "승인대기" 상품을 관리자가 승인 처리할 때 사용. 판매중 상태로 전환된다. */
+export function approveProduct(id: number) {
+  const products = getProducts();
+  const today = todayStr();
+  const next = products.map((p) =>
+    p.id === id
+      ? { ...p, status: "판매중" as ProductStatus, updatedAt: today }
+      : p
   );
   saveProducts(next);
   return next;
