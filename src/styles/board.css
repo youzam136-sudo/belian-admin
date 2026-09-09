@@ -782,6 +782,56 @@
   border-color: #2563eb;
 }
 
+/* 승인 대기 알림 배너 */
+.board-pending-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.board-pending-banner:hover {
+  background: #ffedd5;
+}
+
+.board-pending-banner__icon {
+  font-size: 18px;
+}
+
+.board-pending-banner__text {
+  flex: 1;
+  font-size: 15px;
+  color: #9a3412;
+}
+
+.board-pending-banner__text strong {
+  font-weight: 700;
+}
+
+.board-pending-banner__arrow {
+  font-size: 14px;
+  font-weight: 600;
+  color: #c2410c;
+  white-space: nowrap;
+}
+
+/* 사이드바 - 승인 대기 개수가 있을 때 강조 */
+.board-sidebar__count--alert {
+  background: #fee2e2;
+  color: #dc2626;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 999px;
+}
+
 /* 게시판 추가 모달 */
 .board-modal-overlay {
   position: fixed;
