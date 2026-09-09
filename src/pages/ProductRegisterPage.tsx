@@ -80,7 +80,7 @@ function ProductRegisterPage() {
   const [couponDiscount, setCouponDiscount] = useState(true);
 
   const [productWeight, setProductWeight] = useState(1);
-  const [shippingTemplateMode, setShippingTemplateMode] = useState
+  const [shippingTemplateMode, setShippingTemplateMode] = useState<
     "default" | "select"
   >("default");
 
@@ -201,14 +201,14 @@ function ProductRegisterPage() {
   const [relatedQuery, setRelatedQuery] = useState("");
   const [relatedDropdownOpen, setRelatedDropdownOpen] = useState(false);
   const [relatedCheckedIds, setRelatedCheckedIds] = useState<number[]>([]);
-  const [relatedProducts, setRelatedProducts] = useState
+  const [relatedProducts, setRelatedProducts] = useState<
     { id: number; name: string }[]
   >([]);
 
   const [extraQuery, setExtraQuery] = useState("");
   const [extraDropdownOpen, setExtraDropdownOpen] = useState(false);
   const [extraCheckedIds, setExtraCheckedIds] = useState<number[]>([]);
-  const [extraProducts, setExtraProducts] = useState
+  const [extraProducts, setExtraProducts] = useState<
     { id: number; name: string }[]
   >([]);
 
