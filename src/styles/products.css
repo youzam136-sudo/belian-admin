@@ -660,3 +660,12 @@
 .products-category-menu__item--danger {
   color: #ef4444;
 }
+
+/* 승인대기 상품 - 승인 버튼 (누르기 편하게 크게) */
+.products-status-approve-btn {
+  padding: 8px 18px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  margin-left: 8px;
+}
