@@ -932,3 +932,18 @@
   color: #9ca3af;
   flex-shrink: 0;
 }
+/* 게시물 목록 - 승인 버튼 (테이블 안 바로 노출) */
+.board-approve-btn {
+  background: #2563eb;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+}
+
+.board-approve-btn:hover {
+  background: #1d4ed8;
+}
