@@ -784,13 +784,14 @@ function BoardPage() {
                     <th>좋아요</th>
                     <th>조회수</th>
                     <th>작성일</th>
+                    <th>승인</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredPosts.length === 0 ? (
                     <tr>
-                      <td colSpan={9} className="board-table__empty">
+                      <td colSpan={10} className="board-table__empty">
                         {activeBoardId === PENDING_FILTER_ID
                           ? "승인 대기중인 게시물이 없어요"
                           : "작성된 게시물이 없어요"}
@@ -830,17 +831,24 @@ function BoardPage() {
                                 예약중
                               </span>
                             )}
-                            {post.status === "승인대기" && (
-                              <span className="board-badge board-badge--private">
-                                승인대기
-                              </span>
-                            )}
                             {post.title}
                           </td>
                           <td>{post.author}</td>
                           <td>{post.likes}</td>
                           <td>{post.views}</td>
                           <td>{post.date}</td>
+                          <td onClick={(e) => e.stopPropagation()}>
+                            {post.status === "승인대기" ? (
+                              <button
+                                className="board-approve-btn"
+                                onClick={() => approvePost(post.id)}
+                              >
+                                승인
+                              </button>
+                            ) : (
+                              "-"
+                            )}
+                          </td>
                           <td
                             className="board-table__more-cell"
                             onClick={(e) => e.stopPropagation()}
@@ -864,13 +872,6 @@ function BoardPage() {
                                   onClick={() => setPostMenuOpenId(null)}
                                 />
                                 <div className="board-post-menu">
-                                  {post.status === "승인대기" && (
-                                    <button
-                                      onClick={() => approvePost(post.id)}
-                                    >
-                                      승인
-                                    </button>
-                                  )}
                                   <button
                                     onClick={() => toggleNotice(post.id)}
                                   >
