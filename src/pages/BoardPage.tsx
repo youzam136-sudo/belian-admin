@@ -36,6 +36,9 @@ interface Post {
   approvalRequired?: boolean;
 }
 
+// "all" = 전체 게시물, "pending" = 승인 대기 중인 게시물만, 그 외에는 게시판 id
+const PENDING_FILTER_ID = "pending";
+
 const INITIAL_BOARDS: Board[] = [
   { id: "notice", name: "Notice", type: "일반" },
   { id: "qna", name: "Q&A", type: "일반" },
@@ -126,8 +129,15 @@ function BoardPage() {
 
   const activeBoard = boards.find((b) => b.id === activeBoardId);
 
+  // 전체 게시물 중 승인 대기 중인 것들 (사이드바 배지 / 상단 배너에서 사용)
+  const pendingPosts = posts.filter((p) => p.status === "승인대기");
+
   const filteredPosts = posts
-    .filter((p) => (activeBoardId === "all" ? true : p.boardId === activeBoardId))
+    .filter((p) => {
+      if (activeBoardId === "all") return true;
+      if (activeBoardId === PENDING_FILTER_ID) return p.status === "승인대기";
+      return p.boardId === activeBoardId;
+    })
     .filter((p) =>
       (p.title + p.author).toLowerCase().includes(postSearchKeyword.toLowerCase())
     );
@@ -566,6 +576,22 @@ function BoardPage() {
           </div>
         </div>
 
+        {/* 승인 대기중인 게시물이 있으면 상단에 알림 배너 표시 */}
+        {pendingPosts.length > 0 && activeBoardId !== PENDING_FILTER_ID && (
+          <button
+            type="button"
+            className="board-pending-banner"
+            onClick={() => setActiveBoardId(PENDING_FILTER_ID)}
+          >
+            <span className="board-pending-banner__icon">⏳</span>
+            <span className="board-pending-banner__text">
+              승인 대기중인 게시물이 <strong>{pendingPosts.length}건</strong>{" "}
+              있어요
+            </span>
+            <span className="board-pending-banner__arrow">확인하기 →</span>
+          </button>
+        )}
+
         <div className="board-page__body">
           <aside className="board-sidebar">
             <div className="board-sidebar__search">
@@ -586,6 +612,26 @@ function BoardPage() {
             >
               전체 게시물{" "}
               <span className="board-sidebar__count">{posts.length}</span>
+            </button>
+
+            <button
+              className={`board-sidebar__item ${
+                activeBoardId === PENDING_FILTER_ID
+                  ? "board-sidebar__item--active"
+                  : ""
+              }`}
+              onClick={() => setActiveBoardId(PENDING_FILTER_ID)}
+            >
+              승인 대기{" "}
+              <span
+                className={`board-sidebar__count ${
+                  pendingPosts.length > 0
+                    ? "board-sidebar__count--alert"
+                    : ""
+                }`}
+              >
+                {pendingPosts.length}
+              </span>
             </button>
 
             {filteredBoards.map((board) => (
@@ -664,7 +710,11 @@ function BoardPage() {
             ) : (
               <div className="board-main__toolbar">
                 <h3 className="board-main__title">
-                  {activeBoardId === "all" ? "전체 게시물" : activeBoard?.name}{" "}
+                  {activeBoardId === "all"
+                    ? "전체 게시물"
+                    : activeBoardId === PENDING_FILTER_ID
+                    ? "승인 대기"
+                    : activeBoard?.name}{" "}
                   <span className="board-main__count">
                     {filteredPosts.length}
                   </span>
@@ -741,7 +791,9 @@ function BoardPage() {
                   {filteredPosts.length === 0 ? (
                     <tr>
                       <td colSpan={9} className="board-table__empty">
-                        작성된 게시물이 없어요
+                        {activeBoardId === PENDING_FILTER_ID
+                          ? "승인 대기중인 게시물이 없어요"
+                          : "작성된 게시물이 없어요"}
                       </td>
                     </tr>
                   ) : (
