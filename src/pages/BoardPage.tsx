@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/board.css";
 import { AdminAvatarIcon } from "../components/icons/AdminAvatarIcon";
 import { SearchIcon } from "../components/icons/SearchIcon";
 
 type BoardType = "일반" | "갤러리" | "상품문의";
+type PostStatus = "게시됨" | "예약중" | "승인대기";
 
 interface Board {
   id: string;
@@ -30,6 +31,9 @@ interface Post {
   isNotice: boolean;
   isPrivate: boolean;
   comments: Comment[];
+  status: PostStatus;
+  scheduledAt?: string;
+  approvalRequired?: boolean;
 }
 
 const INITIAL_BOARDS: Board[] = [
@@ -52,6 +56,7 @@ const INITIAL_POSTS: Post[] = [
     isNotice: false,
     isPrivate: false,
     comments: [],
+    status: "게시됨",
   },
 ];
 
@@ -80,8 +85,40 @@ function BoardPage() {
   const [newPostContent, setNewPostContent] = useState("");
   const [newPostImage, setNewPostImage] = useState<string | null>(null);
 
+  // 게시 예약 / 승인 후 게시
+  const [scheduledPublishEnabled, setScheduledPublishEnabled] = useState(false);
+  const [scheduledDate, setScheduledDate] = useState("");
+  const [scheduledTime, setScheduledTime] = useState("");
+  const [approvalRequired, setApprovalRequired] = useState(false);
+
   // 댓글 입력
   const [commentDraft, setCommentDraft] = useState("");
+
+  // 예약 시각이 지난 게시글을 자동으로 승격시킨다.
+  // (승인 필요 없으면 "게시됨"으로, 승인 필요면 "승인대기"로)
+  useEffect(() => {
+    const promote = () => {
+      setPosts((prev) =>
+        prev.map((p) => {
+          if (
+            p.status === "예약중" &&
+            p.scheduledAt &&
+            new Date(p.scheduledAt).getTime() <= Date.now()
+          ) {
+            return {
+              ...p,
+              status: p.approvalRequired ? "승인대기" : "게시됨",
+            };
+          }
+          return p;
+        })
+      );
+    };
+
+    promote();
+    const intervalId = window.setInterval(promote, 30000);
+    return () => window.clearInterval(intervalId);
+  }, []);
 
   const filteredBoards = boards.filter((b) =>
     b.name.toLowerCase().includes(boardSearchKeyword.toLowerCase())
@@ -144,11 +181,30 @@ function BoardPage() {
     setNewPostTitle("");
     setNewPostContent("");
     setNewPostImage(null);
+    setScheduledPublishEnabled(false);
+    setScheduledDate("");
+    setScheduledTime("");
+    setApprovalRequired(false);
     setCreateDropdownOpen(false);
     setView("create");
   };
 
   const submitCreatePost = () => {
+    const scheduledAt =
+      scheduledPublishEnabled && scheduledDate && scheduledTime
+        ? `${scheduledDate}T${scheduledTime}`
+        : undefined;
+
+    const hasFutureSchedule =
+      !!scheduledAt && new Date(scheduledAt).getTime() > Date.now();
+
+    let status: PostStatus = "게시됨";
+    if (hasFutureSchedule) {
+      status = "예약중";
+    } else if (approvalRequired) {
+      status = "승인대기";
+    }
+
     const newPost: Post = {
       id: Date.now(),
       boardId: newPostBoardId,
@@ -162,6 +218,9 @@ function BoardPage() {
       isNotice: false,
       isPrivate: false,
       comments: [],
+      status,
+      scheduledAt,
+      approvalRequired,
     };
     setPosts((prev) => [newPost, ...prev]);
     setActiveBoardId(newPostBoardId);
@@ -196,6 +255,16 @@ function BoardPage() {
   const deletePost = (postId: number) => {
     setPosts((prev) => prev.filter((p) => p.id !== postId));
     if (view === "detail") setView("list");
+  };
+
+  // "승인대기" 게시글을 관리자가 승인 처리 → "게시됨"으로 전환
+  const approvePost = (postId: number) => {
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.id === postId ? { ...p, status: "게시됨" } : p
+      )
+    );
+    setPostMenuOpenId(null);
   };
 
   const addComment = (postId: number) => {
@@ -233,6 +302,14 @@ function BoardPage() {
             </button>
             <h2 className="board-detail__title">게시물 상세</h2>
             <div className="board-detail__actions">
+              {selectedPost.status === "승인대기" && (
+                <button
+                  className="board-btn board-btn--primary"
+                  onClick={() => approvePost(selectedPost.id)}
+                >
+                  ✓ 승인
+                </button>
+              )}
               <button
                 className="board-btn"
                 onClick={() => openCreatePost(selectedPost.boardId)}
@@ -249,7 +326,21 @@ function BoardPage() {
           </div>
 
           <div className="board-detail__card">
-            <h3 className="board-detail__post-title">{selectedPost.title}</h3>
+            <h3 className="board-detail__post-title">
+              {selectedPost.status === "예약중" && (
+                <span className="board-badge board-badge--notice">
+                  예약중{" "}
+                  {selectedPost.scheduledAt &&
+                    `(${selectedPost.scheduledAt.replace("T", " ")})`}
+                </span>
+              )}
+              {selectedPost.status === "승인대기" && (
+                <span className="board-badge board-badge--private">
+                  승인대기
+                </span>
+              )}
+              {selectedPost.title}
+            </h3>
             <div className="board-detail__meta">
               <span className="board-detail__author">
                 👤 {selectedPost.author}
@@ -390,6 +481,47 @@ function BoardPage() {
                   <span>+ 이미지 추가</span>
                 </label>
               )}
+            </div>
+
+            {/* 게시 예약 */}
+            <div className="board-form__field">
+              <label className="board-form__toggle-row">
+                <span>게시 예약</span>
+                <input
+                  type="checkbox"
+                  checked={scheduledPublishEnabled}
+                  onChange={(e) =>
+                    setScheduledPublishEnabled(e.target.checked)
+                  }
+                />
+              </label>
+
+              {scheduledPublishEnabled && (
+                <div className="board-form__row">
+                  <input
+                    type="date"
+                    value={scheduledDate}
+                    onChange={(e) => setScheduledDate(e.target.value)}
+                  />
+                  <input
+                    type="time"
+                    value={scheduledTime}
+                    onChange={(e) => setScheduledTime(e.target.value)}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* 승인 후 게시 */}
+            <div className="board-form__field">
+              <label className="board-form__toggle-row">
+                <span>승인 후 게시 (관리자 승인 필요)</span>
+                <input
+                  type="checkbox"
+                  checked={approvalRequired}
+                  onChange={(e) => setApprovalRequired(e.target.checked)}
+                />
+              </label>
             </div>
           </div>
         </div>
@@ -562,7 +694,19 @@ function BoardPage() {
                     <div className="board-gallery-card__image">
                       {post.imageUrl && <img src={post.imageUrl} alt="" />}
                     </div>
-                    <p className="board-gallery-card__title">{post.title}</p>
+                    <p className="board-gallery-card__title">
+                      {post.status === "예약중" && (
+                        <span className="board-badge board-badge--notice">
+                          예약중
+                        </span>
+                      )}
+                      {post.status === "승인대기" && (
+                        <span className="board-badge board-badge--private">
+                          승인대기
+                        </span>
+                      )}
+                      {post.title}
+                    </p>
                     <span className="board-gallery-card__meta">
                       {post.author} · {post.date}
                     </span>
@@ -629,6 +773,16 @@ function BoardPage() {
                                 비공개
                               </span>
                             )}
+                            {post.status === "예약중" && (
+                              <span className="board-badge board-badge--notice">
+                                예약중
+                              </span>
+                            )}
+                            {post.status === "승인대기" && (
+                              <span className="board-badge board-badge--private">
+                                승인대기
+                              </span>
+                            )}
                             {post.title}
                           </td>
                           <td>{post.author}</td>
@@ -658,6 +812,13 @@ function BoardPage() {
                                   onClick={() => setPostMenuOpenId(null)}
                                 />
                                 <div className="board-post-menu">
+                                  {post.status === "승인대기" && (
+                                    <button
+                                      onClick={() => approvePost(post.id)}
+                                    >
+                                      승인
+                                    </button>
+                                  )}
                                   <button
                                     onClick={() => toggleNotice(post.id)}
                                   >
