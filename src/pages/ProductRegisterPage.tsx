@@ -17,6 +17,8 @@ interface EditableProduct {
   manufacturer?: string;
   brand?: string;
   imageDataUrl?: string;
+  scheduledAt?: string;
+  approvalRequired?: boolean;
 }
 
 const SECTIONS = [
@@ -78,7 +80,7 @@ function ProductRegisterPage() {
   const [couponDiscount, setCouponDiscount] = useState(true);
 
   const [productWeight, setProductWeight] = useState(1);
-  const [shippingTemplateMode, setShippingTemplateMode] = useState<
+  const [shippingTemplateMode, setShippingTemplateMode] = useState
     "default" | "select"
   >("default");
 
@@ -170,9 +172,25 @@ function ProductRegisterPage() {
   const [bottomBadgeText, setBottomBadgeText] = useState("");
 
   const [saleStatus, setSaleStatus] = useState<"판매중" | "품절" | "숨김">(
-    editProduct?.status ?? "판매중"
+    editProduct?.status && ["판매중", "품절", "숨김"].includes(editProduct.status)
+      ? (editProduct.status as "판매중" | "품절" | "숨김")
+      : "판매중"
   );
   const [salePeriodEnabled, setSalePeriodEnabled] = useState(false);
+
+  // ===== 게시 예약 / 승인 후 게시 =====
+  const [scheduledPublishEnabled, setScheduledPublishEnabled] = useState(
+    Boolean(editProduct?.scheduledAt)
+  );
+  const [scheduledDate, setScheduledDate] = useState(
+    editProduct?.scheduledAt ? editProduct.scheduledAt.slice(0, 10) : ""
+  );
+  const [scheduledTime, setScheduledTime] = useState(
+    editProduct?.scheduledAt ? editProduct.scheduledAt.slice(11, 16) : ""
+  );
+  const [approvalRequired, setApprovalRequired] = useState(
+    Boolean(editProduct?.approvalRequired)
+  );
 
   const MOCK_SEARCH_PRODUCTS = [
     { id: 1, name: "벨리안 대표 상품" },
@@ -183,14 +201,14 @@ function ProductRegisterPage() {
   const [relatedQuery, setRelatedQuery] = useState("");
   const [relatedDropdownOpen, setRelatedDropdownOpen] = useState(false);
   const [relatedCheckedIds, setRelatedCheckedIds] = useState<number[]>([]);
-  const [relatedProducts, setRelatedProducts] = useState<
+  const [relatedProducts, setRelatedProducts] = useState
     { id: number; name: string }[]
   >([]);
 
   const [extraQuery, setExtraQuery] = useState("");
   const [extraDropdownOpen, setExtraDropdownOpen] = useState(false);
   const [extraCheckedIds, setExtraCheckedIds] = useState<number[]>([]);
-  const [extraProducts, setExtraProducts] = useState<
+  const [extraProducts, setExtraProducts] = useState
     { id: number; name: string }[]
   >([]);
 
@@ -251,6 +269,11 @@ function ProductRegisterPage() {
   };
 
   const handleComplete = () => {
+    const scheduledAt =
+      scheduledPublishEnabled && scheduledDate && scheduledTime
+        ? `${scheduledDate}T${scheduledTime}`
+        : undefined;
+
     upsertProduct({
       id: editProduct?.id,
       name: productName,
@@ -264,6 +287,8 @@ function ProductRegisterPage() {
       manufacturer,
       brand,
       imageDataUrl: imagePreviewUrl ?? undefined,
+      scheduledAt,
+      approvalRequired,
     });
     setIsCompleteModalOpen(true);
   };
@@ -903,496 +928,3 @@ function ProductRegisterPage() {
                       value={bottomBadgeText}
                       onChange={(e) => setBottomBadgeText(e.target.value)}
                     />
-                    <span className="product-register__badge-counter">
-                      {bottomBadgeText.length}/16
-                    </span>
-                  </div>
-                </div>
-              )}
-            </section>
-
-            {/* SEO */}
-            <section id="section-seo" className="product-register__card">
-              <h3 className="product-register__card-title">
-                SEO(검색엔진 최적화)
-              </h3>
-
-              <div className="product-register__field">
-                <label className="product-register__label">제목</label>
-                <input
-                  type="text"
-                  className="product-register__input"
-                  placeholder="입력하지 않으면, 상품명과 동일하게 적용됩니다."
-                  value={seoTitle}
-                  onChange={(e) => setSeoTitle(e.target.value)}
-                />
-              </div>
-
-              <div className="product-register__field">
-                <label className="product-register__label">메타 설명</label>
-                <textarea
-                  className="product-register__textarea"
-                  placeholder="입력하지 않으면, 상품 상세에 입력한 텍스트가 적용됩니다."
-                  rows={4}
-                  value={seoMeta}
-                  onChange={(e) => setSeoMeta(e.target.value)}
-                />
-              </div>
-
-              <div className="product-register__toggle-row">
-                <span>이 상품을 검색엔진에서 제외</span>
-                <label className="product-register__toggle">
-                  <input
-                    type="checkbox"
-                    checked={excludeFromSearch}
-                    onChange={(e) => setExcludeFromSearch(e.target.checked)}
-                  />
-                  <span className="product-register__toggle-slider" />
-                </label>
-              </div>
-            </section>
-
-            {/* 판매 설정 */}
-            <section id="section-sale" className="product-register__card">
-              <h3 className="product-register__card-title">판매 설정</h3>
-
-              <div className="product-register__field">
-                <label className="product-register__label">판매 상태</label>
-                <div className="product-register__radio-group">
-                  {(["판매중", "품절", "숨김"] as const).map((status) => (
-                    <label
-                      key={status}
-                      className="product-register__radio"
-                    >
-                      <input
-                        type="radio"
-                        name="saleStatus"
-                        checked={saleStatus === status}
-                        onChange={() => setSaleStatus(status)}
-                      />
-                      {status}
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div className="product-register__toggle-row">
-                <span>판매기간 설정</span>
-                <label className="product-register__toggle">
-                  <input
-                    type="checkbox"
-                    checked={salePeriodEnabled}
-                    onChange={(e) =>
-                      setSalePeriodEnabled(e.target.checked)
-                    }
-                  />
-                  <span className="product-register__toggle-slider" />
-                </label>
-              </div>
-            </section>
-
-            {/* 연관상품 */}
-            <section id="section-related" className="product-register__card">
-              <h3 className="product-register__card-title">연관상품</h3>
-
-              <div className="product-register__field">
-                <label className="product-register__label">
-                  상품 추가 ⓘ
-                </label>
-                <div className="product-register__product-search">
-                  <span className="product-register__product-search-icon">
-                    <SearchIcon className="search-icon-svg" />
-                  </span>
-                  <input
-                    type="text"
-                    placeholder="상품명으로 검색해 주세요"
-                    value={relatedQuery}
-                    onFocus={() => setRelatedDropdownOpen(true)}
-                    onChange={(e) => setRelatedQuery(e.target.value)}
-                  />
-                </div>
-
-                {relatedDropdownOpen && (
-                  <>
-                    <div
-                      className="product-register__dropdown-overlay"
-                      onClick={() => setRelatedDropdownOpen(false)}
-                    />
-                    <div className="product-register__product-dropdown">
-                      <div className="product-register__product-dropdown-list">
-                        {MOCK_SEARCH_PRODUCTS.filter((p) =>
-                          p.name
-                            .toLowerCase()
-                            .includes(relatedQuery.toLowerCase())
-                        ).map((p) => (
-                          <label
-                            key={p.id}
-                            className="product-register__product-option"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={relatedCheckedIds.includes(p.id)}
-                              onChange={() =>
-                                toggleCheckedId(
-                                  relatedCheckedIds,
-                                  setRelatedCheckedIds,
-                                  p.id
-                                )
-                              }
-                            />
-                            <span className="product-register__product-option-thumb" />
-                            {p.name}
-                          </label>
-                        ))}
-                      </div>
-                      <div className="product-register__product-dropdown-footer">
-                        <button
-                          className="product-register__option-btn product-register__option-btn--primary"
-                          disabled={relatedCheckedIds.length === 0}
-                          onClick={addRelatedProducts}
-                        >
-                          상품 추가
-                        </button>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {relatedProducts.length > 0 && (
-                <div className="product-register__added-products">
-                  {relatedProducts.map((p) => (
-                    <div
-                      key={p.id}
-                      className="product-register__added-product"
-                    >
-                      <span className="product-register__product-option-thumb" />
-                      <span>{p.name}</span>
-                      <button
-                        onClick={() =>
-                          setRelatedProducts((prev) =>
-                            prev.filter((x) => x.id !== p.id)
-                          )
-                        }
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </section>
-
-            {/* 추가 상품 */}
-            <section id="section-extra" className="product-register__card">
-              <h3 className="product-register__card-title">추가 상품</h3>
-
-              <div className="product-register__field">
-                <label className="product-register__label">
-                  상품 추가 ⓘ
-                </label>
-                <div className="product-register__product-search">
-                  <span className="product-register__product-search-icon">
-                    <SearchIcon className="search-icon-svg" />
-                  </span>
-                  <input
-                    type="text"
-                    placeholder="상품명으로 검색해 주세요"
-                    value={extraQuery}
-                    onFocus={() => setExtraDropdownOpen(true)}
-                    onChange={(e) => setExtraQuery(e.target.value)}
-                  />
-                </div>
-
-                {extraDropdownOpen && (
-                  <>
-                    <div
-                      className="product-register__dropdown-overlay"
-                      onClick={() => setExtraDropdownOpen(false)}
-                    />
-                    <div className="product-register__product-dropdown">
-                      <div className="product-register__product-dropdown-list">
-                        {MOCK_SEARCH_PRODUCTS.filter((p) =>
-                          p.name
-                            .toLowerCase()
-                            .includes(extraQuery.toLowerCase())
-                        ).map((p) => (
-                          <label
-                            key={p.id}
-                            className="product-register__product-option"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={extraCheckedIds.includes(p.id)}
-                              onChange={() =>
-                                toggleCheckedId(
-                                  extraCheckedIds,
-                                  setExtraCheckedIds,
-                                  p.id
-                                )
-                              }
-                            />
-                            <span className="product-register__product-option-thumb" />
-                            {p.name}
-                          </label>
-                        ))}
-                      </div>
-                      <div className="product-register__product-dropdown-footer">
-                        <button
-                          className="product-register__option-btn product-register__option-btn--primary"
-                          disabled={extraCheckedIds.length === 0}
-                          onClick={addExtraProducts}
-                        >
-                          상품 추가
-                        </button>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {extraProducts.length > 0 && (
-                <div className="product-register__added-products">
-                  {extraProducts.map((p) => (
-                    <div
-                      key={p.id}
-                      className="product-register__added-product"
-                    >
-                      <span className="product-register__product-option-thumb" />
-                      <span>{p.name}</span>
-                      <button
-                        onClick={() =>
-                          setExtraProducts((prev) =>
-                            prev.filter((x) => x.id !== p.id)
-                          )
-                        }
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </section>
-
-            {/* 상품 전시 */}
-            <section id="section-display" className="product-register__card">
-              <h3 className="product-register__card-title">상품 전시</h3>
-              <label className="product-register__checkbox">
-                <input type="checkbox" defaultChecked />
-                ddddd (KR)
-              </label>
-            </section>
-
-            {/* 구매 제한 및 기타 설정 */}
-            <section id="section-limit" className="product-register__card">
-              <h3 className="product-register__card-title">
-                구매 제한 및 기타 설정
-              </h3>
-
-              <div className="product-register__field">
-                <label className="product-register__label">
-                  최소 구매수량
-                </label>
-                <div className="product-register__input-with-unit">
-                  <input
-                    type="number"
-                    className="product-register__input"
-                    value={minQty}
-                    onChange={(e) => setMinQty(Number(e.target.value))}
-                  />
-                  <span className="product-register__unit">개</span>
-                </div>
-              </div>
-
-              <div className="product-register__row">
-                <div className="product-register__field">
-                  <label className="product-register__label">
-                    1회 최대 구매 수량
-                  </label>
-                  <div className="product-register__input-with-select">
-                    <select className="product-register__select">
-                      <option>본품/옵션수량 합산</option>
-                    </select>
-                    <input
-                      type="number"
-                      className="product-register__input"
-                      value={maxQtyPerOrder}
-                      onChange={(e) =>
-                        setMaxQtyPerOrder(Number(e.target.value))
-                      }
-                    />
-                    <span className="product-register__unit">개</span>
-                  </div>
-                </div>
-                <div className="product-register__field">
-                  <label className="product-register__label">
-                    1인 최대 구매 수량
-                  </label>
-                  <div className="product-register__input-with-unit">
-                    <input
-                      type="number"
-                      className="product-register__input"
-                      value={maxQtyPerPerson}
-                      onChange={(e) =>
-                        setMaxQtyPerPerson(Number(e.target.value))
-                      }
-                    />
-                    <span className="product-register__unit">개</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="product-register__field">
-                <label className="product-register__label">
-                  0원 선택 옵션 구매시 최대 구매 수량
-                </label>
-                <select className="product-register__select">
-                  <option>본 상품 구매 수량 만큼 구매 가능</option>
-                </select>
-              </div>
-
-              <div className="product-register__toggle-row">
-                <span>미성년자 구매 불가능</span>
-                <label className="product-register__toggle">
-                  <input
-                    type="checkbox"
-                    checked={minorRestricted}
-                    onChange={(e) => setMinorRestricted(e.target.checked)}
-                  />
-                  <span className="product-register__toggle-slider" />
-                </label>
-              </div>
-
-              <div className="product-register__field">
-                <label className="product-register__label">
-                  개인통관고유부호 사용 설정
-                </label>
-                <select className="product-register__select">
-                  <option>사용 안 함</option>
-                  <option>사용</option>
-                </select>
-              </div>
-            </section>
-          </div>
-
-          <div className="product-register__preview">
-            <div className="product-register__phone">
-              <div className="product-register__phone-statusbar">
-                <span>9:41</span>
-                <span>📶 🔋</span>
-              </div>
-              <div className="product-register__phone-body">
-                <div className="product-register__preview-card">
-                  <div
-                    className="product-register__preview-image"
-                    style={
-                      imagePreviewUrl
-                        ? {
-                            backgroundImage: `url(${imagePreviewUrl})`,
-                            backgroundSize: "cover",
-                            backgroundPosition: "center",
-                          }
-                        : undefined
-                    }
-                  />
-                  <p className="product-register__preview-name">
-                    {productName || "상품명"}
-                  </p>
-                  <p className="product-register__preview-price">0 원</p>
-                  <div className="product-register__preview-icons">
-                    <span>♡</span>
-                    <span>↗</span>
-                  </div>
-                  <p className="product-register__preview-shipping">
-                    배송 &nbsp; 택배 · 기본 2,500원
-                    <br />
-                    50,000원 이상 구매 시 무료배송
-                  </p>
-                  <div className="product-register__preview-buttons">
-                    <button className="product-register__preview-btn">
-                      장바구니
-                    </button>
-                    <button className="product-register__preview-btn product-register__preview-btn--primary">
-                      구매하기
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <p className="product-register__preview-note">
-              디자인 모드의 상세 설정에 따라 실제와 다를 수 있어요
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {isCompleteModalOpen && (
-        <div
-          className="product-register-modal-overlay"
-          onClick={goToProductList}
-        >
-          <div
-            className="product-register-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="product-register-modal__header">
-              <h3 className="product-register-modal__title">
-                {isEditMode
-                  ? "상품이 수정됐어요!"
-                  : "첫 상품 등록을 축하드려요!"}
-              </h3>
-              <button
-                className="product-register-modal__close"
-                onClick={goToProductList}
-              >
-                ×
-              </button>
-            </div>
-            <p className="product-register-modal__desc">
-              {isEditMode
-                ? "변경한 내용이 상품 목록에 반영됐어요."
-                : "상품을 바로 판매해 볼까요?"}
-            </p>
-
-            <div className="product-register-modal__product">
-              <div
-                className="product-register-modal__product-image"
-                style={
-                  imagePreviewUrl
-                    ? {
-                        backgroundImage: `url(${imagePreviewUrl})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }
-                    : undefined
-                }
-              />
-              <div className="product-register-modal__product-info">
-                <span className="product-register-modal__product-name">
-                  {productName || "상품명"}
-                </span>
-                <span className="product-register-modal__product-price">
-                  {(typeof productPrice === "number"
-                    ? productPrice
-                    : 0
-                  ).toLocaleString()}
-                  원
-                </span>
-              </div>
-            </div>
-
-            <button
-              className="product-register-modal__sell-btn"
-              onClick={goToProductList}
-            >
-              판매하기
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-export default ProductRegisterPage;
